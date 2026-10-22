@@ -29,6 +29,21 @@ export function applyResolution(baseCredits: number, resolution: keyof typeof RE
   return Math.ceil(baseCredits * RESOLUTION_MULTIPLIER[resolution])
 }
 
+/**
+ * معامل الدقة لنموذج بعينه (ADR 0003): `models.supports.resolution_multipliers` من قاعدة البيانات يطغى على الجدول العام
+ * عندما يسعّر المزوّد الدقات بشكل مختلف (نانو بنانا برو: 1K و2K بنفس السعر، 4K ×2).
+ * أي قيمة ناقصة أو غير صالحة ترجع للجدول العام — لا تسعير بصفر أو سالب أبدًا.
+ */
+export function applyModelResolution(
+  baseCredits: number,
+  resolution: keyof typeof RESOLUTION_MULTIPLIER,
+  overrides?: unknown,
+): number {
+  const raw = overrides && typeof overrides === 'object' ? (overrides as Record<string, unknown>)[resolution] : undefined
+  const m = typeof raw === 'number' && Number.isFinite(raw) && raw > 0 ? raw : RESOLUTION_MULTIPLIER[resolution]
+  return Math.ceil(baseCredits * m)
+}
+
 /** السعر بالريال لحزمة رصيد (شحن إضافي) — للعرض فقط. */
 export function sarForCredits(credits: number): number {
   return Math.round(credits * CREDIT_SAR * 100) / 100

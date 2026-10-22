@@ -42,7 +42,15 @@ jobs:
         run: |
           psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 <<'SQL'
           create schema auth;
-          create table auth.users (id uuid primary key, email text, raw_user_meta_data jsonb default '{}'::jsonb);
+          create table auth.users (
+            id uuid primary key, instance_id uuid, aud text, role text, email text, encrypted_password text,
+            email_confirmed_at timestamptz, raw_app_meta_data jsonb default '{}'::jsonb, raw_user_meta_data jsonb default '{}'::jsonb,
+            created_at timestamptz, updated_at timestamptz
+          );
+          create schema storage;
+          create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
+          create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text references storage.buckets(id), name text);
+          alter table storage.objects enable row level security;
           create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
           create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
           create publication supabase_realtime;
@@ -53,6 +61,9 @@ jobs:
             psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f "$f"
           done
           psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f supabase/seed.sql
+      - name: credit ledger tests (supabase/tests/credits.test.sql)
+        run: |
+          psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f supabase/tests/credits.test.sql
       - name: credit ledger smoke test
         run: |
           psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 <<'SQL'

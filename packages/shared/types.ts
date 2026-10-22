@@ -33,14 +33,18 @@ export interface GenerateRequest {
   maxCredits?: number
 }
 
-export type GenerateErrorCode =
-  | 'INSUFFICIENT_CREDITS'
-  | 'RATE_LIMITED'
-  | 'MODEL_DISABLED'
-  | 'UNSAFE_PROMPT'
-  | 'INVALID_INPUT'
-  | 'OVER_BUDGET'
-  | 'PROVIDER_ERROR'
+/** رموز الأخطاء — القائمة الواحدة؛ نسخة Edge Functions في supabase/functions/_shared/types.ts (يحرسها contract.test.ts) */
+export const GENERATE_ERROR_CODES = [
+  'INSUFFICIENT_CREDITS',
+  'RATE_LIMITED',
+  'MODEL_DISABLED',
+  'UNSAFE_PROMPT',
+  'INVALID_INPUT',
+  'OVER_BUDGET',
+  'PROVIDER_ERROR',
+] as const
+
+export type GenerateErrorCode = (typeof GENERATE_ERROR_CODES)[number]
 
 export interface GenerateResponse {
   success: boolean

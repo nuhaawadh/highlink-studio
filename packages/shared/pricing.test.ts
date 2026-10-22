@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyResolution, creditsForUsd, creditsForVideo, sarForCredits } from './pricing'
+import { applyModelResolution, applyResolution, creditsForUsd, creditsForVideo, sarForCredits } from './pricing'
 
 describe('pricing — المخطط §7', () => {
   it('صورة سريعة 0.03$ ≈ 3 رصيد', () => {
@@ -28,5 +28,23 @@ describe('pricing — المخطط §7', () => {
   })
   it('250 رصيد ≈ 40 ريال', () => {
     expect(sarForCredits(250)).toBe(40)
+  })
+
+  // nano-banana-pro عبر Replicate (ADR 0003): 1K/2K = 0.15$، 4K = 0.30$ — سعر Replicate بتاريخ 2026-10-22
+  it('نانو بنانا برو: 0.15$ → 11 رصيدًا، 0.30$ → 22', () => {
+    expect(creditsForUsd(0.15)).toBe(11)
+    expect(creditsForUsd(0.3)).toBe(22)
+  })
+  it('معاملات الدقة لكل نموذج (models.supports.resolution_multipliers) تطغى على الجدول العام', () => {
+    const nano = { '1K': 1, '2K': 1, '4K': 2 }
+    expect(applyModelResolution(11, '1K', nano)).toBe(11)
+    expect(applyModelResolution(11, '2K', nano)).toBe(11)
+    expect(applyModelResolution(11, '4K', nano)).toBe(22)
+  })
+  it('بدون تجاوزات أو بتجاوز ناقص يرجع للجدول العام', () => {
+    expect(applyModelResolution(10, '2K')).toBe(15)
+    expect(applyModelResolution(10, '4K', null)).toBe(20)
+    expect(applyModelResolution(10, '4K', { '2K': 1 })).toBe(20)
+    expect(applyModelResolution(10, '2K', { '2K': 'x' as unknown as number })).toBe(15)
   })
 })

@@ -18,6 +18,6 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}', '../../packages/shared/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}', '../../packages/shared/**/*.test.ts', '../../supabase/functions/_shared/**/*.test.ts'],
   },
 })
