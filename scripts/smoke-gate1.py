@@ -122,6 +122,17 @@ def ledger(aid):
     return rows if st == 200 else []
 
 
+def wait_ledger(aid, kind, seconds=15):
+    """الـwebhook يكتب الحالة النهائية ثم يؤكد/يحرّر الحجز في نداء تالٍ — ننتظر صف الدفتر المتوقع بدل القراءة في الفجوة."""
+    deadline = time.time() + seconds
+    while time.time() < deadline:
+        rows = ledger(aid)
+        if any(r['kind'] == kind for r in rows):
+            return rows
+        time.sleep(1)
+    return ledger(aid)
+
+
 def wait_final(aid, seconds=180):
     deadline = time.time() + seconds
     while time.time() < deadline:
@@ -180,7 +191,7 @@ try:
 
     # ------------------------------------------------------------ 3) الاكتمال عبر الـwebhook
     a = wait_final(a1)
-    led = ledger(a1)
+    led = wait_ledger(a1, 'charge')
     charged = any(r['kind'] == 'charge' and r['status'] == 'posted' and r['amount'] == -EXPECTED_COST for r in led)
     check('T3a الأصل completed برابط دائم', bool(a and a['status'] == 'completed' and a.get('url')),
           f"status={a and a['status']} url={'yes' if a and a.get('url') else 'no'} err={a and a.get('error_message')}")
@@ -194,7 +205,7 @@ try:
                        images=['https://example.invalid/does-not-exist-' + uuid.uuid4().hex + '.png'])
     path = 'submit-rejected' if st != 200 else 'webhook-failed'
     a = wait_final(a2)
-    led = ledger(a2)
+    led = wait_ledger(a2, 'refund')
     refunded = any(r['kind'] == 'refund' and r['status'] == 'released' for r in led)
     check('T4a الفشل يعلّم الأصل failed برسالة عربية', bool(a and a['status'] == 'failed' and a.get('error_message')),
           f"path={path} http={st} status={a and a['status']} msg={a and a.get('error_message')}")
@@ -295,8 +306,11 @@ try:
     a = wait_final(live_id) if live_id else None
     st, body, _ = api('GET', f'/assets/{live_id}', key_live) if live_id else (0, None, {})
     pub = (body or {}).get('asset') or {}
-    check('A10 الأصل الحي يكتمل عبر الـwebhook: completed برابط وتكلفة 11', bool(a and a['status'] == 'completed') and pub.get('url') and pub.get('cost_credits') == EXPECTED_COST and balance() == 8,
-          f"status={a and a['status']} url={'yes' if pub.get('url') else 'no'} cost={pub.get('cost_credits')} balance={balance()}")
+    live_led = wait_ledger(live_id, 'charge') if live_id else []
+    live_charged = any(r['kind'] == 'charge' and r['status'] == 'posted' and r['amount'] == -EXPECTED_COST for r in live_led)
+    check('A10 الأصل الحي يكتمل عبر الـwebhook: completed برابط وتكلفة 11 وcharge في الدفتر',
+          bool(a and a['status'] == 'completed') and pub.get('url') and pub.get('cost_credits') == EXPECTED_COST and live_charged and balance() == 8,
+          f"status={a and a['status']} url={'yes' if pub.get('url') else 'no'} cost={pub.get('cost_credits')} ledger={[(r['kind'], r['status'], r['amount']) for r in live_led]} balance={balance()}")
 
     # webhook العميل: example.invalid لا يُحل → تُسجَّل 3 محاولات فاشلة لكل أصل (التوقيع نفسه مختبر في vitest)
     time.sleep(12)
