@@ -1,27 +1,29 @@
 /*
   Design tokens — استوديو هاي لينك
   ---------------------------------
-  القيم هنا مؤقتة (ثيم داكن محايد). تُستبدل بقيم هوية هاي لينك من docs/brand/
-  — غيّري المتغيرات فقط، لا تلمسي المكوّنات.
+  القيم من هوية موقع هاي لينك (highlink-site/assets/site.css) — انظر docs/brand/palette.md للمصدر والمطابقة.
+  غيّري المتغيرات فقط، لا تلمسي المكوّنات.
   كل لون بصيغة RGB بلا alpha ليعمل مع Tailwind: bg-[rgb(var(--col-bg))] أو عبر @theme أدناه.
 */
 :root {
-  --col-bg: 11 11 15;            /* خلفية الصفحة */
-  --col-surface: 21 21 27;       /* الأسطح والبطاقات */
-  --col-surface-strong: 36 36 44;
-  --col-border: 40 40 48;
-  --col-text: 244 244 245;
-  --col-text-muted: 138 138 148;
-  --col-brand: 245 197 66;       /* مؤقت — يُستبدل بلون هاي لينك */
-  --col-brand-ink: 0 0 0;        /* لون النص فوق لون البراند */
-  --col-success: 34 197 94;
+  --col-bg: 11 16 32;            /* --canvas #0B1020 — خلفية الصفحة (كحلي داكن) */
+  --col-surface: 15 22 40;       /* --panel-2 #0F1628 — الأسطح والبطاقات */
+  --col-surface-strong: 18 26 48; /* --panel #121A30 — الأسطح البارزة/التمرير */
+  --col-border: 36 42 60;        /* --line rgba(169,180,204,.16) مركّبًا فوق الخلفية ≈ #242A3C */
+  --col-border-strong: 94 106 140; /* --line-strong #5E6A8C */
+  --col-text: 238 242 250;       /* --text #EEF2FA */
+  --col-text-muted: 169 180 204; /* --text-2 #A9B4CC */
+  --col-brand: 127 184 255;      /* --accent #7FB8FF — الأزرق السماوي، لون الأزرار الأساسية */
+  --col-brand-hover: 156 203 255; /* --accent-hover #9CCBFF */
+  --col-brand-ink: 11 16 32;     /* نص فوق لون البراند = لون الخلفية (كما في .btn بالموقع) */
+  --col-success: 52 227 168;     /* #34E3A8 من الموقع */
   --col-danger: 239 68 68;
 
-  --radius-sm: 10px;
-  --radius-lg: 22px;
+  --radius-sm: 12px;             /* الموقع: 12–16px للعناصر الصغيرة، 999px للأزرار الحبّية */
+  --radius-lg: 20px;             /* الموقع: 20–24px للبطاقات */
 
-  --font-ar: 'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif;
-  --font-latin: 'Inter', 'Rubik', system-ui, sans-serif;
+  --font-ar: 'IBM Plex Sans Arabic', 'Alexandria', system-ui, sans-serif;      /* --font-body */
+  --font-latin: 'Alexandria', 'IBM Plex Sans Arabic', system-ui, sans-serif;   /* --font-display */
 }
 
 @theme inline {
@@ -29,9 +31,11 @@
   --color-surface: rgb(var(--col-surface));
   --color-surface-strong: rgb(var(--col-surface-strong));
   --color-border: rgb(var(--col-border));
+  --color-border-strong: rgb(var(--col-border-strong));
   --color-text: rgb(var(--col-text));
   --color-muted: rgb(var(--col-text-muted));
   --color-brand: rgb(var(--col-brand));
+  --color-brand-hover: rgb(var(--col-brand-hover));
   --color-brand-ink: rgb(var(--col-brand-ink));
   --color-success: rgb(var(--col-success));
   --color-danger: rgb(var(--col-danger));

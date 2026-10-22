@@ -9,7 +9,7 @@
 - نماذج: Replicate (أساسي لكل شيء بما فيه نانو بنانا برو `google/nano-banana-pro` — ADR 0003)، Gemini مباشرة لاحقًا إن لزم، fal (احتياط). المفاتيح في Edge Functions فقط — لا مفتاح سري في `VITE_*`. مخطط مدخلات كل نموذج في `models.input_schema` يبني مدخلات المزوّد (`_shared/inputs.ts`) — لا كود لكل نموذج.
 - دفع: خلف محوّل واحد `_shared/payments/` — Paylink أولًا (صفحة دفع مستضافة + webhook + استعلام)، وMoyasar عند تفعيله (حفظ البطاقة + التجديد التلقائي). العملة ريال. التسعير في `packages/shared/pricing.ts` والباقات في `packages/shared/plans.ts` (المصدران الوحيدان).
 - التوزيع: API عامة `v1` تُبنى مباشرة بعد بوابة 1 (نفس `generate-media` + جدول `api_keys`)، وسيرفر MCP في المرحلة 2 (ADR 0002).
-- البراند: هاي لينك — الألوان والخطوط من `docs/brand/` تُكتب في `apps/web/src/styles/tokens.css` فقط. الاسم الظاهر للمستخدم: "استوديو هاي لينك".
+- البراند: هاي لينك — الألوان والخطوط معتمدة من موقع هاي لينك وموثقة في `docs/brand/palette.md`، وتُكتب في `apps/web/src/styles/tokens.css` فقط (كحلي `#0B1020`، أزرق `#7FB8FF`، خطوط Alexandria + IBM Plex Sans Arabic). الاسم الظاهر للمستخدم: "استوديو هاي لينك".
 
 ## قواعد لا تُكسر
 1. التوليد دائمًا: الواجهة تدرج صف `assets` (status=queued) → `functions.invoke('generate-media')` → Realtime. ممنوع polling، ممنوع استدعاء أي مزوّد من الواجهة.
@@ -37,8 +37,8 @@
 
 ## حالة المشروع
 - المرحلة 0 منجزة: هيكل، تصميم، i18n، دخول، migration 0001 (مختبرة على Postgres 16: التسجيل، الحجز/التأكيد/الاسترداد، RLS)، seed، المركز القانوني، صفحة الباقات، وصفة `product-shot`، هيكل `generate-media` (يرفض 501).
-- المرحلة 1 (2026-10-22): (1) migrations 0001+0002 وseed مطبّقة على `highlink-studio-dev` والأنواع مولّدة ✓ (2) `_shared/` + `generate-media` بالخطوات التسع + `provider-webhook` موقّع مع dedupe، منشورتان، الأسرار مرفوعة ✓ (3) `/image-generate` و`/library` بـRealtime ✓. **بوابة 1**: مسار الفشل مُثبت من الواجهة (البطاقة تفشل عبر Realtime والرصيد يُسترد)؛ مسار النجاح ينتظر رصيدًا في حساب Replicate (كان يرد 402). النماذج الأربعة الأخرى `enabled=false` حتى تُبنى.
-- التالي بالترتيب: اجتياز بوابة 1 بتوليدة ناجحة → مراجعة مستقلة (القاعدة 9) → (4) Kling عبر Replicate → (5) API v1. لا تُبنى خطوة قبل اجتياز سابقتها.
+- المرحلة 1 (2026-10-22): (1) migrations 0001+0002 وseed مطبّقة على `highlink-studio-dev` والأنواع مولّدة ✓ (2) `_shared/` + `generate-media` بالخطوات التسع + `provider-webhook` موقّع مع dedupe، منشورتان، الأسرار مرفوعة ✓ (3) `/image-generate` و`/library` بـRealtime ✓. **بوابة 1 مجتازة (2026-10-22)**: توليدة حقيقية ظهرت في الواجهة عبر Realtime بلا تحديث، الرصيد نزل 30 → 19 (صف `charge` −11)، وفشل حقيقي من المزوّد (402 قبل شحن Replicate) أعاد الرصيد وعرض رسالة عربية. النماذج الأربعة الأخرى `enabled=false` حتى تُبنى.
+- التالي بالترتيب: مراجعة مستقلة لكود الرصيد والوظيفتين (القاعدة 9، الجلسة 4 في kickoff) → (4) Kling عبر Replicate → (5) API v1. لا تُبنى خطوة قبل اجتياز سابقتها.
 - خارج النطاق حتى الآن: مسح الأصول `processing` المعلّقة (شبكة أمان الـwebhook مع `cron-renewals`)، المصنّف الآلي للأمان، `prompt-enhancer`، رفع المراجع، بوابة المخرجات الكاملة.
 - الدليل التشغيلي لجلسات Claude Code: `docs/claude-code-kickoff.md`.
 
