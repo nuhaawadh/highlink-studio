@@ -545,6 +545,15 @@ export type Database = {
         Args: { p_amount: number; p_asset: string; p_user: string }
         Returns: number
       }
+      reconcile_holds: {
+        Args: { p_older_than?: string }
+        Returns: {
+          action: string
+          asset: string
+          asset_status: string
+          hold_id: number
+        }[]
+      }
       release_hold: {
         Args: { p_hold_id: number; p_note?: string }
         Returns: undefined

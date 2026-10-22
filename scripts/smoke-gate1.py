@@ -14,6 +14,13 @@
 """
 import io, json, os, sys, time, uuid, threading, urllib.request, urllib.error
 
+# طرفية Windows قد تكون cp1256 — نطبع UTF-8 دائمًا (عربي + رموز)
+for stream in (sys.stdout, sys.stderr):
+    try:
+        stream.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KEEP = '--keep' in sys.argv
 MODEL = 'nano-banana-pro'
