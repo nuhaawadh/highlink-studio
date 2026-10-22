@@ -5,7 +5,7 @@
 | # | الشيء | وين يروح | ملاحظة |
 | --- | --- | --- | --- |
 | 1 | مجلد `highlink-studio` (هذا المستودع) | `C:\Users\HP\OneDrive\Desktop\ai-visual-lab\highlink-studio` | افتحي Claude Code **من داخل المجلد** — `CLAUDE.md` والمهارات تنقرأ تلقائيًا |
-| 2 | رابط Supabase + مفتاح anon | `apps/web/.env.local` (انسخي `.env.example`) | Supabase → Project Settings → API Keys. مشروع واحد اسمه `highlink-studio-dev`، منطقة Frankfurt |
+| 2 | رابط Supabase + مفتاح anon | `apps/web/.env.local` (انسخي `.env.example`) | Supabase → Project Settings → API Keys. مشروع واحد اسمه `highlink-studio-dev`، منطقة باريس `eu-west-3` |
 | 3 | مفتاح service_role + مفاتيح المزوّدين | `supabase/.env.local` (انسخي `supabase/.env.example`) | `SUPABASE_SERVICE_ROLE_KEY`, `REPLICATE_API_TOKEN`, `GEMINI_API_KEY`. لا تلصقينها في الشات أبدًا — Claude Code ممنوع من قراءة الملف (settings.json) ويرفعها بـ`supabase secrets set` |
 | 4 | Supabase CLI | `npm i -D supabase` في جذر المستودع، ثم `npx supabase login` ثم `npx supabase link --project-ref <ref>` | الـref من رابط لوحة المشروع. Docker غير مطلوب |
 | 5 | ملفات هوية هاي لينك | انسخي محتويات مجلد `highlink-brand` إلى `docs/brand/` | الألوان والخطوط والشعار — يحوّلها إلى `tokens.css` |

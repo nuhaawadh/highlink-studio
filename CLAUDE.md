@@ -6,14 +6,14 @@
 - واجهة: Vite + React 19 + TypeScript (strict) + Tailwind v4 + مكوّنات على نمط shadcn في `apps/web`. RTL أولًا (`dir="rtl"`). لا Next.js.
 - باك إند: Supabase (Auth, Postgres + RLS, Realtime, Edge Functions بـDeno). لا سيرفر آخر.
 - ميديا: خلف محوّل واحد `supabase/functions/_shared/storage.ts` (`put`, `publicUrl`). المرحلة 1: Supabase Storage (bucket `media`). بعد نقل DNS إلى Cloudflare: R2 عبر `media.highlink.tech` — تبديل الملف الواحد فقط (ADR 0002).
-- نماذج: Replicate (أساسي)، Gemini (صور)، fal (احتياط). المفاتيح في Edge Functions فقط — لا مفتاح سري في `VITE_*`.
+- نماذج: Replicate (أساسي لكل شيء بما فيه نانو بنانا برو `google/nano-banana-pro` — ADR 0003)، Gemini مباشرة لاحقًا إن لزم، fal (احتياط). المفاتيح في Edge Functions فقط — لا مفتاح سري في `VITE_*`. مخطط مدخلات كل نموذج في `models.input_schema` يبني مدخلات المزوّد (`_shared/inputs.ts`) — لا كود لكل نموذج.
 - دفع: خلف محوّل واحد `_shared/payments/` — Paylink أولًا (صفحة دفع مستضافة + webhook + استعلام)، وMoyasar عند تفعيله (حفظ البطاقة + التجديد التلقائي). العملة ريال. التسعير في `packages/shared/pricing.ts` والباقات في `packages/shared/plans.ts` (المصدران الوحيدان).
 - التوزيع: API عامة `v1` تُبنى مباشرة بعد بوابة 1 (نفس `generate-media` + جدول `api_keys`)، وسيرفر MCP في المرحلة 2 (ADR 0002).
 - البراند: هاي لينك — الألوان والخطوط من `docs/brand/` تُكتب في `apps/web/src/styles/tokens.css` فقط. الاسم الظاهر للمستخدم: "استوديو هاي لينك".
 
 ## قواعد لا تُكسر
 1. التوليد دائمًا: الواجهة تدرج صف `assets` (status=queued) → `functions.invoke('generate-media')` → Realtime. ممنوع polling، ممنوع استدعاء أي مزوّد من الواجهة.
-2. الرصيد يُكتب فقط عبر `credit_ledger` من Edge Functions (service_role) بدوال `hold_credits / confirm_hold / release_hold / grant_credits`. الواجهة تقرأ `get_balance()` فقط.
+2. الرصيد يُكتب فقط عبر `credit_ledger` من Edge Functions (service_role) بدوال `hold_credits / confirm_hold / release_hold / grant_credits`. الواجهة تقرأ `get_balance()` فقط. `hold_credits` idempotent على `assetId` (فهرس فريد للحجز النشط — migration 0002)، والتأكيد/التحرير يتمان بالأصل عبر `_shared/credits.ts`.
 3. كل جدول جديد = migration + RLS في نفس الملف. لا جدول بدون RLS. أي تغيير في المخطط عبر `supabase db diff`، ويُختبر محليًا قبل `db push`.
 4. النصوص من `apps/web/src/i18n/ar.json` و`en.json`. لا نص عربي مكتوب داخل JSX.
 5. Tailwind بالخصائص المنطقية (`ps/pe/ms/me/start/end`). ممنوع `ml/mr/left/right` إلا للأيقونات المتماثلة.
@@ -30,11 +30,16 @@
 - مع Docker (اختياري): `supabase start` ← Postgres + Functions محليًا؛ `supabase db reset` يطبّق migrations + seed؛ `supabase functions serve generate-media --env-file supabase/.env.local`.
 - `supabase db push` / `functions deploy` / `secrets set` ← تحتاج تأكيدًا مني دائمًا (settings.json)
 - `npm run gen:types` ← `supabase gen types typescript --linked > packages/shared/db.ts`
-- الأسرار: `supabase/.env.local` (لا يُقرأ ولا يُطبع) → `supabase secrets set --env-file supabase/.env.local`. الواجهة: `apps/web/.env.local`.
+- اختبارات الرصيد على القاعدة البعيدة (تُلغى دائمًا): `npx supabase db query --linked -f supabase/tests/credits.test.sql` ← يجب أن ترجع `ALL CREDIT TESTS PASSED`.
+- الأسرار: `supabase/.env.local` (لا يُقرأ ولا يُطبع) → `python -I scripts/push-secrets.py <tmp>` (يتخطى `SUPABASE_*` والفارغة، يجلب `REPLICATE_WEBHOOK_SECRET`) → `npx supabase secrets set --env-file <tmp>` → حذف tmp. الواجهة: `apps/web/.env.local`.
+- مفاتيح Supabase الجديدة (`sb_secret_…`/`sb_publishable_…`) ليست JWT: في السكربتات تُرسل كـ`apikey` فقط (Auth Admin API يرفضها في `Authorization: Bearer`).
+- لا Deno محليًا: الوحدات النقية في `_shared/` تُختبر بـvitest، والباقي يُتحقق عند النشر وبالفحص الدخاني بـcurl على الرابط السحابي.
 
 ## حالة المشروع
 - المرحلة 0 منجزة: هيكل، تصميم، i18n، دخول، migration 0001 (مختبرة على Postgres 16: التسجيل، الحجز/التأكيد/الاسترداد، RLS)، seed، المركز القانوني، صفحة الباقات، وصفة `product-shot`، هيكل `generate-media` (يرفض 501).
-- التالي (المرحلة 1) بالترتيب: (1) تطبيق migration+seed على المشروع السحابي وتوليد الأنواع (2) `_shared/` ثم `generate-media` الكاملة + `provider-webhook` بنموذج nano-banana-pro فقط (3) صفحة `/image-generate` الحقيقية + المكتبة عبر Realtime = **بوابة 1** (4) Kling عبر Replicate (5) API v1. لا تُبنى خطوة قبل اجتياز سابقتها.
+- المرحلة 1 (2026-10-22): (1) migrations 0001+0002 وseed مطبّقة على `highlink-studio-dev` والأنواع مولّدة ✓ (2) `_shared/` + `generate-media` بالخطوات التسع + `provider-webhook` موقّع مع dedupe، منشورتان، الأسرار مرفوعة ✓ (3) `/image-generate` و`/library` بـRealtime ✓. **بوابة 1**: مسار الفشل مُثبت من الواجهة (البطاقة تفشل عبر Realtime والرصيد يُسترد)؛ مسار النجاح ينتظر رصيدًا في حساب Replicate (كان يرد 402). النماذج الأربعة الأخرى `enabled=false` حتى تُبنى.
+- التالي بالترتيب: اجتياز بوابة 1 بتوليدة ناجحة → مراجعة مستقلة (القاعدة 9) → (4) Kling عبر Replicate → (5) API v1. لا تُبنى خطوة قبل اجتياز سابقتها.
+- خارج النطاق حتى الآن: مسح الأصول `processing` المعلّقة (شبكة أمان الـwebhook مع `cron-renewals`)، المصنّف الآلي للأمان، `prompt-enhancer`، رفع المراجع، بوابة المخرجات الكاملة.
 - الدليل التشغيلي لجلسات Claude Code: `docs/claude-code-kickoff.md`.
 
 ## عند التردد
