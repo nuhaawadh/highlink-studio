@@ -39,6 +39,30 @@ export const ERROR_HTTP_STATUS: Record<GenerateErrorCode, number> = {
   PROVIDER_ERROR: 502,
 }
 
+/** رموز API v1 (ADR 0004) — إضافة إلى رموز التوليد؛ النسخة الأخرى في packages/shared/types.ts */
+export const API_ERROR_CODES = ['UNAUTHORIZED', 'NOT_FOUND', 'DAILY_LIMIT', 'IDEMPOTENCY_CONFLICT', 'METHOD_NOT_ALLOWED'] as const
+export type ApiErrorCode = (typeof API_ERROR_CODES)[number]
+export type ErrorCode = GenerateErrorCode | ApiErrorCode
+
+export const API_ERROR_MESSAGES_AR: Record<ApiErrorCode, string> = {
+  UNAUTHORIZED: 'مفتاح API مفقود أو غير صالح أو مُبطَل',
+  NOT_FOUND: 'غير موجود',
+  DAILY_LIMIT: 'تجاوزت الحد اليومي لهذا المفتاح — يتجدد منتصف الليل بتوقيت UTC',
+  IDEMPOTENCY_CONFLICT: 'Idempotency-Key مستخدم من قبل بطلب مختلف أو ما زال قيد التنفيذ',
+  METHOD_NOT_ALLOWED: 'طريقة غير مدعومة لهذا المسار',
+}
+
+export const API_ERROR_HTTP_STATUS: Record<ApiErrorCode, number> = {
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
+  DAILY_LIMIT: 429,
+  IDEMPOTENCY_CONFLICT: 409,
+  METHOD_NOT_ALLOWED: 405,
+}
+
+export const ALL_ERROR_MESSAGES_AR: Record<ErrorCode, string> = { ...ERROR_MESSAGES_AR, ...API_ERROR_MESSAGES_AR }
+export const ALL_ERROR_HTTP_STATUS: Record<ErrorCode, number> = { ...ERROR_HTTP_STATUS, ...API_ERROR_HTTP_STATUS }
+
 export type AspectRatio = '1:1' | '9:16' | '16:9' | '4:5' | '3:4'
 export type ImageSize = '1K' | '2K' | '4K'
 export type Provider = 'replicate' | 'fal' | 'google'
@@ -71,7 +95,27 @@ export interface GenerateResponse {
   balanceAfter: number
   provider?: Provider
   providerJobId?: string
+  /** مفتاح hl_test_: تجربة جافة بلا مزوّد ولا خصم (ADR 0004) */
+  sandbox?: boolean
   error?: { code: GenerateErrorCode; message: string }
+}
+
+/** تمثيل الأصل في API v1 (ADR 0004 القرار 8) — ثابت؛ لا metadata داخلية ولا معرّف مهمة المزوّد */
+export interface PublicAsset {
+  id: string
+  status: AssetStatus
+  type: 'image' | 'video' | 'audio'
+  model: string | null
+  prompt: string | null
+  aspect_ratio: string | null
+  resolution: string | null
+  url: string | null
+  thumbnail_url: string | null
+  cost_credits: number
+  sandbox: boolean
+  error: { code: string; message: string } | null
+  created_at: string
+  completed_at: string | null
 }
 
 /** صف models كما تقرأه الوظائف (الأعمدة المستخدمة فقط) */

@@ -3,6 +3,7 @@
 // verify_jwt=false في config.toml — الحماية الوحيدة هي التوقيع، فلا طريق بدونه.
 // الترتيب مهم لأن المزوّد قد يرسل الحدث مرتين: التوقيع → dedupe → المعالجة → processed_at.
 import { z } from 'npm:zod@4'
+import { scheduleAssetWebhook } from '../_shared/client-webhook.ts'
 import { handleOptions } from '../_shared/cors.ts'
 import { confirmAssetHold, releaseAssetHold } from '../_shared/credits.ts'
 import { AppError, jsonResponse, toAppError } from '../_shared/errors.ts'
@@ -17,6 +18,7 @@ interface AssetRow {
   type: 'image' | 'video' | 'audio'
   status: string
   metadata: Record<string, unknown> | null
+  api_key_id: string | null
 }
 
 const FAILED_MESSAGE_AR = 'فشل التوليد عند المزوّد — استُرجع رصيدك كاملًا'
@@ -76,7 +78,7 @@ Deno.serve(async (req) => {
     // 3) الأصل المرتبط بالمهمة
     const { data: asset, error: assetErr } = await db
       .from('assets')
-      .select('id, user_id, type, status, metadata')
+      .select('id, user_id, type, status, metadata, api_key_id')
       .eq('provider', provider.name)
       .eq('provider_job_id', result.jobId)
       .maybeSingle<AssetRow>()
@@ -125,6 +127,8 @@ Deno.serve(async (req) => {
       const confirmed = await confirmAssetHold(asset.id)
       await db.from('webhook_events').update({ processed_at: new Date().toISOString() }).eq('event_id', eventId)
       logRequest({ fn: 'provider-webhook', user: asset.user_id, asset: assetId, ms: Date.now() - started, ok: true, code: 'COMPLETED', confirmed, bytes: copied.bytes })
+      // أصل أُنشئ عبر API → webhook موقّع للعميل (لا يؤثر في ردّنا للمزوّد)
+      if (asset.api_key_id) await scheduleAssetWebhook(asset.id)
       return jsonResponse({ ok: true })
     }
 
@@ -143,6 +147,7 @@ Deno.serve(async (req) => {
     if (failErr) throw toAppError(new Error(failErr.message))
     await db.from('webhook_events').update({ processed_at: new Date().toISOString() }).eq('event_id', eventId)
     logRequest({ fn: 'provider-webhook', user: asset.user_id, asset: assetId, ms: Date.now() - started, ok: true, code: 'FAILED_REFUNDED', released, detail: result.error })
+    if (asset.api_key_id) await scheduleAssetWebhook(asset.id)
     return jsonResponse({ ok: true, refunded: released })
   } catch (e) {
     // 6) استثناء بعد تسجيل الحدث: نحذف صفه ليعيد المزوّد الإرسال، ونرد 500

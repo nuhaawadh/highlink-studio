@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Globe, Image as ImageIcon, LayoutGrid, LayoutTemplate, Library, LogIn, LogOut, Menu, Video, X } from 'lucide-react'
+import { Globe, Image as ImageIcon, LayoutGrid, LayoutTemplate, Library, LogIn, LogOut, Menu, UserRound, Video, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { CreditBadge } from '@/components/studio/CreditBadge'
@@ -108,9 +108,19 @@ export function Header() {
             <Globe className="size-3.5" />
           </Button>
           {user ? (
-            <Button variant="secondary" size="sm" onClick={() => void signOut()}>
-              <LogOut className="size-3" /> <span className="hidden sm:inline">{t('nav.logout')}</span>
-            </Button>
+            <>
+              <Link
+                to="/account"
+                title={t('nav.account')}
+                aria-label={t('nav.account')}
+                className="hidden size-9 items-center justify-center rounded-[var(--radius-sm)] border border-border bg-white/5 text-text hover:bg-white/10 md:inline-flex"
+              >
+                <UserRound className="size-3.5" />
+              </Link>
+              <Button variant="secondary" size="sm" onClick={() => void signOut()}>
+                <LogOut className="size-3" /> <span className="hidden sm:inline">{t('nav.logout')}</span>
+              </Button>
+            </>
           ) : (
             <Link
               to="/login"
@@ -145,6 +155,7 @@ export function Header() {
             ))}
             <p className="mt-2.5 px-2 text-[11px] font-medium text-muted">{t('nav.library')}</p>
             <DrawerLink to="/library" icon={<LayoutGrid className="size-3" />} label={t('nav.library')} />
+            {user && <DrawerLink to="/account" icon={<UserRound className="size-3" />} label={t('nav.account')} />}
             <DrawerLink to="/pricing" icon={<LayoutGrid className="size-3" />} label={t('nav.pricing')} />
           </div>
           <div className="border-t border-border p-2">

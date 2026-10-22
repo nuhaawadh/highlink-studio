@@ -39,8 +39,176 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_daily_usage: {
+        Row: {
+          day: string
+          key_id: string
+          requests: number
+        }
+        Insert: {
+          day: string
+          key_id: string
+          requests?: number
+        }
+        Update: {
+          day?: string
+          key_id?: string
+          requests?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_daily_usage_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_idempotency: {
+        Row: {
+          asset_id: string | null
+          created_at: string
+          idempotency_key: string
+          key_id: string
+          request_hash: string
+          response: Json | null
+          status: number | null
+        }
+        Insert: {
+          asset_id?: string | null
+          created_at?: string
+          idempotency_key: string
+          key_id: string
+          request_hash: string
+          response?: Json | null
+          status?: number | null
+        }
+        Update: {
+          asset_id?: string | null
+          created_at?: string
+          idempotency_key?: string
+          key_id?: string
+          request_hash?: string
+          response?: Json | null
+          status?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_idempotency_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_keys: {
+        Row: {
+          created_at: string
+          daily_limit: number
+          id: string
+          key_hash: string
+          key_hint: string
+          last_used_at: string | null
+          mode: string
+          name: string
+          revoked_at: string | null
+          user_id: string
+          webhook_secret: string
+          webhook_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          daily_limit: number
+          id?: string
+          key_hash: string
+          key_hint: string
+          last_used_at?: string | null
+          mode: string
+          name: string
+          revoked_at?: string | null
+          user_id: string
+          webhook_secret: string
+          webhook_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          daily_limit?: number
+          id?: string
+          key_hash?: string
+          key_hint?: string
+          last_used_at?: string | null
+          mode?: string
+          name?: string
+          revoked_at?: string | null
+          user_id?: string
+          webhook_secret?: string
+          webhook_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      api_webhook_deliveries: {
+        Row: {
+          asset_id: string | null
+          attempts: number
+          created_at: string
+          delivered_at: string | null
+          event: string
+          id: number
+          key_id: string | null
+          last_error: string | null
+          ok: boolean
+          status_code: number | null
+          url: string
+        }
+        Insert: {
+          asset_id?: string | null
+          attempts?: number
+          created_at?: string
+          delivered_at?: string | null
+          event: string
+          id?: number
+          key_id?: string | null
+          last_error?: string | null
+          ok?: boolean
+          status_code?: number | null
+          url: string
+        }
+        Update: {
+          asset_id?: string | null
+          attempts?: number
+          created_at?: string
+          delivered_at?: string | null
+          event?: string
+          id?: number
+          key_id?: string | null
+          last_error?: string | null
+          ok?: boolean
+          status_code?: number | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_webhook_deliveries_key_id_fkey"
+            columns: ["key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assets: {
         Row: {
+          api_key_id: string | null
           aspect_ratio: string | null
           completed_at: string | null
           cost_credits: number | null
@@ -68,6 +236,7 @@ export type Database = {
           visibility: string
         }
         Insert: {
+          api_key_id?: string | null
           aspect_ratio?: string | null
           completed_at?: string | null
           cost_credits?: number | null
@@ -95,6 +264,7 @@ export type Database = {
           visibility?: string
         }
         Update: {
+          api_key_id?: string | null
           aspect_ratio?: string | null
           completed_at?: string | null
           cost_credits?: number | null
@@ -122,6 +292,13 @@ export type Database = {
           visibility?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "assets_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "assets_project_id_fkey"
             columns: ["project_id"]
@@ -529,7 +706,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      api_authenticate: {
+        Args: { p_count?: boolean; p_key_hash: string }
+        Returns: {
+          daily_limit: number
+          key_id: string
+          mode: string
+          plan_id: string
+          used_today: number
+          user_id: string
+          webhook_secret: string
+          webhook_url: string
+        }[]
+      }
       confirm_hold: { Args: { p_hold_id: number }; Returns: undefined }
+      create_api_key: {
+        Args: { p_mode: string; p_name: string; p_webhook_url?: string }
+        Returns: {
+          daily_limit: number
+          id: string
+          key: string
+          key_hint: string
+          mode: string
+          webhook_secret: string
+        }[]
+      }
       get_balance: { Args: { p_user: string }; Returns: number }
       grant_credits: {
         Args: {
@@ -558,6 +759,7 @@ export type Database = {
         Args: { p_hold_id: number; p_note?: string }
         Returns: undefined
       }
+      revoke_api_key: { Args: { p_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

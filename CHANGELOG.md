@@ -1,5 +1,15 @@
 # سجل التغييرات
 
+## المرحلة 1 — API عامة v1 (2026-10-22، ADR 0004)
+- وظيفة `v1` بلا JWT: `POST /v1/generate` · `GET /v1/assets/{id}` · `GET /v1/models` · `GET /v1/balance`، المصادقة بمفتاح `hl_live_`/`hl_test_` في `Authorization: Bearer` أو `X-API-Key`، وترويسات `X-RateLimit-*`.
+- النواة مشتركة: منطق `generate-media` انتقل إلى `_shared/generate-core.ts` (`runGenerate`) ويستدعيه الغلافان (الواجهة بـJWT، الـAPI بالمفتاح) — تسعير وأمان وحجز واحد.
+- migration `0004_api_v1`: `api_keys` (sha256 فقط + تلميح، حد يومي من الباقة، آخر استخدام، إبطال)، `api_daily_usage`، `api_idempotency`، `api_webhook_deliveries`، `assets.api_key_id`، RLS لكلٍّ، ودوال `create_api_key`/`revoke_api_key` (الواجهة بـ`auth.uid()`، حد 10 مفاتيح) و`api_authenticate` (service_role، عدّ ذرّي + `DAILY_LIMIT`). اختبارات `supabase/tests/api.test.sql` (A1–A11) قبل الكود.
+- `Idempotency-Key`: نفس المفتاح ونفس الجسم → الرد المخزَّن مع `Idempotency-Replayed: true`؛ جسم مختلف أو قيد التنفيذ → `409 IDEMPOTENCY_CONFLICT`.
+- مفاتيح `hl_test_` = تجربة جافة: نفس التحقق والتسعير وفحص الرصيد، بلا مزوّد ولا خصم؛ الأصل `completed` بـ`metadata.sandbox`.
+- webhook العميل (`_shared/client-webhook.ts`): عند اكتمال/فشل أصل أُنشئ عبر API، POST موقّع بمواصفة Standard Webhooks (`webhook-id/timestamp/signature`، سر `whsec_` لكل مفتاح)، 3 محاولات، يُسجَّل في `api_webhook_deliveries`؛ التوقيع مختبر بدالة التحقق نفسها.
+- الواجهة: صفحة `/account` (البريد، الباقة، الرصيد) لإصدار المفاتيح (الاسم، النوع، رابط webhook) مع عرض المفتاح والسر مرة واحدة، والإبطال؛ رابط الحساب في الهيدر والدرج؛ بطاقة الأصل تعرض "تجربة API" للأصول sandbox.
+- رموز API (`UNAUTHORIZED`, `NOT_FOUND`, `DAILY_LIMIT`, `IDEMPOTENCY_CONFLICT`, `METHOD_NOT_ALLOWED`) في النسختين يحرسهما `contract.test.ts`. `smoke-gate1.py` يغطي الـAPI بمفتاحي test وlive (A1–A14).
+
 ## المرحلة 1 — المراجعة المستقلة وتصليب المحرك (2026-10-22)
 - مراجعة من جلسة لم تكتب الكود (القاعدة 9، الجلسة 4): حرج واحد، سبعة مهمة، 11 تحسينًا — نُفّذ الحرج والمهم كلها والتحسينات الأمنية الرخيصة؛ الباقي في `docs/backlog.md`.
 - `generate-media`: حجز الأصل ذريًا (`queued → processing` بشرط الحالة) قبل الحجز والإرسال، فالطلبات المتزامنة بنفس `assetId` تنتج مهمة واحدة عند المزوّد والباقي 409؛ بعد كتابة `provider_job_id` تنتقل ملكية الحجز إلى الـwebhook (لا تحرير من الـcatch)؛ `assetId` لا يُعتمد قبل فحص الملكية؛ `type` و`model` من جدول النماذج؛ مخطط الطلب في `_shared/request.ts` (روابط https فقط، مختبر).

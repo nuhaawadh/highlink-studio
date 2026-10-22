@@ -82,6 +82,9 @@ jobs:
       - name: credit ledger tests (supabase/tests/credits.test.sql)
         run: |
           psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f supabase/tests/credits.test.sql
+      - name: API v1 tests (supabase/tests/api.test.sql)
+        run: |
+          psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 -f supabase/tests/api.test.sql
       - name: credit ledger smoke test
         run: |
           psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 <<'SQL'

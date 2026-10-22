@@ -51,3 +51,7 @@ verify_jwt = true
 # webhook المزوّد: لا JWT — الحماية بتوقيع Replicate (webhook-signature) داخل الوظيفة
 [functions.provider-webhook]
 verify_jwt = false
+
+# API عامة v1 (ADR 0004): لا JWT — المصادقة بمفتاح API (hl_live_/hl_test_) داخل الوظيفة
+[functions.v1]
+verify_jwt = false

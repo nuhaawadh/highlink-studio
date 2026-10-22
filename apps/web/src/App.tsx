@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
+import { AccountPage } from '@/app/AccountPage'
 import { ContactPage } from '@/app/ContactPage'
 import { HomePage } from '@/app/HomePage'
 import { ImageGeneratePage } from '@/app/ImageGeneratePage'
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="templates" element={<PlaceholderPage titleKey="nav.templates" phase={2} />} />
           <Route element={<RequireAuth />}>
             <Route path="library" element={<LibraryPage />} />
+            <Route path="account" element={<AccountPage />} />
             <Route path="image-generate" element={<ImageGeneratePage />} />
             <Route path="video-generate" element={<PlaceholderPage titleKey="nav.video" phase={1} />} />
             <Route path="studio/product" element={<PlaceholderPage titleKey="studios.product" phase={2} />} />

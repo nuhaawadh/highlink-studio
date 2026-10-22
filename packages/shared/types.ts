@@ -46,6 +46,10 @@ export const GENERATE_ERROR_CODES = [
 
 export type GenerateErrorCode = (typeof GENERATE_ERROR_CODES)[number]
 
+/** رموز API v1 (ADR 0004) — نسخة Edge Functions في supabase/functions/_shared/types.ts (يحرسها contract.test.ts) */
+export const API_ERROR_CODES = ['UNAUTHORIZED', 'NOT_FOUND', 'DAILY_LIMIT', 'IDEMPOTENCY_CONFLICT', 'METHOD_NOT_ALLOWED'] as const
+export type ApiErrorCode = (typeof API_ERROR_CODES)[number]
+
 export interface GenerateResponse {
   success: boolean
   assetId: string
@@ -53,7 +57,27 @@ export interface GenerateResponse {
   balanceAfter: number
   provider?: Provider
   providerJobId?: string
+  /** مفتاح hl_test_: تجربة جافة بلا مزوّد ولا خصم (ADR 0004) */
+  sandbox?: boolean
   error?: { code: GenerateErrorCode; message: string }
+}
+
+/** تمثيل الأصل في API v1 (ADR 0004 القرار 8) */
+export interface PublicAsset {
+  id: string
+  status: AssetStatus
+  type: AssetType
+  model: string | null
+  prompt: string | null
+  aspect_ratio: string | null
+  resolution: string | null
+  url: string | null
+  thumbnail_url: string | null
+  cost_credits: number
+  sandbox: boolean
+  error: { code: string; message: string } | null
+  created_at: string
+  completed_at: string | null
 }
 
 /** POST /functions/v1/generate-media?estimate=1 — تسعير بلا حجز */

@@ -8,6 +8,9 @@
   3. التوليدة الحقيقية تكتمل عبر الـwebhook: الأصل completed برابط دائم، الحجز صار charge، الرصيد 30 → 19.
   4. فشل حقيقي (مرجع صورة لا يمكن جلبه) → failed برسالة عربية، الحجز حُرّر، الرصيد يعود 19.
   5. حدث webhook واحد معالَج لكل مهمة، وتنظيف المستخدم التجريبي (cascade) وملفاته.
+  6. الحارس عبر PostgREST: PATCH status من الواجهة مرفوض.
+  7. API v1 (ADR 0004): مفتاح hl_test_ (models/balance/generate sandbox/idempotency/assets/401/429/إبطال)
+     ومفتاح hl_live_ (توليدة حقيقية 202 → completed عبر الـwebhook، الرصيد 19 → 8) وسجل تسليم webhook العميل.
 
 يقرأ supabase/.env.local (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) وapps/web/.env.local (VITE_SUPABASE_ANON_KEY) ولا يطبع قيمها.
 المفاتيح الجديدة (sb_secret_/sb_publishable_) ليست JWT وتُرسل كـapikey فقط؛ المفاتيح القديمة (JWT) تُرسل أيضًا في Authorization.
@@ -213,6 +216,110 @@ try:
     st, res = rest('PATCH', f'/assets?id=eq.{a1}', jwt, {'status': 'queued'}, extra={'Prefer': 'return=minimal'})
     check('T6 PATCH status من الواجهة يُرفض (FORBIDDEN_COLUMN_UPDATE)', st in (400, 403, 409) and 'FORBIDDEN_COLUMN_UPDATE' in json.dumps(res),
           f'http={st} body={str(res)[:120]}')
+
+    # ------------------------------------------------------------ 7) API v1 (ADR 0004): مفتاح hl_test_ (sandbox) ثم hl_live_ (توليدة حقيقية + webhook العميل)
+    API = URL + '/functions/v1/v1'
+
+    def api(method, path, key, body=None, extra=None, timeout=120):
+        data = None if body is None else json.dumps(body).encode('utf-8')
+        headers = {'Content-Type': 'application/json'}
+        if key:
+            headers['Authorization'] = 'Bearer ' + key
+        if extra:
+            headers.update(extra)
+        req = urllib.request.Request(API + path, data=data, method=method, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                raw = r.read().decode('utf-8')
+                return r.status, (json.loads(raw) if raw else None), {k.lower(): v for k, v in r.headers.items()}
+        except urllib.error.HTTPError as e:
+            raw = e.read().decode('utf-8', 'replace')
+            try:
+                return e.code, json.loads(raw), {k.lower(): v for k, v in e.headers.items()}
+            except Exception:
+                return e.code, raw, {}
+
+    def rpc_create_key(name, mode, hook):
+        st, rows = rest('POST', '/rpc/create_api_key', jwt, {'p_name': name, 'p_mode': mode, 'p_webhook_url': hook})
+        if st != 200 or not rows:
+            sys.exit(f'create_api_key failed: HTTP {st} {str(rows)[:200]}')
+        return rows[0]
+
+    hook = 'https://example.invalid/highlink-hook'
+    kt = rpc_create_key('smoke test', 'test', hook)
+    kl = rpc_create_key('smoke live', 'live', hook)
+    key_test, key_live = kt['key'], kl['key']
+    check('A1 إصدار مفتاحي test وlive بالصيغة المتوقعة', key_test.startswith('hl_test_') and key_live.startswith('hl_live_')
+          and kt['webhook_secret'].startswith('whsec_') and kt['daily_limit'] == 200 and kl['daily_limit'] == 50,
+          f"limits test={kt['daily_limit']} live={kl['daily_limit']}")
+
+    st, body, hdr = api('GET', '/models', key_test)
+    ids = [m.get('id') for m in (body or {}).get('data', [])] if st == 200 else []
+    check('A2 GET /models بمفتاح API', st == 200 and MODEL in ids, f'http={st} models={ids}')
+
+    st, body, hdr = api('GET', '/balance', key_test)
+    check('A3 GET /balance = 19 بوضع test', st == 200 and body.get('balance') == 19 and body.get('mode') == 'test', f'http={st} body={body}')
+
+    gen_body = {'model': MODEL, 'prompt': 'A ceramic coffee cup on a wooden table, soft light', 'config': {'aspectRatio': '1:1', 'imageSize': '1K'}, 'maxCredits': EXPECTED_COST}
+    idem = 'smoke-' + uuid.uuid4().hex[:12]
+    st, body, hdr = api('POST', '/generate', key_test, gen_body, extra={'Idempotency-Key': idem})
+    sb_asset = (body or {}).get('asset') or {}
+    check('A4 POST /generate بمفتاح test → sandbox مكتمل بلا خصم', st == 200 and body.get('sandbox') is True and sb_asset.get('status') == 'completed'
+          and sb_asset.get('sandbox') is True and body.get('cost') == EXPECTED_COST and balance() == 19,
+          f"http={st} status={sb_asset.get('status')} cost={body.get('cost') if body else None} balance={balance()} remaining={hdr.get('x-ratelimit-remaining')}")
+    check('A4b X-RateLimit-Remaining = 199 بعد أول طلب', hdr.get('x-ratelimit-remaining') == '199', f"remaining={hdr.get('x-ratelimit-remaining')}")
+    sb_id = sb_asset.get('id')
+
+    st2, body2, hdr2 = api('POST', '/generate', key_test, gen_body, extra={'Idempotency-Key': idem})
+    check('A5 إعادة نفس Idempotency-Key → نفس الرد مع Idempotency-Replayed', st2 == 200 and hdr2.get('idempotency-replayed') == 'true'
+          and ((body2 or {}).get('asset') or {}).get('id') == sb_id, f"http={st2} replayed={hdr2.get('idempotency-replayed')}")
+    st3, body3, _ = api('POST', '/generate', key_test, {**gen_body, 'prompt': 'different prompt'}, extra={'Idempotency-Key': idem})
+    check('A6 نفس المفتاح بجسم مختلف → 409 IDEMPOTENCY_CONFLICT', st3 == 409 and (body3 or {}).get('error', {}).get('code') == 'IDEMPOTENCY_CONFLICT', f'http={st3} body={body3}')
+
+    st, body, _ = api('GET', f'/assets/{sb_id}', key_test)
+    check('A7 GET /assets/{id} يعيد الأصل بلا metadata داخلية', st == 200 and body.get('asset', {}).get('id') == sb_id and 'metadata' not in body.get('asset', {}),
+          f"http={st} keys={sorted((body or {}).get('asset', {}).keys())}")
+    st, body, _ = api('GET', f'/assets/{uuid.uuid4()}', key_test)
+    check('A7b أصل غير موجود → 404', st == 404, f'http={st}')
+
+    st, body, _ = api('GET', '/balance', 'hl_live_' + 'x' * 32)
+    st_b, _, _ = api('GET', '/balance', None)
+    check('A8 مفتاح خاطئ أو غائب → 401', st == 401 and st_b == 401, f'wrong={st} missing={st_b}')
+
+    # مفتاح حي: توليدة حقيقية عبر API
+    st, body, hdr = api('POST', '/generate', key_live, gen_body)
+    live_asset = (body or {}).get('asset') or {}
+    live_id = live_asset.get('id')
+    check('A9 POST /generate بمفتاح live → 202 processing والرصيد 8', st == 202 and live_asset.get('status') == 'processing' and balance() == 8,
+          f"http={st} status={live_asset.get('status')} balance={balance()}")
+    a = wait_final(live_id) if live_id else None
+    st, body, _ = api('GET', f'/assets/{live_id}', key_live) if live_id else (0, None, {})
+    pub = (body or {}).get('asset') or {}
+    check('A10 الأصل الحي يكتمل عبر الـwebhook: completed برابط وتكلفة 11', bool(a and a['status'] == 'completed') and pub.get('url') and pub.get('cost_credits') == EXPECTED_COST and balance() == 8,
+          f"status={a and a['status']} url={'yes' if pub.get('url') else 'no'} cost={pub.get('cost_credits')} balance={balance()}")
+
+    # webhook العميل: example.invalid لا يُحل → تُسجَّل 3 محاولات فاشلة لكل أصل (التوقيع نفسه مختبر في vitest)
+    time.sleep(12)
+    st, rows = admin_rest('GET', f'/api_webhook_deliveries?asset_id=in.({sb_id},{live_id})&select=asset_id,event,attempts,ok,url')
+    by_asset = {r['asset_id']: r for r in (rows or [])} if st == 200 else {}
+    check('A11 سجل تسليم webhook العميل للأصلين (3 محاولات، وجهة لا تُحل)',
+          st == 200 and len(by_asset) == 2 and all(r['attempts'] == 3 and r['ok'] is False and r['url'] == hook for r in by_asset.values())
+          and by_asset.get(sb_id, {}).get('event') == 'asset.completed' and by_asset.get(live_id, {}).get('event') == 'asset.completed',
+          f"rows={[(r['event'], r['attempts'], r['ok']) for r in by_asset.values()]}")
+
+    # الحد اليومي: نخفض حد مفتاح الاختبار إلى 1 (service_role) → الطلب التالي 429
+    st, _ = admin_rest('PATCH', f"/api_keys?id=eq.{kt['id']}", {'daily_limit': 1}, extra={'Prefer': 'return=minimal'})
+    st, body, _ = api('POST', '/generate', key_test, gen_body)
+    check('A12 تجاوز الحد اليومي → 429 DAILY_LIMIT', st == 429 and (body or {}).get('error', {}).get('code') == 'DAILY_LIMIT', f'http={st} body={body}')
+
+    # الواجهة لا تعدّل المفاتيح مباشرة (لا سياسة UPDATE) — صفر صفوف
+    st, rows = rest('PATCH', f"/api_keys?id=eq.{kt['id']}", jwt, {'daily_limit': 999}, extra={'Prefer': 'return=representation'})
+    check('A13 PATCH api_keys من الواجهة لا يصيب شيئًا', st in (200, 204) and not rows, f'http={st} rows={rows}')
+
+    # الإبطال من المالك → المفتاح يتوقف فورًا
+    st, ok = rest('POST', '/rpc/revoke_api_key', jwt, {'p_id': kt['id']})
+    st2, _, _ = api('GET', '/balance', key_test)
+    check('A14 revoke_api_key → true ثم 401', st == 200 and ok is True and st2 == 401, f'revoke={ok} after={st2}')
 finally:
     if KEEP:
         print('kept test user (--keep)')

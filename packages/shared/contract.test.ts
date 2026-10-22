@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { GENERATE_ERROR_CODES } from './types'
+import { API_ERROR_CODES, GENERATE_ERROR_CODES } from './types'
 import { RESOLUTION_MULTIPLIER, applyModelResolution } from './pricing'
-import { GENERATE_ERROR_CODES as EDGE_ERROR_CODES, ERROR_MESSAGES_AR } from '../../supabase/functions/_shared/types'
+import {
+  API_ERROR_CODES as EDGE_API_ERROR_CODES,
+  API_ERROR_HTTP_STATUS,
+  API_ERROR_MESSAGES_AR,
+  GENERATE_ERROR_CODES as EDGE_ERROR_CODES,
+  ERROR_MESSAGES_AR,
+} from '../../supabase/functions/_shared/types'
 import { RESOLUTION_MULTIPLIER as EDGE_MULTIPLIER, applyModelResolution as edgeApplyModelResolution } from '../../supabase/functions/_shared/pricing'
 
 /**
@@ -17,6 +23,17 @@ describe('contract parity — packages/shared ↔ _shared', () => {
     for (const code of GENERATE_ERROR_CODES) {
       expect(ERROR_MESSAGES_AR[code], code).toMatch(/\S/)
     }
+  })
+
+  it('رموز API v1 متطابقة ولكل واحد رسالة عربية وحالة HTTP منطقية', () => {
+    expect([...EDGE_API_ERROR_CODES].sort()).toEqual([...API_ERROR_CODES].sort())
+    for (const code of API_ERROR_CODES) {
+      expect(API_ERROR_MESSAGES_AR[code], code).toMatch(/\S/)
+      expect(API_ERROR_HTTP_STATUS[code], code).toBeGreaterThanOrEqual(400)
+      expect(API_ERROR_HTTP_STATUS[code], code).toBeLessThan(500)
+    }
+    // لا تداخل بين المجموعتين
+    for (const code of API_ERROR_CODES) expect((GENERATE_ERROR_CODES as readonly string[]).includes(code), code).toBe(false)
   })
 
   it('التسعير متطابق: جدول الدقة ودالة applyModelResolution يعطيان نفس النتائج', () => {
