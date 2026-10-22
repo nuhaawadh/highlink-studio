@@ -12,5 +12,8 @@
     "install:web": "npm --prefix apps/web install",
     "gen:types": "supabase gen types typescript --linked > packages/shared/db.ts",
     "gen:types:local": "supabase gen types typescript --local > packages/shared/db.ts"
+  },
+  "devDependencies": {
+    "supabase": "^2.121.0"
   }
 }
