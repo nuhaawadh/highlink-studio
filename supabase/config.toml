@@ -47,3 +47,7 @@ policy = "oneshot"
 
 [functions.generate-media]
 verify_jwt = true
+
+# webhook المزوّد: لا JWT — الحماية بتوقيع Replicate (webhook-signature) داخل الوظيفة
+[functions.provider-webhook]
+verify_jwt = false
