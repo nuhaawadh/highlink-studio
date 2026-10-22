@@ -8,7 +8,7 @@
 - ميديا: خلف محوّل واحد `supabase/functions/_shared/storage.ts` (`put`, `publicUrl`). المرحلة 1: Supabase Storage (bucket `media`). بعد نقل DNS إلى Cloudflare: R2 عبر `media.highlink.tech` — تبديل الملف الواحد فقط (ADR 0002).
 - نماذج: Replicate (أساسي لكل شيء بما فيه نانو بنانا برو `google/nano-banana-pro` — ADR 0003)، Gemini مباشرة لاحقًا إن لزم، fal (احتياط). المفاتيح في Edge Functions فقط — لا مفتاح سري في `VITE_*`. مخطط مدخلات كل نموذج في `models.input_schema` يبني مدخلات المزوّد (`_shared/inputs.ts`) — لا كود لكل نموذج.
 - دفع: خلف محوّل واحد `_shared/payments/` — Paylink أولًا (صفحة دفع مستضافة + webhook + استعلام)، وMoyasar عند تفعيله (حفظ البطاقة + التجديد التلقائي). العملة ريال. التسعير في `packages/shared/pricing.ts` والباقات في `packages/shared/plans.ts` (المصدران الوحيدان).
-- التوزيع: API عامة `v1` (وظيفة `v1` بلا JWT، مفاتيح `api_keys` بـsha256، نفس نواة `generate-media` — ADR 0004)، وسيرفر MCP في المرحلة 2 (ADR 0002). أي مسار جديد في الـAPI يمر بـ`_shared/api-auth.ts` ويرجع `{ error: { code, message } }`.
+- التوزيع: API عامة `v1` (وظيفة `v1` بلا JWT، مفاتيح `api_keys` بـsha256، نفس نواة `generate-media` — ADR 0004)، وسيرفر MCP في المرحلة 2 (ADR 0002). أي مسار جديد في الـAPI يمر بـ`_shared/api-auth.ts` ويرجع `{ error: { code, message } }`، ويُوثَّق في `docs/api.md` (دليل العميل: curl + n8n لكل مسار) في نفس الالتزام.
 - البراند: هاي لينك — الألوان والخطوط معتمدة من موقع هاي لينك وموثقة في `docs/brand/palette.md`، وتُكتب في `apps/web/src/styles/tokens.css` فقط (كحلي `#0B1020`، أزرق `#7FB8FF`، خطوط Alexandria + IBM Plex Sans Arabic). الاسم الظاهر للمستخدم: "استوديو هاي لينك".
 
 ## قواعد لا تُكسر
