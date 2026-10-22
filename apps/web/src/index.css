@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+
+@layer base {
+  html {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  html[dir="ltr"] {
+    font-family: var(--font-latin);
+  }
+  body {
+    min-height: 100dvh;
+    margin: 0;
+  }
+  /* الأرقام تبقى لاتينية داخل التطبيق (القرار في المخطط §8) */
+  body {
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+  ::selection {
+    background: var(--color-brand);
+    color: var(--color-brand-ink);
+  }
+}

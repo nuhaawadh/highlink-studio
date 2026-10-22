@@ -1,0 +1,16 @@
+{
+  "name": "highlink-studio",
+  "private": true,
+  "version": "0.1.0",
+  "description": "استوديو هاي لينك — منصة توليد صور وفيديو بالذكاء الاصطناعي بنظام رصيد",
+  "scripts": {
+    "dev": "npm --prefix apps/web run dev",
+    "build": "npm --prefix apps/web run build",
+    "typecheck": "npm --prefix apps/web run typecheck",
+    "test": "npm --prefix apps/web run test",
+    "lint": "npm --prefix apps/web run lint",
+    "install:web": "npm --prefix apps/web install",
+    "gen:types": "supabase gen types typescript --linked > packages/shared/db.ts",
+    "gen:types:local": "supabase gen types typescript --local > packages/shared/db.ts"
+  }
+}

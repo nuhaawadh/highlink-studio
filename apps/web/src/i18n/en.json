@@ -1,0 +1,110 @@
+{
+  "app": {
+    "name": "Highlink Studio",
+    "tagline": "Store photos and ads ready to publish in 60 seconds — no photographer, no designer"
+  },
+  "nav": {
+    "images": "Images",
+    "video": "Video",
+    "templates": "Apps",
+    "studios": "Studios",
+    "library": "Library",
+    "pricing": "Pricing",
+    "login": "Sign in",
+    "logout": "Sign out",
+    "menu": "Menu",
+    "close": "Close",
+    "language": "Language",
+    "terms": "Terms",
+    "refund": "Refund Policy",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "legal": "Legal Center",
+    "deletion": "Delete your data"
+  },
+  "studios": {
+    "product": "Product Studio",
+    "ads": "Ads Studio",
+    "ugc": "UGC Studio",
+    "soon": "Soon"
+  },
+  "credits": {
+    "label": "credits",
+    "one": "1 credit",
+    "loading": "…",
+    "insufficient": "Not enough credits for this action",
+    "topup": "Top up"
+  },
+  "auth": {
+    "title": "Sign in to Highlink Studio",
+    "subtitle": "30 free credits when you sign up",
+    "google": "Continue with Google",
+    "or": "or",
+    "email": "Email",
+    "password": "Password",
+    "signin": "Sign in",
+    "signup": "Create account",
+    "switchToSignup": "No account? Create one",
+    "switchToSignin": "Have an account? Sign in",
+    "sent": "Check your inbox to confirm your account",
+    "error": "Sign-in failed — check your details and try again"
+  },
+  "home": {
+    "hero1": "Create",
+    "hero2": "without limits.",
+    "cta": "Start free",
+    "phase0": "Phase 0 — foundation. Studios are enabled in the next phases."
+  },
+  "errors": {
+    "generic": "Something went wrong, please try again"
+  },
+  "legal": {
+    "updated": "Last updated",
+    "contactLine": "Questions and requests:",
+    "centerSubtitle": "Everything that governs your relationship with Highlink Studio, in one place."
+  },
+  "plans": {
+    "free": "Free",
+    "starter": "Starter",
+    "basic": "Basic",
+    "pro": "Pro",
+    "creators": "Creators"
+  },
+  "pricing": {
+    "title": "Plans that fit your workload",
+    "subtitle": "Start with {bonus} free credits at sign-up and upgrade whenever you need. Prices in Saudi Riyals.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearlySave": "(2 months free)",
+    "sar": "SAR",
+    "perMonth": "per month",
+    "perYear": "per year",
+    "billedYearly": "Billed {n} SAR yearly",
+    "popular": "Most popular",
+    "subscribe": "Subscribe",
+    "startFree": "Start free",
+    "checkoutSoon": "Checkout opens soon — email us to start now",
+    "whatIsCredit": "What is a credit?",
+    "creditExamples": "A professional product shot ≈ 10 credits · a quick image ≈ 3 · one second of video ≈ 5–12 credits depending on the model. The cost is shown before every generation and only charged on success.",
+    "paymentMethods": "Payment methods",
+    "paymentMethodsList": "mada · Visa · Mastercard · Apple Pay — through a payment gateway licensed by the Saudi Central Bank. Your card details never pass through us.",
+    "refundTitle": "Refunds",
+    "refundLine": "Credits are digital and non-refundable except on technical failure — failed generations are refunded automatically.",
+    "f": {
+      "credits": "{n} credits {period}",
+      "concurrent": "{n} concurrent generations",
+      "private": "Your work is private by default",
+      "public": "Your work may appear in the public gallery",
+      "allModels": "All models and studios",
+      "commercial": "Commercial use of outputs"
+    }
+  },
+  "contact": {
+    "title": "Contact us",
+    "subtitle": "Support, questions and refund requests — by email.",
+    "sla": "We reply within two business days (Sun–Thu)."
+  },
+  "footer": {
+    "by": "by Highlink"
+  }
+}

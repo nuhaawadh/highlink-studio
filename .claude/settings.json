@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run typecheck)",
+      "Bash(npm test)",
+      "Bash(npm run build)",
+      "Bash(npm run lint)",
+      "Bash(npm --prefix apps/web run *)",
+      "Bash(npx vitest *)",
+      "Bash(supabase start)",
+      "Bash(supabase status)",
+      "Bash(supabase db reset)",
+      "Bash(supabase db diff *)",
+      "Bash(supabase functions serve *)",
+      "Bash(supabase functions list*)",
+      "Bash(supabase projects list*)",
+      "Bash(supabase migration list*)",
+      "Bash(supabase gen types *)",
+      "Bash(npm run gen:types*)",
+      "Bash(npx supabase status*)",
+      "Bash(npx supabase projects list*)",
+      "Bash(npx supabase migration list*)",
+      "Bash(npx supabase gen types *)",
+      "Bash(npx supabase functions list*)",
+      "Bash(npx supabase db diff *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "ask": [
+      "Bash(supabase db push*)",
+      "Bash(supabase functions deploy*)",
+      "Bash(supabase secrets *)",
+      "Bash(supabase link *)",
+      "Bash(npx supabase db push*)",
+      "Bash(npx supabase functions deploy*)",
+      "Bash(npx supabase secrets *)",
+      "Bash(npx supabase link *)",
+      "Bash(git push*)",
+      "Bash(gh *)"
+    ],
+    "deny": [
+      "Bash(supabase db reset --linked*)",
+      "Bash(npx supabase db reset --linked*)",
+      "Bash(git push --force*)",
+      "Read(./apps/web/.env.local)",
+      "Read(./supabase/.env.local)"
+    ]
+  }
+}
