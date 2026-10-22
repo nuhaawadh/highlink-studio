@@ -44,11 +44,20 @@ interface AssetRow {
   metadata: Record<string, unknown> | null
 }
 
-/** يعلّم الأصل فاشلًا برسالة عربية — Realtime يوصلها للبطاقة في الواجهة */
-async function markFailed(assetId: string, err: AppError) {
+/**
+ * يعلّم الأصل فاشلًا برسالة عربية — Realtime يوصلها للبطاقة في الواجهة.
+ * التفصيل التقني يُحفظ في metadata.error_detail للوحة الإدارة (المخطط §11 المرحلة 3) ولا يُعرض للمستخدم.
+ */
+async function markFailed(assetId: string, err: AppError, metadata: Record<string, unknown> | null) {
   await supabaseAdmin()
     .from('assets')
-    .update({ status: 'failed', error_code: err.code, error_message: err.message, completed_at: new Date().toISOString() })
+    .update({
+      status: 'failed',
+      error_code: err.code,
+      error_message: err.message,
+      completed_at: new Date().toISOString(),
+      metadata: { ...(metadata ?? {}), error_detail: err.detail ?? null, failed_at_step: 'generate-media' },
+    })
     .eq('id', assetId)
     .eq('status', 'queued')
 }
@@ -61,6 +70,7 @@ Deno.serve(async (req) => {
 
   let userId: string | null = null
   let assetId: string | null = null
+  let assetMetadata: Record<string, unknown> | null = null
   let held = false
 
   try {
@@ -85,6 +95,7 @@ Deno.serve(async (req) => {
     if (!asset || asset.user_id !== user.id) {
       throw new AppError('INVALID_INPUT', 'الأصل غير موجود — أعد المحاولة من الصفحة', { status: 404 })
     }
+    assetMetadata = asset.metadata
 
     // تكرار الطلب بنفس assetId بعد إرسال سابق → نفس الرد (idempotent) بدل حجز ثانٍ
     if (asset.status === 'processing' && asset.provider_job_id) {
@@ -189,7 +200,7 @@ Deno.serve(async (req) => {
     if (assetId) {
       try {
         if (held) released = await releaseAssetHold(assetId, `generate-media: ${err.code}`)
-        await markFailed(assetId, err)
+        await markFailed(assetId, err, assetMetadata)
       } catch (inner) {
         logRequest({ fn: 'generate-media', user: userId, asset: assetId, ms: Date.now() - started, ok: false, code: 'CLEANUP_FAILED', detail: String(inner) })
       }

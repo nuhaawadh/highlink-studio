@@ -33,7 +33,8 @@
     "one": "1 credit",
     "loading": "…",
     "insufficient": "Not enough credits for this action",
-    "topup": "Top up"
+    "topup": "Top up",
+    "n": "{n} credits"
   },
   "auth": {
     "title": "Sign in to Highlink Studio",
@@ -56,7 +57,14 @@
     "phase0": "Phase 0 — foundation. Studios are enabled in the next phases."
   },
   "errors": {
-    "generic": "Something went wrong, please try again"
+    "generic": "Something went wrong, please try again",
+    "INSUFFICIENT_CREDITS": "Not enough credits — top up and try again",
+    "RATE_LIMITED": "You have running generations beyond your plan limit — wait for them to finish",
+    "MODEL_DISABLED": "This model is not available right now",
+    "UNSAFE_PROMPT": "The prompt contains disallowed content — edit it and try again",
+    "INVALID_INPUT": "Invalid input",
+    "OVER_BUDGET": "This generation exceeds the budget you set",
+    "PROVIDER_ERROR": "The provider could not generate — nothing was charged, please try again"
   },
   "legal": {
     "updated": "Last updated",
@@ -106,5 +114,38 @@
   },
   "footer": {
     "by": "by Highlink"
+  },
+  "generate": {
+    "title": "Image generation",
+    "subtitle": "Describe your image in Arabic or English, pick a model and size. The cost is shown on the button and only charged on success.",
+    "model": "Model",
+    "noModels": "No models are enabled right now",
+    "fromCost": "from {n} credits",
+    "aspectRatio": "Aspect ratio",
+    "resolution": "Resolution",
+    "promptLabel": "Image description",
+    "promptPlaceholder": "e.g. a luxury perfume bottle on white marble, soft studio light… (Ctrl+Enter to generate)",
+    "generate": "Generate",
+    "generating": "Sending…",
+    "started": "Generation started — {n} credits held, charged only on success",
+    "empty": "Your results will appear here as soon as generation starts — no refresh needed"
+  },
+  "asset": {
+    "queued": "Queued…",
+    "processing": "Generating…",
+    "failed": "Generation failed",
+    "refunded": "Your credits were fully refunded",
+    "download": "Download",
+    "open": "Open full size"
+  },
+  "library": {
+    "title": "Library",
+    "subtitle": "Everything you generated, updated live.",
+    "all": "All",
+    "image": "Images",
+    "video": "Video",
+    "empty": "Your library is empty",
+    "emptyCta": "Generate your first image",
+    "count": "{n} items"
   }
 }

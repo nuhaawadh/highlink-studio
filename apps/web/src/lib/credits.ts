@@ -31,8 +31,9 @@ export function useCredits(userId: string | null) {
 
     void refresh()
 
+    // اسم فريد لكل نسخة من الـhook: supabase.channel(name) يعيد القناة نفسها إن وُجدت، و.on() بعد subscribe() يرمي خطأ
     const channel = supabase
-      .channel(`credits-${userId}`)
+      .channel(`credits-${userId}-${crypto.randomUUID()}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'credit_ledger', filter: `user_id=eq.${userId}` },

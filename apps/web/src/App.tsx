@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import { ContactPage } from '@/app/ContactPage'
 import { HomePage } from '@/app/HomePage'
+import { ImageGeneratePage } from '@/app/ImageGeneratePage'
+import { LibraryPage } from '@/app/LibraryPage'
 import { LegalCenterPage, LegalPage } from '@/app/LegalPage'
 import { LoginPage } from '@/app/LoginPage'
 import { PlaceholderPage } from '@/app/PlaceholderPage'
@@ -9,7 +11,7 @@ import { PricingPage } from '@/app/PricingPage'
 import { RequireAuth } from '@/app/RequireAuth'
 
 /**
- * خريطة المسارات (المخطط §8). المرحلة 0: الرئيسية والدخول فقط حقيقيتان؛ الباقي placeholders مرقّمة بمرحلتها.
+ * خريطة المسارات (المخطط §8). المرحلة 1: الرئيسية، الدخول، الباقات، توليد الصور، المكتبة حقيقية؛ الباقي placeholders مرقّمة بمرحلتها.
  */
 export default function App() {
   return (
@@ -27,8 +29,8 @@ export default function App() {
           <Route path="contact" element={<ContactPage />} />
           <Route path="templates" element={<PlaceholderPage titleKey="nav.templates" phase={2} />} />
           <Route element={<RequireAuth />}>
-            <Route path="library" element={<PlaceholderPage titleKey="nav.library" phase={1} />} />
-            <Route path="image-generate" element={<PlaceholderPage titleKey="nav.images" phase={1} />} />
+            <Route path="library" element={<LibraryPage />} />
+            <Route path="image-generate" element={<ImageGeneratePage />} />
             <Route path="video-generate" element={<PlaceholderPage titleKey="nav.video" phase={1} />} />
             <Route path="studio/product" element={<PlaceholderPage titleKey="studios.product" phase={2} />} />
             <Route path="studio/ads" element={<PlaceholderPage titleKey="studios.ads" phase={2} />} />

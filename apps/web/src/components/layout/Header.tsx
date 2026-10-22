@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Globe, Image as ImageIcon, LayoutGrid, LayoutTemplate, LogIn, LogOut, Menu, Video, X } from 'lucide-react'
+import { Globe, Image as ImageIcon, LayoutGrid, LayoutTemplate, Library, LogIn, LogOut, Menu, Video, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { CreditBadge } from '@/components/studio/CreditBadge'
@@ -74,6 +74,11 @@ export function Header() {
             <NavLink to="/templates" className={navLinkClass}>
               <LayoutTemplate className="size-4" /> {t('nav.templates')}
             </NavLink>
+            {user && (
+              <NavLink to="/library" className={navLinkClass}>
+                <Library className="size-4" /> {t('nav.library')}
+              </NavLink>
+            )}
             <span className="ms-3 flex h-8 items-center gap-1.5 px-2 text-sm font-medium text-muted">
               <LayoutGrid className="size-4" /> {t('nav.studios')}
             </span>
