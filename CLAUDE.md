@@ -26,7 +26,7 @@
 ## الأوامر
 - `npm run dev` ← الواجهة على localhost:5173 (من الجذر؛ يوجّه إلى apps/web)
 - `npm run typecheck` / `npm test` / `npm run build` ← يجب أن تنجح كلها قبل أي commit
-- بدون Docker (الوضع الافتراضي): نشتغل على مشروع Supabase السحابي `highlink-studio-dev` المرتبط بـ`supabase link`. `supabase db push` يطبّق migrations، ثم seed عبر SQL Editor أو `psql`. `supabase functions deploy <name>` للنشر، والاختبار بـcurl على الرابط السحابي.
+- بدون Docker (الوضع الافتراضي): نشتغل على مشروع Supabase السحابي `highlink-studio-dev` (منطقة باريس `eu-west-3`) المرتبط بـ`supabase link`. `supabase db push` يطبّق migrations، ثم seed عبر `npx supabase db query --linked -f supabase/seed.sql` (أو SQL Editor). `supabase functions deploy <name>` للنشر، والاختبار بـcurl على الرابط السحابي.
 - مع Docker (اختياري): `supabase start` ← Postgres + Functions محليًا؛ `supabase db reset` يطبّق migrations + seed؛ `supabase functions serve generate-media --env-file supabase/.env.local`.
 - `supabase db push` / `functions deploy` / `secrets set` ← تحتاج تأكيدًا مني دائمًا (settings.json)
 - `npm run gen:types` ← `supabase gen types typescript --linked > packages/shared/db.ts`

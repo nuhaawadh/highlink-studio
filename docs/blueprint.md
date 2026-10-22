@@ -468,7 +468,7 @@ https://media.highlink.tech/cdn-cgi/image/width=1200,quality=88,format=jpeg/cms/
 **المرحلة 0 — الأساس (الأسبوع 1)**
 
 - [ ] مستودع `highlink-studio` على GitHub (خاص) بهيكل القسم 12 وCLAUDE.md
-- [ ] مشروع Supabase (منطقة Frankfurt — الأقرب للسعودية بين المتاح) + تشغيل SQL القسم 4 كـmigration أولى
+- [x] مشروع Supabase `highlink-studio-dev` (منطقة باريس `eu-west-3` — أُنشئ فيها بدل فرانكفورت؛ الفرق الزمني للسعودية مهمل) + تشغيل SQL القسم 4 كـmigration أولى
 - [ ] Google OAuth + إيميل، صفحة دخول، trigger ينشئ `profiles` عند التسجيل ويمنح 30 رصيدًا
 - [ ] حساب Cloudflare: نقل DNS لـhighlink.tech + R2 bucket + دومين media + Pages للواجهة + Turnstile
 - [ ] Vite + React + TS + Tailwind + shadcn، متغيرات التصميم من هوية هاي لينك، RTL، i18n، Layout (هيدر + درج جوال)
