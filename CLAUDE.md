@@ -30,7 +30,9 @@
 - مع Docker (اختياري): `supabase start` ← Postgres + Functions محليًا؛ `supabase db reset` يطبّق migrations + seed؛ `supabase functions serve generate-media --env-file supabase/.env.local`.
 - `supabase db push` / `functions deploy` / `secrets set` ← تحتاج تأكيدًا مني دائمًا (settings.json)
 - `npm run gen:types` ← `supabase gen types typescript --linked > packages/shared/db.ts`
-- اختبارات الرصيد على القاعدة البعيدة (تُلغى دائمًا): `npx supabase db query --linked -f supabase/tests/credits.test.sql` ← يجب أن ترجع `ALL CREDIT TESTS PASSED`.
+- اختبارات الرصيد على القاعدة البعيدة (تُلغى دائمًا): `npx supabase db query --linked -f supabase/tests/credits.test.sql` ← يجب أن ترجع `ALL CREDIT TESTS PASSED`. لاختبار migration جديدة قبل `db push`: ملف مؤقت = `begin;` + الـmigration + ملف الاختبار (ينتهي بـ`rollback`) ويُشغَّل بنفس الأمر.
+- محاكاة طلب الواجهة في SQL: `set local role authenticated` + `set_config('request.jwt.claims', '{"role":"authenticated","sub":"<uuid>"}', true)`. ممنوع `request.jwt.claim.*` (قديم، لا يضبطه PostgREST ≥ 9).
+- حجز عالق؟ `select * from public.reconcile_holds();` عبر `db query --linked` (يحرّر/يؤكد ما هو أقدم من 30 دقيقة). بوابة 1 آليًا بعد أي نشر: `python -I scripts/smoke-gate1.py`.
 - الأسرار: `supabase/.env.local` (لا يُقرأ ولا يُطبع) → `python -I scripts/push-secrets.py <tmp>` (يتخطى `SUPABASE_*` والفارغة، يجلب `REPLICATE_WEBHOOK_SECRET`) → `npx supabase secrets set --env-file <tmp>` → حذف tmp. الواجهة: `apps/web/.env.local`.
 - مفاتيح Supabase الجديدة (`sb_secret_…`/`sb_publishable_…`) ليست JWT: في السكربتات تُرسل كـ`apikey` فقط (Auth Admin API يرفضها في `Authorization: Bearer`).
 - لا Deno محليًا: الوحدات النقية في `_shared/` تُختبر بـvitest، والباقي يُتحقق عند النشر وبالفحص الدخاني بـcurl على الرابط السحابي.
@@ -38,8 +40,9 @@
 ## حالة المشروع
 - المرحلة 0 منجزة: هيكل، تصميم، i18n، دخول، migration 0001 (مختبرة على Postgres 16: التسجيل، الحجز/التأكيد/الاسترداد، RLS)، seed، المركز القانوني، صفحة الباقات، وصفة `product-shot`، هيكل `generate-media` (يرفض 501).
 - المرحلة 1 (2026-10-22): (1) migrations 0001+0002 وseed مطبّقة على `highlink-studio-dev` والأنواع مولّدة ✓ (2) `_shared/` + `generate-media` بالخطوات التسع + `provider-webhook` موقّع مع dedupe، منشورتان، الأسرار مرفوعة ✓ (3) `/image-generate` و`/library` بـRealtime ✓. **بوابة 1 مجتازة (2026-10-22)**: توليدة حقيقية ظهرت في الواجهة عبر Realtime بلا تحديث، الرصيد نزل 30 → 19 (صف `charge` −11)، وفشل حقيقي من المزوّد (402 قبل شحن Replicate) أعاد الرصيد وعرض رسالة عربية. النماذج الأربعة الأخرى `enabled=false` حتى تُبنى.
-- التالي بالترتيب: مراجعة مستقلة لكود الرصيد والوظيفتين (القاعدة 9، الجلسة 4 في kickoff) → (4) Kling عبر Replicate → (5) API v1. لا تُبنى خطوة قبل اجتياز سابقتها.
-- خارج النطاق حتى الآن: مسح الأصول `processing` المعلّقة (شبكة أمان الـwebhook مع `cron-renewals`)، المصنّف الآلي للأمان، `prompt-enhancer`، رفع المراجع، بوابة المخرجات الكاملة.
+- المراجعة المستقلة (2026-10-22، الجلسة 4) منجزة: migration `0003_review_hardening` (حارس الأعمدة بـ`auth.role()`، سياسة INSERT، `get_balance` للمالك، `reconcile_holds()`) + حجز الأصل الذرّي في `generate-media` + تسوية الحجز في الـwebhook + zod/مهلات. ما بقي في `docs/backlog.md`.
+- التالي بالترتيب: (4) Kling عبر Replicate → (5) API v1. لا تُبنى خطوة قبل اجتياز سابقتها.
+- خارج النطاق حتى الآن: مجدول `reconcile_holds()` (مع `cron-renewals`) ومسح `processing` بسؤال المزوّد، المصنّف الآلي للأمان، `prompt-enhancer`، رفع المراجع، بوابة المخرجات الكاملة.
 - الدليل التشغيلي لجلسات Claude Code: `docs/claude-code-kickoff.md`.
 
 ## عند التردد

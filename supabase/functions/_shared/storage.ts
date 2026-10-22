@@ -41,16 +41,25 @@ export interface CopiedFile {
  * ينسخ ناتج المزوّد (رابط مؤقت ينتهي خلال ساعات) إلى التخزين الدائم.
  * `basePath` بلا امتداد — الامتداد من Content-Type الفعلي. يرفض الملف الفارغ أو غير المطابق للنوع المتوقع (§15 الطبقة 5، الحد الأدنى).
  */
+/** مهلة الجلب وسقف الحجم (= file_size_limit للـbucket في migration 0002) — لا نقرأ ملفًا كاملًا في الذاكرة بلا حدود */
+const FETCH_TIMEOUT_MS = 60_000
+export const MAX_OUTPUT_BYTES = 52_428_800
+
 export async function copyFromUrl(sourceUrl: string, basePath: string, expected: 'image' | 'video'): Promise<CopiedFile> {
-  const res = await fetch(sourceUrl)
+  const res = await fetch(sourceUrl, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }).catch((e: unknown) => {
+    throw new AppError('PROVIDER_ERROR', 'تعذّر جلب الناتج من المزوّد', { detail: `fetch: ${e instanceof Error ? e.name + ' ' + e.message : String(e)}` })
+  })
   if (!res.ok) throw new AppError('PROVIDER_ERROR', 'تعذّر جلب الناتج من المزوّد', { detail: `fetch ${res.status}` })
   const contentType = (res.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
   const ext = extensionFor(contentType)
   if (!ext || !contentType.startsWith(`${expected}/`)) {
     throw new AppError('PROVIDER_ERROR', 'ناتج المزوّد بصيغة غير متوقعة', { detail: `content-type ${contentType || 'none'}` })
   }
+  const declared = Number(res.headers.get('content-length') ?? 0)
+  if (declared > MAX_OUTPUT_BYTES) throw new AppError('PROVIDER_ERROR', 'ناتج المزوّد أكبر من الحد المسموح', { detail: `content-length ${declared}` })
   const bytes = new Uint8Array(await res.arrayBuffer())
   if (bytes.byteLength === 0) throw new AppError('PROVIDER_ERROR', 'ناتج المزوّد فارغ', { detail: 'zero bytes' })
+  if (bytes.byteLength > MAX_OUTPUT_BYTES) throw new AppError('PROVIDER_ERROR', 'ناتج المزوّد أكبر من الحد المسموح', { detail: `bytes ${bytes.byteLength}` })
   const path = `${basePath}.${ext}`
   await put(path, bytes, contentType)
   return { url: publicUrl(path), path, bytes: bytes.byteLength, contentType }

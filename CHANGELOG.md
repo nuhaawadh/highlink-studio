@@ -1,5 +1,13 @@
 # سجل التغييرات
 
+## المرحلة 1 — المراجعة المستقلة وتصليب المحرك (2026-10-22)
+- مراجعة من جلسة لم تكتب الكود (القاعدة 9، الجلسة 4): حرج واحد، سبعة مهمة، 11 تحسينًا — نُفّذ الحرج والمهم كلها والتحسينات الأمنية الرخيصة؛ الباقي في `docs/backlog.md`.
+- `generate-media`: حجز الأصل ذريًا (`queued → processing` بشرط الحالة) قبل الحجز والإرسال، فالطلبات المتزامنة بنفس `assetId` تنتج مهمة واحدة عند المزوّد والباقي 409؛ بعد كتابة `provider_job_id` تنتقل ملكية الحجز إلى الـwebhook (لا تحرير من الـcatch)؛ `assetId` لا يُعتمد قبل فحص الملكية؛ `type` و`model` من جدول النماذج؛ مخطط الطلب في `_shared/request.ts` (روابط https فقط، مختبر).
+- `provider-webhook`: فرع `ALREADY_FINAL` يُسوّي الحجز (تأكيد لمكتمل/تحرير لفاشل) بدل تركه `held`؛ `source` بـzod؛ حمولة Replicate بـzod (`parseWebhook` مختبر)؛ مهلة 30 ث على الإرسال و60 ث + سقف 50MB على نسخ الناتج.
+- migration `0003_review_hardening`: حارس أعمدة `assets` كان يقرأ `request.jwt.claim.role` الذي لا يضبطه PostgREST ≥ 9 (لم يعمل قط) → `auth.role()` برفض افتراضي + `type`/`model`؛ سياسة INSERT تمنع أعمدة السيرفر؛ `get_balance` للمالك فقط؛ `reconcile_holds()` تحرّر/تؤكد الحجوزات الأقدم من 30 دقيقة وتعلّم الأصول المعلّقة فاشلة.
+- اختبارات أولًا: T7 (`ALREADY_CHARGED`)، T8 (إعادة المحاولة بعد التحرير)، T9 (حارس وسياسة INSERT عبر محاكاة `request.jwt.claims`)، T10 (`get_balance`)، T11 (`reconcile_holds`) — تمر على القاعدة السحابية داخل معاملة تُلغى؛ CI يحاكي `auth.role()`/`request.jwt.claims` ويمنح صلاحيات الأدوار. vitest لمخطط الطلب وحمولة الـwebhook (محلّل `npm:zod@4` في `vite.config.ts`).
+- الواجهة ترسل `maxCredits` = التكلفة المعروضة على الزر. `scripts/smoke-gate1.py` يعيد بوابة 1 آليًا (توليدة حقيقية، طلبان متزامنان، فشل مع استرداد، تنظيف).
+
 ## المرحلة 1 — المحرك (2026-10-22)
 - اختبارات أولًا (القاعدة 9): `supabase/tests/credits.test.sql` (حجز/تأكيد/تحرير، idempotency على assetId، رصيد غير كافٍ، dedupe للـwebhook) تمر على القاعدة السحابية وفي CI؛ vitest لتوقيع Replicate، قائمة الأمان، بناء المدخلات من المخطط، تطابق العقد والتسعير بين `packages/shared` و`_shared`.
 - migration `0002_phase1_engine`: bucket `media` عام للقراءة (الكتابة service_role)، فهرس فريد للحجز النشط لكل أصل، `hold_credits` idempotent + حارس `ALREADY_CHARGED`.

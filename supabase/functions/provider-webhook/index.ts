@@ -2,6 +2,7 @@
 // ينسخ الناتج إلى التخزين الدائم، يحدّث assets (Realtime) ويؤكد/يحرّر الحجز.
 // verify_jwt=false في config.toml — الحماية الوحيدة هي التوقيع، فلا طريق بدونه.
 // الترتيب مهم لأن المزوّد قد يرسل الحدث مرتين: التوقيع → dedupe → المعالجة → processed_at.
+import { z } from 'npm:zod@4'
 import { handleOptions } from '../_shared/cors.ts'
 import { confirmAssetHold, releaseAssetHold } from '../_shared/credits.ts'
 import { AppError, jsonResponse, toAppError } from '../_shared/errors.ts'
@@ -21,13 +22,18 @@ interface AssetRow {
 const FAILED_MESSAGE_AR = 'فشل التوليد عند المزوّد — استُرجع رصيدك كاملًا'
 const CANCELED_MESSAGE_AR = 'أُلغي التوليد — استُرجع رصيدك كاملًا'
 
+/** المزوّدون الذين نقبل منهم webhooks (CLAUDE.md القاعدة 10) — fal/google يُضافان مع محوّلاتهم */
+const Source = z.enum(['replicate'])
+
 Deno.serve(async (req) => {
   const started = Date.now()
   const preflight = handleOptions(req)
   if (preflight) return preflight
   if (req.method !== 'POST') return jsonResponse({ ok: false, error: 'method' }, 405)
 
-  const source = new URL(req.url).searchParams.get('source') ?? 'replicate'
+  const sourceParsed = Source.safeParse(new URL(req.url).searchParams.get('source') ?? 'replicate')
+  if (!sourceParsed.success) return jsonResponse({ ok: false, error: 'unknown source' }, 400)
+  const source = sourceParsed.data
   const db = supabaseAdmin()
   let eventId: string | null = null
   let jobId: string | null = null
@@ -86,9 +92,12 @@ Deno.serve(async (req) => {
     assetId = asset.id
 
     if (asset.status === 'completed' || asset.status === 'failed' || asset.status === 'canceled') {
+      // تسوية: إن وصلنا هنا بإعادة إرسال بعد أن سُجّلت الحالة النهائية لكن فشل تأكيد/تحرير الحجز في المحاولة السابقة،
+      // نكمله الآن (كلاهما idempotent ويعيد false إن لم يوجد حجز نشط) — وإلا بقي صف hold/held إلى الأبد.
+      const reconciled = asset.status === 'completed' ? await confirmAssetHold(asset.id) : await releaseAssetHold(asset.id, `reconcile: asset ${asset.status}`)
       await db.from('webhook_events').update({ processed_at: new Date().toISOString() }).eq('event_id', eventId)
-      logRequest({ fn: 'provider-webhook', ms: Date.now() - started, ok: true, code: 'ALREADY_FINAL', asset: assetId, status: asset.status })
-      return jsonResponse({ ok: true, alreadyFinal: true })
+      logRequest({ fn: 'provider-webhook', ms: Date.now() - started, ok: true, code: 'ALREADY_FINAL', asset: assetId, status: asset.status, reconciled })
+      return jsonResponse({ ok: true, alreadyFinal: true, reconciled })
     }
 
     if (result.status === 'processing') {

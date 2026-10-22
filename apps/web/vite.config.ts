@@ -2,11 +2,22 @@
 import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
+
+/** وحدات supabase/functions/_shared تستورد zod بصيغة Deno (`npm:zod@4`)؛ في vitest نحلّها إلى حزمة zod المثبتة هنا. */
+const denoNpmSpecifiers: Plugin = {
+  name: 'highlink:deno-npm-specifiers',
+  enforce: 'pre',
+  resolveId(id) {
+    // المستورِد خارج apps/web (لا يرى node_modules هنا) — نحلّ من موقع هذا الملف
+    if (id === 'npm:zod@4') return this.resolve('zod', path.resolve(import.meta.dirname, 'package.json'), { skipSelf: true })
+    return null
+  },
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [denoNpmSpecifiers, react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),

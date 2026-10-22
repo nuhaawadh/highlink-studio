@@ -72,6 +72,8 @@ export function ImageGeneratePage() {
         config: { aspectRatio, imageSize },
         feature_tag: 'general',
         locale,
+        // سقف الإنفاق = ما رآه المستخدم على الزر؛ لو تغيّر سعر النموذج بعد التحميل يُرفض الطلب بدل خصم أعلى
+        maxCredits: cost,
       })
       toast.success(t('generate.started', { n: res.cost }))
     } catch (e) {

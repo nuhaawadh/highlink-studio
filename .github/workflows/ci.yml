@@ -51,8 +51,26 @@ jobs:
           create table storage.buckets (id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]);
           create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text references storage.buckets(id), name text);
           alter table storage.objects enable row level security;
-          create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;
+          -- كما في Supabase: المطالبات من request.jwt.claims (JSON، PostgREST ≥ 9) مع احتياطي request.jwt.claim.* القديم
+          create function auth.uid() returns uuid language sql stable as $$
+            select coalesce(
+              nullif(current_setting('request.jwt.claim.sub', true), ''),
+              (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+            )::uuid
+          $$;
+          create function auth.role() returns text language sql stable as $$
+            select coalesce(
+              nullif(current_setting('request.jwt.claim.role', true), ''),
+              (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role')
+            )::text
+          $$;
           create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
+          -- صلاحيات الأدوار كما يمنحها Supabase للمخطط public (تلزم اختبارات RLS T9–T11)
+          grant usage on schema public, auth to anon, authenticated, service_role;
+          grant execute on all functions in schema auth to anon, authenticated, service_role;
+          alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+          alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
+          alter default privileges in schema public grant execute on functions to anon, authenticated, service_role;
           create publication supabase_realtime;
           SQL
       - name: apply migrations and seed
