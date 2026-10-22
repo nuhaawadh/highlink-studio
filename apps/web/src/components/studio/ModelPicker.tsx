@@ -2,7 +2,7 @@ import { Check } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useI18n } from '@/i18n'
-import { modelCost, modelDefaults, modelName, type ModelRow } from '@/lib/models'
+import { modelFromCost, modelName, type ModelRow } from '@/lib/models'
 import { cn } from '@/lib/utils'
 
 /** منتقي النماذج ببطاقات (المخطط §8): الاسم، الشارة، التكلفة بالدقة الافتراضية. */
@@ -33,7 +33,7 @@ export function ModelPicker({
     <div role="radiogroup" aria-label={t('generate.model')} className="flex flex-col gap-2">
       {models.map((m) => {
         const selected = m.id === value
-        const cost = modelCost(m, modelDefaults(m).imageSize ?? '1K')
+        const cost = modelFromCost(m)
         return (
           <button
             key={m.id}

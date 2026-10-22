@@ -1,5 +1,13 @@
 # سجل التغييرات
 
+## المرحلة 1 — الفيديو (Kling 3 عبر Replicate) + تصليب الحجوزات B2/B9 (2026-10-23)
+- migration `0005_concurrency_reconcile`: `claim_and_hold` — حد التزامن من الباقة + حجز الأصل (queued→processing) + حجز الرصيد في معاملة واحدة تحت قفل المستخدم (B2؛ T12–T14). `reconcile_holds(p_image, p_video)` بمهلة حسب النوع (صورة 30 د، فيديو 120 د) والأصول `processing` التي لها مهمة تُعاد كـ`provider_check` بدل اعتبارها فاشلة (B9؛ T11).
+- وظيفة `reconcile` (سر `RECONCILE_SECRET`، بلا JWT): تستدعي `reconcile_holds` ثم تسأل المزوّد (`getJob` = GET prediction) عن كل `provider_check` وتُنهي الأصل بنفس مسار الـwebhook (`_shared/finalize.ts`)؛ ما زال يعمل بعد السقف الصلب (صورة 4 س، فيديو 12 س) → تحرير + failed. `push-secrets.py` يولّد السر إن غاب.
+- `_shared/finalize.ts`: إنهاء موحّد (نسخ، completed/failed، تأكيد/تحرير، webhook العميل) يستخدمه `provider-webhook` و`reconcile`.
+- **Kling 3** (`kwaivgi/kling-v3-video`، مخطط OpenAPI 2026-10-23): `cost_per_second = 12` (standard 0.168$/ث) وجدول `supports.video_cost_per_second` {720p: 12, 720p+audio: 18, 1080p: 16, 1080p+audio: 24} و`mode_by_resolution`؛ `videoCredits()` في النسختين (contract.test) — 5 ث 720p = 60. `inputs.ts`: `start_image` من أول مرجع، `duration` ضمن min/max، `generate_audio`، `mode` من الدقة. النواة تسعّر الفيديو بالمدة قبل الإرسال وتكتب `duration_s`.
+- صفحة `/video-generate`: نص أو صورة→فيديو (رابط https أو من صورك الأخيرة)، المدة 5/10، القياس، الدقة 720p/1080p، صوت، التكلفة على الزر. بطاقة الأصل تشغّل الفيديو وتلتقط صورة مصغّرة من أول إطار وترفعها عبر `asset-thumbnail` (JWT، JPEG ≤ 300KB، للمالك فقط).
+- `smoke-gate1.py`: V1–V5 (منحة، مقطع 5 ث → حجز 60 بالضبط → mp4 + charge، فشل → استرداد، حدث واحد) وR1 (reconcile).
+
 ## المرحلة 1 — API عامة v1 (2026-10-22، ADR 0004)
 - وظيفة `v1` بلا JWT: `POST /v1/generate` · `GET /v1/assets/{id}` · `GET /v1/models` · `GET /v1/balance`، المصادقة بمفتاح `hl_live_`/`hl_test_` في `Authorization: Bearer` أو `X-API-Key`، وترويسات `X-RateLimit-*`.
 - النواة مشتركة: منطق `generate-media` انتقل إلى `_shared/generate-core.ts` (`runGenerate`) ويستدعيه الغلافان (الواجهة بـJWT، الـAPI بالمفتاح) — تسعير وأمان وحجز واحد.

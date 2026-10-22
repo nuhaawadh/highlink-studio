@@ -1,7 +1,8 @@
+import { useRef, type SyntheticEvent } from 'react'
 import { AlertTriangle, Download, ExternalLink, Loader2 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useI18n } from '@/i18n'
-import type { AssetRow } from '@/lib/assets'
+import { uploadVideoThumbnail, type AssetRow } from '@/lib/assets'
 import { cn } from '@/lib/utils'
 
 /** نسبة العرض كقيمة CSS aspect-ratio من عمود aspect_ratio ("9:16" → "9 / 16") */
@@ -11,12 +12,16 @@ function cssAspect(ratio: string | null): string {
   return `${w} / ${h}`
 }
 
+const THUMB_MAX_WIDTH = 640
+
 /**
- * بطاقة الأصل بحالاتها الأربع (المخطط §8): queued/processing هيكل نابض، completed الصورة مع تحميل، failed رسالة عربية + استرداد.
- * الحالة تتغير عبر Realtime من useAssets — البطاقة لا تطلب شيئًا بنفسها.
+ * بطاقة الأصل بحالاتها (المخطط §8): queued/processing هيكل نابض، completed الصورة أو مشغّل الفيديو مع تحميل، failed رسالة عربية + استرداد.
+ * الحالة تتغير عبر Realtime من useAssets — البطاقة لا تطلب شيئًا بنفسها،
+ * إلا التقاط الصورة المصغّرة للفيديو عند أول عرض إن لم توجد (المخطط §6، asset-thumbnail).
  */
 export function AssetCard({ asset, className }: { asset: AssetRow; className?: string }) {
   const { t, locale } = useI18n()
+  const thumbAttempted = useRef(false)
   const time = new Intl.DateTimeFormat(locale === 'ar' ? 'ar-SA-u-nu-latn' : 'en-US', { hour: '2-digit', minute: '2-digit' }).format(
     new Date(asset.created_at),
   )
@@ -24,10 +29,31 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
   const failed = asset.status === 'failed' || asset.status === 'canceled'
   // أصل من مفتاح API اختباري (ADR 0004): مكتمل بلا صورة ولا خصم
   const sandbox = asset.status === 'completed' && !asset.url && Boolean((asset.metadata as { sandbox?: unknown } | null)?.sandbox)
+  const isVideo = asset.type === 'video'
+
+  function captureThumbnail(e: SyntheticEvent<HTMLVideoElement>) {
+    if (asset.thumbnail_url || thumbAttempted.current) return
+    thumbAttempted.current = true
+    const video = e.currentTarget
+    try {
+      const scale = Math.min(1, THUMB_MAX_WIDTH / Math.max(1, video.videoWidth))
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(1, Math.round(video.videoWidth * scale))
+      canvas.height = Math.max(1, Math.round(video.videoHeight * scale))
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8)
+      void uploadVideoThumbnail(asset.id, dataUrl)
+    } catch {
+      /* canvas ملوّث (CORS) أو متصفح يمنع — المصغّر تحسين لا شرط */
+    }
+  }
 
   return (
     <figure
       data-status={asset.status}
+      data-type={asset.type}
       className={cn('group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface', className)}
     >
       <div className="relative w-full overflow-hidden bg-bg" style={{ aspectRatio: cssAspect(asset.aspect_ratio) }}>
@@ -36,15 +62,33 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
             <Skeleton className="absolute inset-0 rounded-none" />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-sm text-muted">
               <Loader2 className="size-6 animate-spin text-brand" aria-hidden />
-              <span>{t(asset.status === 'queued' ? 'asset.queued' : 'asset.processing')}</span>
+              <span>{t(asset.status === 'queued' ? 'asset.queued' : isVideo ? 'asset.processingVideo' : 'asset.processing')}</span>
             </div>
           </>
         )}
 
         {asset.status === 'completed' && asset.url && (
           <>
-            <img src={asset.url} alt={asset.prompt ?? ''} loading="lazy" className="size-full object-cover" />
-            <div className="absolute inset-x-0 bottom-0 flex justify-end gap-1 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
+            {isVideo ? (
+              <video
+                src={asset.url}
+                poster={asset.thumbnail_url ?? undefined}
+                controls
+                playsInline
+                preload="metadata"
+                crossOrigin="anonymous"
+                onLoadedData={captureThumbnail}
+                className="size-full object-cover"
+              />
+            ) : (
+              <img src={asset.url} alt={asset.prompt ?? ''} loading="lazy" className="size-full object-cover" />
+            )}
+            <div
+              className={cn(
+                'absolute inset-x-0 flex justify-end gap-1 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100',
+                isVideo ? 'top-0 bg-gradient-to-b' : 'bottom-0',
+              )}
+            >
               <a
                 href={asset.url}
                 download
@@ -89,6 +133,7 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
           {asset.prompt ?? '—'}
         </span>
         <span className="flex shrink-0 items-center gap-2">
+          {isVideo && asset.duration_s != null && <span className="font-latin tabular-nums">{t('video.seconds', { n: Number(asset.duration_s) })}</span>}
           {asset.cost_credits != null && asset.status === 'completed' && (
             <span className="font-latin tabular-nums text-text">{t('credits.n', { n: asset.cost_credits })}</span>
           )}

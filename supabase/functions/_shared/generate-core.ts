@@ -1,16 +1,18 @@
 // نواة التوليد المشتركة (المخطط §5، ADR 0004 القرار 2): الخطوات التسع بالترتيب، كل خطوة تفشل مبكرًا برمز واضح ورسالة عربية.
 // يستدعيها غلافان رقيقان: generate-media (الواجهة بـJWT) وv1 (مفتاح API). مصدر حقيقة واحد للتسعير والأمان والحجز.
-// الرصيد (القاعدة 2): hold هنا، confirm/release في provider-webhook أو في catch هنا. لا كتابة أخرى في credit_ledger.
-// بعد المراجعة المستقلة (2026-10-22):
-//  - الأصل يُحجز ذريًا (queued → processing) قبل الحجز والإرسال، فالطلبات المتزامنة بنفس assetId تنتج مهمة واحدة عند المزوّد.
+// الرصيد (القاعدة 2): hold هنا، confirm/release في provider-webhook/reconcile أو في catch هنا. لا كتابة أخرى في credit_ledger.
+// بعد المراجعة المستقلة (2026-10-22) وbacklog B2 (0005):
+//  - claim_and_hold في القاعدة: حد التزامن من الباقة + حجز الأصل (queued → processing) + حجز الرصيد في معاملة واحدة
+//    تحت قفل المستخدم، فالطلبات المتزامنة بنفس assetId تنتج مهمة واحدة، وتجاوز التزامن لا يترك أثرًا.
 //  - بعد كتابة provider_job_id تنتقل ملكية الحجز إلى الـwebhook: الـcatch هنا لا يحرّره.
 //  - assetId لا يُعتمد قبل التحقق من الملكية، فلا تُعلَّم أصول الآخرين فاشلة.
+// الفيديو (Kling): التكلفة = جدول الدقة/الصوت × المدة قبل الإرسال؛ الصورة→فيديو عبر images[0].
 // sandbox (مفتاح hl_test_): نفس التحقق والتسعير والأمان وفحص الرصيد، ثم completed فورًا بلا مزوّد ولا حجز (ADR 0004 القرار 5).
-import { getBalance, holdCredits, releaseAssetHold } from './credits.ts'
+import { claimAndHold, getBalance, releaseAssetHold } from './credits.ts'
 import { AppError, toAppError } from './errors.ts'
 import { buildProviderInput } from './inputs.ts'
 import { logRequest } from './log.ts'
-import { applyModelResolution } from './pricing.ts'
+import { applyModelResolution, videoCredits } from './pricing.ts'
 import { getProvider } from './providers/index.ts'
 import type { GenerateRequestInput } from './request.ts'
 import { checkPromptSafety } from './safety.ts'
@@ -57,6 +59,28 @@ async function markFailed(fn: string, assetId: string, userId: string, from: 'qu
     .eq('user_id', userId)
     .eq('status', from)
     .is('provider_job_id', null)
+}
+
+/** تسعير الطلب حسب نوع النموذج — صورة: cost_credits × معامل الدقة؛ فيديو: جدول الدقة/الصوت × المدة */
+function priceRequest(model: ModelRow, body: GenerateRequestInput): { cost: number; resolution: string; duration: number | null; audio: boolean } {
+  const defaults = model.default_params ?? {}
+  if (model.type === 'video') {
+    if (model.cost_per_second == null) throw new AppError('MODEL_DISABLED', 'هذا النموذج بلا تسعير بعد')
+    const duration = body.config?.duration ?? (typeof defaults.duration === 'number' ? defaults.duration : 5)
+    const allowed = (model.supports as { durations?: unknown }).durations
+    if (Array.isArray(allowed) && allowed.length && !allowed.includes(duration)) {
+      throw new AppError('INVALID_INPUT', 'مدة غير مدعومة لهذا النموذج', { detail: `duration=${duration} allowed=${JSON.stringify(allowed)}` })
+    }
+    if (model.max_duration_s != null && duration > model.max_duration_s) {
+      throw new AppError('INVALID_INPUT', 'المدة تتجاوز الحد الأقصى لهذا النموذج', { detail: `duration=${duration} max=${model.max_duration_s}` })
+    }
+    const resolution = body.config?.resolution ?? (typeof defaults.resolution === 'string' ? defaults.resolution : '720p')
+    const audio = body.config?.audio ?? (typeof defaults.audio === 'boolean' ? defaults.audio : false)
+    return { cost: videoCredits(Number(model.cost_per_second), duration, resolution, audio, model.supports), resolution, duration, audio }
+  }
+  if (model.cost_credits == null) throw new AppError('MODEL_DISABLED', 'هذا النموذج بلا تسعير بعد')
+  const imageSize = body.config?.imageSize ?? (defaults.imageSize as '1K' | '2K' | '4K' | undefined) ?? '1K'
+  return { cost: applyModelResolution(model.cost_credits, imageSize, model.supports.resolution_multipliers), resolution: imageSize, duration: null, audio: false }
 }
 
 /** ينفّذ طلب توليد لأصل queued يملكه المستخدم. يرجع رد النجاح أو يرمي AppError بعد تنظيف الحجز والأصل. */
@@ -109,15 +133,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
       throw new AppError('INVALID_INPUT', 'هذا الطلب نُفّذ من قبل', { status: 409 })
     }
 
-    // 2) حد التزامن حسب الباقة
-    const [{ data: profile }, { count: processing }] = await Promise.all([
-      db.from('profiles').select('plan_id, plans!inner(max_concurrent)').eq('id', userId).maybeSingle<{ plan_id: string; plans: { max_concurrent: number } }>(),
-      db.from('assets').select('id', { count: 'exact', head: true }).eq('user_id', userId).eq('status', 'processing').is('deleted_at', null),
-    ])
-    const maxConcurrent = profile?.plans?.max_concurrent ?? 1
-    if (!sandbox && (processing ?? 0) >= maxConcurrent) {
-      throw new AppError('RATE_LIMITED', undefined, { detail: `processing=${processing} max=${maxConcurrent}` })
-    }
+    // 2) حد التزامن: يُفحص ذريًا داخل claim_and_hold (الخطوة 6) تحت قفل المستخدم — لا فحص مسبق هنا
 
     // 3) حلّ النموذج (الاستوديوهات في المرحلة 2)
     if (body.model.startsWith('studio:')) {
@@ -130,7 +146,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
       .maybeSingle<ModelRow>()
     if (modelErr) throw toAppError(new Error(modelErr.message))
     if (!model || !model.enabled) throw new AppError('MODEL_DISABLED')
-    if (model.type !== 'image' || model.cost_credits == null) {
+    if (model.type !== 'image' && model.type !== 'video') {
       throw new AppError('MODEL_DISABLED', 'هذا النوع من النماذج يُفعَّل في جلسة لاحقة')
     }
     const provider = getProvider(model.provider)
@@ -141,8 +157,8 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
       const first = built.invalid[0]
       throw new AppError('INVALID_INPUT', 'إعداد غير مدعوم لهذا النموذج', { detail: `${first.key}=${String(first.value)} not in ${JSON.stringify(first.allowed)}` })
     }
-    const imageSize = (body.config?.imageSize ?? (model.default_params.imageSize as '1K' | '2K' | '4K' | undefined) ?? '1K')
-    const cost = applyModelResolution(model.cost_credits, imageSize, model.supports.resolution_multipliers)
+    const price = priceRequest(model, body)
+    const cost = price.cost
     if (body.maxCredits !== undefined && cost > body.maxCredits) {
       throw new AppError('OVER_BUDGET', undefined, { detail: `cost=${cost} max=${body.maxCredits}` })
     }
@@ -154,7 +170,8 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     const commonFields = {
       prompt: body.prompt,
       aspect_ratio: (built.input.aspect_ratio as string | undefined) ?? null,
-      resolution: imageSize,
+      resolution: price.resolution,
+      duration_s: price.duration,
       feature_tag: body.feature_tag ?? 'general',
       input_urls: body.images ?? null,
     }
@@ -183,22 +200,9 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
       return { success: true, assetId: asset.id, cost, balanceAfter: balance, provider: provider.name, sandbox: true }
     }
 
-    // 5.5) الحجز الذرّي للأصل: صف واحد فقط ينتقل من queued إلى processing — الطلبات المتزامنة تحصل على 409
-    const { data: claimedRows, error: claimErr } = await db
-      .from('assets')
-      .update({ status: 'processing', provider: provider.name, cost_credits: cost, model: model.id, type: model.type })
-      .eq('id', asset.id)
-      .eq('user_id', userId)
-      .eq('status', 'queued')
-      .select('id')
-    if (claimErr) throw toAppError(new Error(claimErr.message))
-    if (!claimedRows || claimedRows.length === 0) {
-      throw new AppError('INVALID_INPUT', 'هذا الطلب قيد التنفيذ', { status: 409 })
-    }
+    // 6) حد التزامن + حجز الأصل + حجز الرصيد — معاملة واحدة تحت قفل المستخدم (0005)
+    await claimAndHold({ userId, assetId: asset.id, amount: cost, provider: provider.name, model: model.id, type: model.type })
     claimed = true
-
-    // 6) حجز الرصيد (idempotent على assetId)
-    await holdCredits(userId, cost, asset.id)
     held = true
 
     // 7) المزوّد
@@ -233,7 +237,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
       provider: provider.name,
       providerJobId: jobId,
     }
-    logRequest({ fn, user: userId, asset: assetId, ms: Date.now() - started, ok: true, model: model.id, cost })
+    logRequest({ fn, user: userId, asset: assetId, ms: Date.now() - started, ok: true, model: model.id, cost, type: model.type })
     return res
   } catch (e) {
     // 9) أي فشل قبل كتابة provider_job_id: تحرير الحجز إن كان لنا، تعليم الأصل فاشلًا، ثم إعادة الرمي للغلاف

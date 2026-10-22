@@ -42,6 +42,13 @@ if not env.get('REPLICATE_WEBHOOK_SECRET'):
         f.write('\nREPLICATE_WEBHOOK_SECRET=' + key + '\n')
     print('appended REPLICATE_WEBHOOK_SECRET to supabase/.env.local')
 
+if not env.get('RECONCILE_SECRET'):
+    import secrets as _secrets
+    env['RECONCILE_SECRET'] = 'rcs_' + _secrets.token_urlsafe(32)
+    with io.open(ENV, 'a', encoding='utf-8') as f:
+        f.write('\nRECONCILE_SECRET=' + env['RECONCILE_SECRET'] + '\n')
+    print('generated RECONCILE_SECRET and appended it to supabase/.env.local')
+
 out_keys, skipped = [], []
 with io.open(OUT, 'w', encoding='utf-8', newline='\n') as f:
     for k, v in env.items():

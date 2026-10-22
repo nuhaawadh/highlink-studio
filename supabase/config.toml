@@ -55,3 +55,11 @@ verify_jwt = false
 # API عامة v1 (ADR 0004): لا JWT — المصادقة بمفتاح API (hl_live_/hl_test_) داخل الوظيفة
 [functions.v1]
 verify_jwt = false
+
+# شبكة أمان الحجوزات (backlog B9): يُستدعى من المجدول/يدويًا بسر RECONCILE_SECRET — لا JWT
+[functions.reconcile]
+verify_jwt = false
+
+# التقاط الصورة المصغّرة للفيديو من الواجهة (المخطط §6): JWT المستخدم
+[functions.asset-thumbnail]
+verify_jwt = true

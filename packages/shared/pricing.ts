@@ -44,6 +44,21 @@ export function applyModelResolution(
   return Math.ceil(baseCredits * m)
 }
 
+/**
+ * رصيد مقطع فيديو (المخطط §7، نموذج Kling عبر Replicate): `cost_per_second` بالرصيد × المدة، مقرّبًا لأعلى.
+ * إن سعّر المزوّد الدقة/الصوت بشكل مختلف يأتي الجدول من `models.supports.video_cost_per_second`
+ * بمفاتيح مثل "720p" و"720p+audio" — بيانات لا كود لكل نموذج (القاعدة 7). المفتاح الغائب يعود إلى `cost_per_second`.
+ */
+export function videoCredits(costPerSecond: number, durationSeconds: number, resolution: string | undefined, audio: boolean, supports?: unknown): number {
+  if (!Number.isInteger(durationSeconds) || durationSeconds <= 0) throw new RangeError('durationSeconds must be a positive integer')
+  if (!Number.isFinite(costPerSecond) || costPerSecond < 0) throw new RangeError('costPerSecond must be a non-negative number')
+  const table = supports && typeof supports === 'object' ? (supports as { video_cost_per_second?: unknown }).video_cost_per_second : undefined
+  const key = resolution ? `${resolution}${audio ? '+audio' : ''}` : undefined
+  const raw = key && table && typeof table === 'object' ? (table as Record<string, unknown>)[key] : undefined
+  const perSecond = typeof raw === 'number' && Number.isFinite(raw) && raw > 0 ? raw : costPerSecond
+  return Math.ceil(perSecond * durationSeconds)
+}
+
 /** السعر بالريال لحزمة رصيد (شحن إضافي) — للعرض فقط. */
 export function sarForCredits(credits: number): number {
   return Math.round(credits * CREDIT_SAR * 100) / 100

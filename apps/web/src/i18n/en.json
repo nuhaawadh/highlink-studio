@@ -138,7 +138,25 @@
     "refunded": "Your credits were fully refunded",
     "download": "Download",
     "open": "Open full size",
-    "sandbox": "API sandbox run (no image, no charge)"
+    "sandbox": "API sandbox run (no image, no charge)",
+    "processingVideo": "Generating the clip… this can take a few minutes"
+  },
+  "video": {
+    "title": "Video generation",
+    "subtitle": "From text or from an image. The cost by duration and resolution shows on the button and is only charged on success.",
+    "duration": "Duration",
+    "seconds": "{n}s",
+    "audio": "Native audio",
+    "audioHint": "+{n} credits",
+    "startImage": "Start image (optional)",
+    "startImagePlaceholder": "https://… image URL",
+    "startImageHttps": "The URL must start with https://",
+    "clearStartImage": "Remove start image",
+    "pickFromLibrary": "Or pick one of your recent images",
+    "aspectIgnored": "Aspect ratio follows the start image",
+    "promptLabel": "Clip description",
+    "promptPlaceholder": "e.g. a slow cinematic shot of a perfume bottle on marble as light sweeps across… (Ctrl+Enter to generate)",
+    "empty": "Your clips will appear here as soon as generation starts — no page refresh"
   },
   "account": {
     "title": "Account",

@@ -18,7 +18,7 @@
 4. النصوص من `apps/web/src/i18n/ar.json` و`en.json`. لا نص عربي مكتوب داخل JSX.
 5. Tailwind بالخصائص المنطقية (`ps/pe/ms/me/start/end`). ممنوع `ml/mr/left/right` إلا للأيقونات المتماثلة.
 6. استوديو جديد = ملف `content/studios/<id>.json` + سطر في `supabase/seed.sql`. لا صفحة جديدة إلا إذا خرج عن `StudioWizard`.
-7. نموذج جديد = سطر في `supabase/seed.sql` (جدول `models`) بتكلفة من `creditsForUsd()` — ceil(سعر المزوّد بالدولار × 3 ÷ 0.042) — ومخطط مدخلاته من المزوّد في `input_schema`.
+7. نموذج جديد = سطر في `supabase/seed.sql` (جدول `models`) بتكلفة من `creditsForUsd()` — ceil(سعر المزوّد بالدولار × 3 ÷ 0.042) — ومخطط مدخلاته من المزوّد في `input_schema`. الفيديو: `cost_per_second` بالرصيد + جدول `supports.video_cost_per_second` بمفاتيح `"<دقة>"` و`"<دقة>+audio"` و`supports.mode_by_resolution` — `videoCredits()` تحسب، ولا كود لكل نموذج.
 8. لا تحذف أصول المستخدمين أو سجلات الرصيد أبدًا في migration. الحذف منطقي (`deleted_at`).
 9. أي منطق يلمس المال (رصيد، تسعير، دفع) يبدأ باختبار vitest/SQL قبل الكود، ويُراجَع من جلسة Claude Code ثانية قبل الدمج.
 10. كل Edge Function تتحقق من مدخلاتها بـzod وترجع رموز الأخطاء في `packages/shared/types.ts` (`GenerateErrorCode`) ورسائل عربية.
@@ -32,7 +32,8 @@
 - `npm run gen:types` ← `supabase gen types typescript --linked > packages/shared/db.ts`
 - اختبارات الرصيد على القاعدة البعيدة (تُلغى دائمًا): `npx supabase db query --linked -f supabase/tests/credits.test.sql` ← `ALL CREDIT TESTS PASSED`، و`-f supabase/tests/api.test.sql` ← `ALL API TESTS PASSED`. لاختبار migration جديدة قبل `db push`: ملف مؤقت = `begin;` + الـmigration + ملف الاختبار (ينتهي بـ`rollback`) ويُشغَّل بنفس الأمر.
 - محاكاة طلب الواجهة في SQL: `set local role authenticated` + `set_config('request.jwt.claims', '{"role":"authenticated","sub":"<uuid>"}', true)`. ممنوع `request.jwt.claim.*` (قديم، لا يضبطه PostgREST ≥ 9).
-- حجز عالق؟ `select * from public.reconcile_holds();` عبر `db query --linked` (يحرّر/يؤكد ما هو أقدم من 30 دقيقة). بوابة 1 آليًا بعد أي نشر: `python -I scripts/smoke-gate1.py`.
+- حجز عالق؟ استدعِ وظيفة `reconcile` بـ`curl -X POST <SUPABASE_URL>/functions/v1/reconcile -H "Authorization: Bearer $RECONCILE_SECRET"` (تسأل المزوّد قبل الاسترداد؛ المهل: صورة 30 د، فيديو 120 د). بوابة 1 آليًا بعد أي نشر: `python -I scripts/smoke-gate1.py` (تشمل فيديو Kling؛ تستغرق دقائق).
+- النشر الكامل: `generate-media` و`asset-thumbnail` بـJWT؛ `provider-webhook` و`v1` و`reconcile` بـ`--no-verify-jwt`.
 - الأسرار: `supabase/.env.local` (لا يُقرأ ولا يُطبع) → `python -I scripts/push-secrets.py <tmp>` (يتخطى `SUPABASE_*` والفارغة، يجلب `REPLICATE_WEBHOOK_SECRET`) → `npx supabase secrets set --env-file <tmp>` → حذف tmp. الواجهة: `apps/web/.env.local`.
 - مفاتيح Supabase الجديدة (`sb_secret_…`/`sb_publishable_…`) ليست JWT: في السكربتات تُرسل كـ`apikey` فقط (Auth Admin API يرفضها في `Authorization: Bearer`).
 - لا Deno محليًا: الوحدات النقية في `_shared/` تُختبر بـvitest، والباقي يُتحقق عند النشر وبالفحص الدخاني بـcurl على الرابط السحابي.
@@ -42,8 +43,9 @@
 - المرحلة 1 (2026-10-22): (1) migrations 0001+0002 وseed مطبّقة على `highlink-studio-dev` والأنواع مولّدة ✓ (2) `_shared/` + `generate-media` بالخطوات التسع + `provider-webhook` موقّع مع dedupe، منشورتان، الأسرار مرفوعة ✓ (3) `/image-generate` و`/library` بـRealtime ✓. **بوابة 1 مجتازة (2026-10-22)**: توليدة حقيقية ظهرت في الواجهة عبر Realtime بلا تحديث، الرصيد نزل 30 → 19 (صف `charge` −11)، وفشل حقيقي من المزوّد (402 قبل شحن Replicate) أعاد الرصيد وعرض رسالة عربية. النماذج الأربعة الأخرى `enabled=false` حتى تُبنى.
 - المراجعة المستقلة (2026-10-22، الجلسة 4) منجزة: migration `0003_review_hardening` (حارس الأعمدة بـ`auth.role()`، سياسة INSERT، `get_balance` للمالك، `reconcile_holds()`) + حجز الأصل الذرّي في `generate-media` + تسوية الحجز في الـwebhook + zod/مهلات. ما بقي في `docs/backlog.md`.
 - API v1 منجزة (2026-10-22، ADR 0004): وظيفة `v1` (`/functions/v1/v1/{generate|assets/{id}|models|balance}`) بمفاتيح `hl_live_`/`hl_test_`، migration 0004، نواة مشتركة `_shared/generate-core.ts`، webhook موقّع للعميل، صفحة `/account`. مفتاح الاختبار = تجربة جافة بلا مزوّد ولا خصم.
-- التالي بالترتيب: (4) Kling عبر Replicate → (6) سيرفر MCP (المرحلة 2). لا تُبنى خطوة قبل اجتياز سابقتها.
-- خارج النطاق حتى الآن: مجدول `reconcile_holds()` (مع `cron-renewals`) ومسح `processing` بسؤال المزوّد، المصنّف الآلي للأمان، `prompt-enhancer`، رفع المراجع، بوابة المخرجات الكاملة.
+- الفيديو (2026-10-23): Kling 3 عبر Replicate مفعّل (`kling-v3-turbo`، 12 رصيد/ث standard، جدول الدقة/الصوت في `supports.video_cost_per_second`)، `/video-generate` حقيقية، المصغّر يُلتقط في الواجهة عبر `asset-thumbnail`. migration 0005: `claim_and_hold` (حد التزامن + حجز الأصل + حجز الرصيد ذريًا) و`reconcile_holds` بمهلة حسب النوع، ووظيفة `reconcile` تسأل المزوّد قبل الاسترداد.
+- التالي بالترتيب: (6) سيرفر MCP (المرحلة 2) → الاستوديوهات. لا تُبنى خطوة قبل اجتياز سابقتها.
+- خارج النطاق حتى الآن: مجدول يستدعي `reconcile` دوريًا (مع `cron-renewals`)، المصنّف الآلي للأمان، `prompt-enhancer`، رفع المراجع، بوابة المخرجات الكاملة، تدرّج الطرح (`rollout_pct` موجود ولا يُفرض).
 - الدليل التشغيلي لجلسات Claude Code: `docs/claude-code-kickoff.md`.
 
 ## عند التردد

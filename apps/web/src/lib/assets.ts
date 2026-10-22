@@ -120,6 +120,16 @@ export async function createQueuedAsset(input: CreateAssetInput): Promise<AssetR
   return data
 }
 
+/**
+ * صورة مصغّرة لفيديو مكتمل تُلتقط من أول إطار في المتصفح (المخطط §6) وتُرفع عبر Edge Function بصلاحية السيرفر.
+ * يرجع الرابط أو null إن رُفض (ليس فشلًا يُعرض للمستخدم).
+ */
+export async function uploadVideoThumbnail(assetId: string, jpegDataUrl: string): Promise<string | null> {
+  const { data, error } = await supabase.functions.invoke<{ success: boolean; thumbnail_url?: string }>('asset-thumbnail', { body: { assetId, image: jpegDataUrl } })
+  if (error || !data?.success) return null
+  return data.thumbnail_url ?? null
+}
+
 export class GenerateError extends Error {
   readonly code: GenerateErrorCode
   readonly balanceAfter: number | null

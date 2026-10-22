@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { API_ERROR_CODES, GENERATE_ERROR_CODES } from './types'
-import { RESOLUTION_MULTIPLIER, applyModelResolution } from './pricing'
+import { RESOLUTION_MULTIPLIER, applyModelResolution, videoCredits } from './pricing'
 import {
   API_ERROR_CODES as EDGE_API_ERROR_CODES,
   API_ERROR_HTTP_STATUS,
@@ -8,7 +8,11 @@ import {
   GENERATE_ERROR_CODES as EDGE_ERROR_CODES,
   ERROR_MESSAGES_AR,
 } from '../../supabase/functions/_shared/types'
-import { RESOLUTION_MULTIPLIER as EDGE_MULTIPLIER, applyModelResolution as edgeApplyModelResolution } from '../../supabase/functions/_shared/pricing'
+import {
+  RESOLUTION_MULTIPLIER as EDGE_MULTIPLIER,
+  applyModelResolution as edgeApplyModelResolution,
+  videoCredits as edgeVideoCredits,
+} from '../../supabase/functions/_shared/pricing'
 
 /**
  * Edge Functions لا تستورد من خارج supabase/functions/ (قيود التجميع)، فالعقد منسوخ في _shared/types.ts.
@@ -22,6 +26,19 @@ describe('contract parity — packages/shared ↔ _shared', () => {
   it('لكل رمز رسالة عربية غير فارغة', () => {
     for (const code of GENERATE_ERROR_CODES) {
       expect(ERROR_MESSAGES_AR[code], code).toMatch(/\S/)
+    }
+  })
+
+  it('تسعير الفيديو متطابق بين النسختين', () => {
+    const supports = { video_cost_per_second: { '720p': 12, '720p+audio': 18, '1080p': 16, '1080p+audio': 24 } }
+    for (const d of [3, 5, 10, 15]) {
+      for (const res of ['720p', '1080p', '480p', undefined]) {
+        for (const audio of [false, true]) {
+          for (const s of [supports, undefined]) {
+            expect(edgeVideoCredits(12, d, res, audio, s), `${d} ${res} ${audio}`).toBe(videoCredits(12, d, res, audio, s))
+          }
+        }
+      }
     }
   })
 

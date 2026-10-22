@@ -1,5 +1,35 @@
 import { describe, expect, it } from 'vitest'
-import { applyModelResolution, applyResolution, creditsForUsd, creditsForVideo, sarForCredits } from './pricing'
+import { applyModelResolution, applyResolution, creditsForUsd, creditsForVideo, sarForCredits, videoCredits } from './pricing'
+
+/** Kling 3 عبر Replicate (2026-10-23): standard 0.168$/ث، pro 0.224$/ث، الصوت +50%، 4K 0.42$/ث → بالرصيد 12/16/18/24/30 */
+const KLING_SUPPORTS = { video_cost_per_second: { '720p': 12, '720p+audio': 18, '1080p': 16, '1080p+audio': 24, '4K': 30, '4K+audio': 30 } }
+
+describe('videoCredits — جدول الدقة/الصوت من supports (ADR Kling)', () => {
+  it('أسعار Kling من صفحة Replicate تتحول إلى رصيد صحيح بلا كسور', () => {
+    expect(creditsForUsd(0.168)).toBe(12)
+    expect(creditsForUsd(0.224)).toBe(16)
+    expect(creditsForUsd(0.252)).toBe(18)
+    expect(creditsForUsd(0.336)).toBe(24)
+    expect(creditsForUsd(0.42)).toBe(30)
+  })
+  it('5 ثوانٍ 720p = 60، 10 ثوانٍ 1080p مع صوت = 240', () => {
+    expect(videoCredits(12, 5, '720p', false, KLING_SUPPORTS)).toBe(60)
+    expect(videoCredits(12, 10, '1080p', true, KLING_SUPPORTS)).toBe(240)
+    expect(videoCredits(12, 5, '720p', true, KLING_SUPPORTS)).toBe(90)
+  })
+  it('مفتاح غائب أو جدول غائب → cost_per_second الأساسي؛ 4K بالصوت نفس السعر', () => {
+    expect(videoCredits(12, 5, '480p', false, KLING_SUPPORTS)).toBe(60)
+    expect(videoCredits(12, 5, undefined, true, KLING_SUPPORTS)).toBe(60)
+    expect(videoCredits(12, 5, '720p', false, undefined)).toBe(60)
+    expect(videoCredits(12, 5, '4K', true, KLING_SUPPORTS)).toBe(150)
+  })
+  it('كسر لكل ثانية يُقرَّب لأعلى على الإجمالي، والمدخلات غير الصالحة تُرفض', () => {
+    expect(videoCredits(2.5, 3, undefined, false)).toBe(8)
+    expect(() => videoCredits(12, 0, '720p', false)).toThrow(RangeError)
+    expect(() => videoCredits(12, 2.5, '720p', false)).toThrow(RangeError)
+    expect(() => videoCredits(-1, 5, '720p', false)).toThrow(RangeError)
+  })
+})
 
 describe('pricing — المخطط §7', () => {
   it('صورة سريعة 0.03$ ≈ 3 رصيد', () => {

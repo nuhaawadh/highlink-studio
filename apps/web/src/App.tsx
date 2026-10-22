@@ -10,6 +10,7 @@ import { LoginPage } from '@/app/LoginPage'
 import { PlaceholderPage } from '@/app/PlaceholderPage'
 import { PricingPage } from '@/app/PricingPage'
 import { RequireAuth } from '@/app/RequireAuth'
+import { VideoGeneratePage } from '@/app/VideoGeneratePage'
 
 /**
  * خريطة المسارات (المخطط §8). المرحلة 1: الرئيسية، الدخول، الباقات، توليد الصور، المكتبة حقيقية؛ الباقي placeholders مرقّمة بمرحلتها.
@@ -33,7 +34,7 @@ export default function App() {
             <Route path="library" element={<LibraryPage />} />
             <Route path="account" element={<AccountPage />} />
             <Route path="image-generate" element={<ImageGeneratePage />} />
-            <Route path="video-generate" element={<PlaceholderPage titleKey="nav.video" phase={1} />} />
+            <Route path="video-generate" element={<VideoGeneratePage />} />
             <Route path="studio/product" element={<PlaceholderPage titleKey="studios.product" phase={2} />} />
             <Route path="studio/ads" element={<PlaceholderPage titleKey="studios.ads" phase={2} />} />
             <Route path="studio/ugc" element={<PlaceholderPage titleKey="studios.ugc" phase={2} />} />

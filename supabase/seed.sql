@@ -25,8 +25,15 @@ insert into public.models (id, name_ar, name_en, type, provider, provider_slug, 
      true, 'جديد', 1),
   ('flux-fast',       'فلوكس السريع',  'FLUX fast',       'image', 'replicate', 'black-forest-labs/flux-schnell', 'fal-ai/flux/schnell',
      3, null, null, '{"ref_images":0,"text":false,"sizes":["1K"],"aspect_ratios":["1:1","9:16","16:9","4:5","3:4"]}', '{}', null, false, null, 2),
-  ('kling-v3-turbo',  'كلينج 3 تيربو', 'Kling 3 Turbo',   'video', 'replicate', 'kwaivgi/kling-v3-video', 'fal-ai/kling-video/v3/turbo',
-     null, 5, 15, '{"i2v":true,"audio":true,"resolutions":["720p","1080p"],"aspect_ratios":["16:9","9:16","1:1"]}', '{"duration":5,"resolution":"720p"}', null, false, 'جديد', 3),
+  -- Kling 3 عبر Replicate (kwaivgi/kling-v3-video، مخطط OpenAPI بتاريخ 2026-10-23، الإصدار cadb27bd…). أسعار Replicate لكل ثانية:
+  --   standard (720p) 0.168$ → 12 رصيد/ث، pro (1080p) 0.224$ → 16، مع الصوت +50% (18 / 24)، 4K 0.42$ → 30 (غير معروض الآن).
+  --   cost_per_second = 12 (الأساس) والجدول الكامل في supports.video_cost_per_second (videoCredits)؛ mode_by_resolution يحوّل دقتنا إلى mode النموذج.
+  ('kling-v3-turbo',  'كلينج 3',       'Kling 3',         'video', 'replicate', 'kwaivgi/kling-v3-video', 'fal-ai/kling-video/v3/turbo',
+     null, 12, 15,
+     '{"i2v":true,"audio":true,"durations":[5,10],"resolutions":["720p","1080p"],"aspect_ratios":["16:9","9:16","1:1"],"video_cost_per_second":{"720p":12,"720p+audio":18,"1080p":16,"1080p+audio":24,"4K":30,"4K+audio":30},"mode_by_resolution":{"720p":"standard","1080p":"pro"}}',
+     '{"duration":5,"resolution":"720p","aspectRatio":"16:9","audio":false}',
+     '{"required":["prompt"],"properties":{"prompt":{"type":"string","description":"Text prompt for video generation. Max 2500 characters."},"negative_prompt":{"type":"string","default":""},"start_image":{"type":"string","format":"uri","nullable":true,"description":"First frame image. .jpg/.jpeg/.png, max 10MB, min 300px, aspect 1:2.5 to 2.5:1."},"end_image":{"type":"string","format":"uri","nullable":true},"mode":{"type":"string","enum":["standard","pro","4k"],"default":"pro"},"aspect_ratio":{"type":"string","enum":["16:9","9:16","1:1"],"default":"16:9","description":"Ignored when start_image is provided."},"duration":{"type":"integer","minimum":3,"maximum":15,"default":5},"generate_audio":{"type":"boolean","default":false},"multi_prompt":{"type":"string","nullable":true}},"output":{"type":"string","format":"uri"}}',
+     true, 'جديد', 3),
   ('seedance-2.5',    'سيدانس 2.5',    'Seedance 2.5',    'video', 'replicate', 'bytedance/seedance-2.5', null,
      null, 6, 15, '{"i2v":true,"audio":true,"resolutions":["480p","720p","1080p"],"aspect_ratios":["16:9","9:16","1:1"]}', '{"duration":5,"resolution":"720p"}', null, false, null, 4),
   ('veo-3.1-fast',    'فيو 3.1 فاست',  'Veo 3.1 Fast',    'video', 'replicate', 'google/veo-3.1-fast', null,

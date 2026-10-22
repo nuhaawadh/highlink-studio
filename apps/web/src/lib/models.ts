@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Tables } from '@shared/db'
-import { applyModelResolution } from '@shared/pricing'
-import type { AspectRatio, ImageSize } from '@shared/types'
+import { applyModelResolution, videoCredits } from '@shared/pricing'
+import type { AspectRatio, ImageSize, VideoResolution } from '@shared/types'
 import { supabase } from './supabase'
 
 /**
@@ -16,17 +16,53 @@ interface Supports {
   resolution_multipliers?: Record<string, number>
   ref_images?: number
   text?: boolean
+  /** فيديو */
+  i2v?: boolean
+  audio?: boolean
+  durations?: number[]
+  resolutions?: VideoResolution[]
+  video_cost_per_second?: Record<string, number>
+}
+
+export interface ModelDefaults {
+  imageSize?: ImageSize
+  aspectRatio?: AspectRatio
+  duration?: number
+  resolution?: VideoResolution
+  audio?: boolean
 }
 
 export function modelSupports(model: ModelRow): Supports {
   return (model.supports && typeof model.supports === 'object' ? model.supports : {}) as Supports
 }
 
-export function modelDefaults(model: ModelRow): { imageSize?: ImageSize; aspectRatio?: AspectRatio } {
-  return (model.default_params && typeof model.default_params === 'object' ? model.default_params : {}) as {
-    imageSize?: ImageSize
-    aspectRatio?: AspectRatio
+export function modelDefaults(model: ModelRow): ModelDefaults {
+  return (model.default_params && typeof model.default_params === 'object' ? model.default_params : {}) as ModelDefaults
+}
+
+/** الفيديو: المدد والدقات المدعومة وتكلفة مقطع بعينه — نفس videoCredits التي يخصم بها السيرفر */
+export function modelDurations(model: ModelRow): number[] {
+  const d = modelSupports(model).durations
+  return d && d.length ? d : [5]
+}
+
+export function modelVideoResolutions(model: ModelRow): VideoResolution[] {
+  const r = modelSupports(model).resolutions
+  return r && r.length ? r : ['720p']
+}
+
+export function modelVideoCost(model: ModelRow, duration: number, resolution: VideoResolution, audio: boolean): number {
+  return videoCredits(Number(model.cost_per_second ?? 0), duration, resolution, audio, model.supports)
+}
+
+/** أقل تكلفة ممكنة للعرض في منتقي النماذج ("من N رصيد") */
+export function modelFromCost(model: ModelRow): number {
+  if (model.type === 'video') {
+    const d = modelDefaults(model)
+    const durations = modelDurations(model)
+    return modelVideoCost(model, Math.min(...durations), d.resolution ?? modelVideoResolutions(model)[0], false)
   }
+  return modelCost(model, modelDefaults(model).imageSize ?? '1K')
 }
 
 export function modelSizes(model: ModelRow): ImageSize[] {

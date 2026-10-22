@@ -96,17 +96,40 @@ export const replicate: ProviderAdapter = {
     } catch {
       throw new AppError('INVALID_INPUT', undefined, { detail: 'webhook: invalid json' })
     }
-    const parsed = PredictionPayload.safeParse(json)
-    if (!parsed.success) {
-      throw new AppError('INVALID_INPUT', undefined, { detail: `webhook: ${parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}` })
-    }
-    const p = parsed.data
-    const outputs = typeof p.output === 'string' ? [p.output] : Array.isArray(p.output) ? p.output.filter((o): o is string => typeof o === 'string') : []
-    return {
-      jobId: p.id,
-      status: mapStatus(p.status),
-      outputs,
-      error: p.error == null ? undefined : String(p.error),
-    }
+    return parsePrediction(json, 'webhook')
   },
+
+  async getJob(jobId): Promise<ProviderWebhookResult> {
+    const res = await fetch(`${API}/predictions/${encodeURIComponent(jobId)}`, {
+      headers: { Authorization: `Bearer ${token()}`, 'User-Agent': 'highlink-studio/0.1 (+https://highlink.tech)' },
+      signal: AbortSignal.timeout(15_000),
+    }).catch((e: unknown) => {
+      throw new AppError('PROVIDER_ERROR', undefined, { detail: `replicate get: ${e instanceof Error ? e.name + ' ' + e.message : String(e)}` })
+    })
+    const text = await res.text()
+    if (!res.ok) throw new AppError('PROVIDER_ERROR', undefined, { detail: `replicate get ${res.status}: ${text.slice(0, 200)}` })
+    let json: unknown
+    try {
+      json = JSON.parse(text)
+    } catch {
+      throw new AppError('PROVIDER_ERROR', undefined, { detail: 'replicate get: non-JSON response' })
+    }
+    return parsePrediction(json, 'get')
+  },
+}
+
+/** كائن prediction (من الـwebhook أو من GET) → نتيجة موحّدة؛ الحقول المستخدمة فقط تُتحقق بـzod */
+export function parsePrediction(json: unknown, source: string): ProviderWebhookResult {
+  const parsed = PredictionPayload.safeParse(json)
+  if (!parsed.success) {
+    throw new AppError('INVALID_INPUT', undefined, { detail: `${source}: ${parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}` })
+  }
+  const p = parsed.data
+  const outputs = typeof p.output === 'string' ? [p.output] : Array.isArray(p.output) ? p.output.filter((o): o is string => typeof o === 'string') : []
+  return {
+    jobId: p.id,
+    status: mapStatus(p.status),
+    outputs,
+    error: p.error == null ? undefined : String(p.error),
+  }
 }

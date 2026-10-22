@@ -12,6 +12,23 @@ export async function holdCredits(userId: string, amount: number, assetId: strin
   return Number(data)
 }
 
+/**
+ * حد التزامن + حجز الأصل (queued → processing) + حجز الرصيد في معاملة واحدة تحت قفل المستخدم (migration 0005، backlog B2).
+ * يرمي RATE_LIMITED / ALREADY_CLAIMED / INSUFFICIENT_CREDITS وفي كل الحالات لا يبقى أثر على الأصل ولا الدفتر.
+ */
+export async function claimAndHold(args: { userId: string; assetId: string; amount: number; provider: string; model: string; type: string }): Promise<number> {
+  const { data, error } = await supabaseAdmin().rpc('claim_and_hold', {
+    p_user: args.userId,
+    p_asset: args.assetId,
+    p_amount: args.amount,
+    p_provider: args.provider,
+    p_model: args.model,
+    p_type: args.type,
+  })
+  if (error) throw toAppError(new Error(error.message))
+  return Number(data)
+}
+
 async function findActiveHold(assetId: string): Promise<number | null> {
   const { data, error } = await supabaseAdmin()
     .from('credit_ledger')

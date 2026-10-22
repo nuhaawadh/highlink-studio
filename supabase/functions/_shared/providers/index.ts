@@ -26,6 +26,8 @@ export interface ProviderAdapter {
   /** معرّف الحدث للـdedupe (ثابت عند إعادة الإرسال) */
   eventId(req: Request): string | null
   parseWebhook(rawBody: string): ProviderWebhookResult
+  /** يسأل المزوّد عن حالة مهمة (شبكة أمان الـwebhook — backlog B9، المخطط §15 الطبقة 4) */
+  getJob(jobId: string): Promise<ProviderWebhookResult>
 }
 
 const adapters: Record<string, ProviderAdapter> = { replicate }
