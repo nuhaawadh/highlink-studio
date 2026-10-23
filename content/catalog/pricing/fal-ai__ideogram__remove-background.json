@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/ideogram/remove-background",
+ "unit": "image",
+ "usd": 0.01,
+ "pricing_text": "Each image costs **$0.01**.",
+ "source_url": "https://fal.ai/models/fal-ai/ideogram/remove-background",
+ "confidence": "high",
+ "notes": "سعر ثابت لكل صورة. مدخل واحد (image_url حتى 10MB) ومخرج واحد بخلفية شفافة."
+}

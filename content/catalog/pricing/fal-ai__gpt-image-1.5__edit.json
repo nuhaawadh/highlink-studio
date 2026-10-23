@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/gpt-image-1.5/edit",
+ "unit": "image",
+ "usd": 0.133,
+ "by_resolution": {"1024x1024": 0.133, "1024x1536": 0.2, "1536x1024": 0.199},
+ "pricing_text": "Your request will cost different amounts based on the number of images, quality, and size.\n \n - You will be charged **$0.005** per 1,000 input text tokens. Token counts vary with the text; you are charged for actual token usage.\n - You will be charged **$0.008** per 1,000 input image tokens. One 1024x1024 image is roughly 135 tokens in low fidelity mode, or 3,050 tokens in high fidelity mode.\n - You will be charged **$0.010** per 1,000 output text tokens. The model will consume tokens reasoning about your prompt based on its complexity.\n - For **low** quality, you will be charged **$0.009** for 1024x1024 or **$0.013** for any other size *per image*.\n - For **medium** quality, you will be charged **$0.034** for 1024x1024, **$0.051** for 1024x1536 and **$0.050** for 1536x1024 *per image*.\n - For **high** quality, you will be charged **$0.133** for 1024x1024, **$0.200** for 1024x1536 or **$0.199** for 1536x1024 *per image*.",
+ "source_url": "https://fal.ai/models/fal-ai/gpt-image-1.5/edit",
+ "confidence": "high",
+ "notes": "usd وby_resolution لجودة high (الافتراضية في المخطط). جودات أخرى: low $0.009 (1024²) أو $0.013 (غيرها)؛ medium $0.034 / $0.051 / $0.050. يُضاف: نص المدخلات $0.005/1000 توكن، صور المدخلات $0.008/1000 توكن (صورة 1024² ≈135 توكن بوضع low fidelity ≈$0.001، أو ≈3,050 توكن بوضع high fidelity ≈$0.024 — والافتراضي input_fidelity=high)، ونص الإخراج $0.010/1000 توكن. تنبيه: pricing_parsed في fal-launch.json أخذ 0.005 خطأً (سعر توكنات النص)."
+}

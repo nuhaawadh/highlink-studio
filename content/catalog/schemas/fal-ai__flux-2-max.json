@@ -1,0 +1,211 @@
+{
+ "endpoint": "fal-ai/flux-2-max",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "Whether to enable the safety checker. Disabling it requires account authorization; unauthorized requests are always checked."
+  },
+  "output_format": {
+   "enum": [
+    "jpeg",
+    "png"
+   ],
+   "type": "string",
+   "default": "jpeg",
+   "title": "Output Format",
+   "description": "The format of the generated image."
+  },
+  "seed": {
+   "title": "Seed",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The seed to use for the generation."
+  },
+  "sync_mode": {
+   "type": "boolean",
+   "default": false,
+   "title": "Sync Mode",
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history."
+  },
+  "safety_tolerance": {
+   "type": "string",
+   "default": "2",
+   "title": "Safety Tolerance",
+   "enum": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ],
+   "description": "The safety tolerance level for the generated image. 1 being the most strict and 5 being the most permissive."
+  },
+  "prompt": {
+   "type": "string",
+   "title": "Prompt",
+   "description": "The prompt to generate an image from."
+  },
+  "image_size": {
+   "default": "landscape_4_3",
+   "title": "Image Size",
+   "anyOf": [
+    {
+     "type": "object",
+     "properties": {
+      "width": {
+       "maximum": 14142,
+       "type": "integer",
+       "default": 512,
+       "title": "Width",
+       "exclusiveMinimum": 0,
+       "description": "The width of the generated image."
+      },
+      "height": {
+       "maximum": 14142,
+       "type": "integer",
+       "default": 512,
+       "title": "Height",
+       "exclusiveMinimum": 0,
+       "description": "The height of the generated image."
+      }
+     },
+     "title": "ImageSize"
+    },
+    {
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ],
+     "type": "string"
+    }
+   ],
+   "description": "The size of the generated image."
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "images": {
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "width": {
+       "title": "Width",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The width of the image"
+      },
+      "file_name": {
+       "title": "File Name",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "file_size": {
+       "title": "File Size",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      },
+      "url": {
+       "type": "string",
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from."
+      },
+      "content_type": {
+       "title": "Content Type",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "height": {
+       "title": "Height",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The height of the image"
+      }
+     },
+     "required": [
+      "url"
+     ],
+     "title": "ImageFile"
+    },
+    "title": "Images",
+    "description": "The generated images.",
+    "examples": [
+     [
+      {
+       "url": "https://storage.googleapis.com/falserverless/example_outputs/flux2/max.jpg"
+      }
+     ]
+    ]
+   },
+   "seed": {
+    "type": "integer",
+    "title": "Seed",
+    "description": "The seed used for the generation."
+   }
+  },
+  "required": [
+   "images",
+   "seed"
+  ],
+  "title": "Flux2MaxOutput"
+ },
+ "fetched_at": "2026-10-23T08:21:34+00:00"
+}

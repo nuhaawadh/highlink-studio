@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-max",
+ "unit": "megapixel",
+ "usd": 0.07,
+ "pricing_text": "The first processed megapixel will cost **$0.07**. Each additional megapixel will cost **$0.03**",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-max",
+ "confidence": "high",
+ "notes": "usd = الميغابكسل الأول ($0.07)؛ كل ميغابكسل إضافي $0.03 (مثال: 2K ≈ 4MP = 0.07 + 3×0.03 = $0.16). الحجم الافتراضي landscape_4_3 (~1MP)؛ الحد الأقصى 4,194,304 بكسل (≈4MP) وضلع حتى 2560."
+}

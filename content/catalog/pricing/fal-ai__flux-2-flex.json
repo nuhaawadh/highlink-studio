@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-flex",
+ "unit": "megapixel",
+ "usd": 0.05,
+ "pricing_text": "Your request will cost **$0.05** per megapixel on both input and output side, rounded up to the nearest megapixel. For example, a **1024x1024** image will cost **$0.05**, and a **1920x1080** image will cost **$0.10** (**$0.05** × **2** megapixels). Similarly, a **512x512** output will cost **$0.05** (**$0.05** for **0.26** megapixels, rounded to **1** megapixel).",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-flex",
+ "confidence": "high",
+ "notes": "$0.05 لكل ميغابكسل (مخرجات، ومدخلات أيضًا في وضع التحرير) مع تقريب لأعلى لأقرب ميغابكسل؛ الميغابكسل الإضافي بنفس السعر $0.05. نص→صورة بلا مدخلات: 1MP = $0.05، 2K (~4MP) = $0.20. الحجم الافتراضي landscape_4_3؛ الحد الأقصى ≈4MP."
+}
