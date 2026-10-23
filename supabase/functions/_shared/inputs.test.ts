@@ -173,11 +173,11 @@ describe('buildProviderInput — مخططات fal (ADR 0005)', () => {
     expect(input).toEqual({ prompt: 'جمل يمشي في العلا', duration: '10', aspect_ratio: '9:16', generate_audio: true, enable_safety_checker: true })
   })
 
-  it('بلا خيارات → مدة default_params ونسبته؛ الصوت لا يُرسل إن لم يُطلب (يبقى افتراض المزوّد)', () => {
+  it('بلا خيارات → مدة default_params ونسبته؛ الصوت false صراحةً (افتراض Kling/Veo عند المزوّد true وأغلى مما سعّرنا)', () => {
     const { input } = buildProviderInput(klingT2v, 'p', undefined, undefined)
     expect(input.duration).toBe('5')
     expect(input.aspect_ratio).toBe('16:9')
-    expect(input).not.toHaveProperty('generate_audio')
+    expect(input.generate_audio).toBe(false)
   })
 
   it('مدة خارج enum تُرفض قبل الحجز', () => {

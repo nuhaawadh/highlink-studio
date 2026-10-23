@@ -139,6 +139,10 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     if (needsRefs && !(body.images && body.images.length)) {
       throw new AppError('INVALID_INPUT', 'هذا النموذج يحتاج صورة مرجعية واحدة على الأقل')
     }
+    const minRefs = typeof model.supports.min_refs === 'number' ? model.supports.min_refs : 0
+    if (minRefs > 1 && (body.images?.length ?? 0) < minRefs) {
+      throw new AppError('INVALID_INPUT', 'هذا النموذج يحتاج صورتين: الأولى ثم الثانية (إطار أول وأخير، أو الشخص ثم القطعة)')
+    }
     const provider = getProvider(model.provider)
 
     // 4) المدخلات ضد مخطط المزوّد + التسعير (ADR 0005: صورة بالدقة، فيديو بالثانية أو بالمقطع — modelCredits هي المصدر الوحيد)

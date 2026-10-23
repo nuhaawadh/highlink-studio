@@ -117,6 +117,13 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
   if (refs[0] && schema.image_url && !schema.image_urls) input.image_url = refs[0]
   if (refs[0] && schema.start_image_url) input.start_image_url = refs[0]
   if (refs[1] && schema.end_image_url) input.end_image_url = refs[1]
+  // أسماء بديلة للإطار الأول/الأخير (Veo: first/last_frame_url، PixVerse: first/last_image_url)
+  for (const k of ['first_frame_url', 'first_image_url'] as const) if (refs[0] && schema[k]) input[k] = refs[0]
+  for (const k of ['last_frame_url', 'last_image_url', 'tail_image_url'] as const) if (refs[1] && schema[k]) input[k] = refs[1]
+  // تجربة الملابس/المنتج في اليد: images[0] = الشخص، images[1…] = القطعة أو المنتج (موثّق في docs/api.md)
+  if (refs[0] && schema.person_image_url) input.person_image_url = refs[0]
+  for (const k of ['product_image_url', 'garment_image_url'] as const) if (refs[1] && schema[k]) input[k] = refs[1]
+  for (const k of ['product_image_urls', 'garment_image_urls'] as const) if (refs.length > 1 && schema[k]) input[k] = refs.slice(1, 1 + (schema[k].maxItems ?? refs.length))
 
   // ---- النسبة: aspect_ratio مباشرة، أو image_size المسمّى عند fal (أو أبعاد صريحة إن قبِل المخطط كائنًا)
   const wantRatio =
@@ -137,10 +144,9 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
   // ---- المدة (فيديو): نصية "5" أو "8s" أو رقمية حسب المخطط
   if (model.type === 'video') set('duration', config?.duration ?? (defaults.duration as number | undefined))
 
-  // ---- الصوت الأصلي: يُرسل فقط إن طُلب صراحة (وإلا افتراض المزوّد)
-  if (config?.audio !== undefined) {
-    for (const k of ['generate_audio', 'enable_audio', 'with_audio', 'audio'] as const) if (schema[k]) set(k, config.audio)
-  }
+  // ---- الصوت الأصلي: يُرسل دائمًا صراحةً (false ما لم يُطلب) — افتراض بعض المزوّدين true (Veo، Kling 3)
+  //      وهو أغلى، فترك الافتراض يعني أن يولّد المزوّد بصوت ونحن سعّرنا بلا صوت
+  for (const k of ['generate_audio', 'enable_audio', 'with_audio'] as const) if (schema[k]) set(k, config?.audio ?? false)
 
   // ---- قرارات ثابتة للمنصة: ناتج واحد لكل عملية (تسعير دقيق)، PNG، فاحص الأمان مفعّل، مرشّح متوسط، لا نموذج بديل (ADR 0003)
   if (schema.num_images) input.num_images = 1

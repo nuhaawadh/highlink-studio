@@ -35,6 +35,8 @@ LAUNCH = ROOT / 'content' / 'catalog' / 'fal-launch.json'
 PRICING = ROOT / 'content' / 'catalog' / 'pricing'
 SCHEMAS = ROOT / 'content' / 'catalog' / 'schemas'
 SEED = ROOT / 'supabase' / 'seed.sql'
+# نسخة JSON من الصفوف المولّدة — يقرأها اختبار supabase/functions/_shared/catalog.test.ts
+GENERATED = ROOT / 'content' / 'catalog' / 'models.generated.json'
 BEGIN = '-- BEGIN fal-catalog (generated)'
 END = '-- END fal-catalog (generated)'
 
@@ -46,6 +48,13 @@ PRESET_TO_RATIO = {'square_hd': '1:1', 'square': '1:1', 'landscape_16_9': '16:9'
 ENGINE_KINDS = {'t2v', 'i2v', 'ref2v', 'flf2v', 'transition', 't2i', 'edit', 'character', 'transparent', 'vector', 'vectorize', 'vto', 'product', 'expand', 'bg-replace', 'bg-remove', 'erase', 'fill', 'upscale'}
 # أنواع تعمل على صورة/مرجع من المستخدم دائمًا (requires_ref حتى لو لم يطلبه المخطط)
 REF_KINDS = {'i2v', 'ref2v', 'flf2v', 'transition', 'edit', 'character', 'vectorize', 'vto', 'product', 'expand', 'bg-replace', 'bg-remove', 'erase', 'fill', 'upscale'}
+HIDE_UI = {'nano-banana-pro-fal'}
+# حقول يملؤها inputs.ts من طلبنا الموحّد (أي حقل مطلوب خارجها بلا افتراض = النموذج معطّل)
+FILLABLE = {'prompt', 'image_input', 'image_urls', 'reference_image_urls', 'image_url', 'start_image_url', 'end_image_url',
+            'first_frame_url', 'first_image_url', 'last_frame_url', 'last_image_url', 'tail_image_url', 'person_image_url',
+            'product_image_url', 'garment_image_url', 'product_image_urls', 'garment_image_urls', 'aspect_ratio', 'image_size',
+            'resolution', 'duration', 'generate_audio', 'enable_audio', 'with_audio', 'num_images', 'output_format',
+            'enable_safety_checker', 'seed'}
 # أنواع تعمل في الواجهة بلا رفع مراجع (الباقي عبر API v1 حتى يُبنى رفع المراجع)
 UI_KINDS = {'t2v', 't2i', 'vector', 'transparent'}
 # دقات نستبعدها حتى الانتقال إلى R2 (حد bucket 50MB — migration 0002)
@@ -124,11 +133,13 @@ def durations_of(prop: dict | None) -> list[int]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--check', action='store_true')
+    ap.add_argument('--dump', type=Path, help='يكتب الصفوف المولّدة JSON للمراجعة (لا يغيّر seed)')
     ap.add_argument('--show', help='يطبع supports/default_params/التكلفة لمعرّف واحد')
     args = ap.parse_args()
 
     launch = json.loads(LAUNCH.read_text())
     rows: list[str] = []
+    dumped: list[dict] = []
     stats = Counter()
     skipped: list[tuple[str, str]] = []
     enabled_ids: list[str] = []
@@ -217,9 +228,21 @@ def main() -> int:
                         if isinstance(v, (int, float)) and v > 0 and str(k).lower() == r.lower():
                             cbr[r] = cps(v if unit == 'second' else v / 60)
                 if cbr:
+                    # دقة بلا سعر معلن لا تُعرض — وإلا سُعّرت بالسعر الأساسي وهي أغلى عند المزوّد (Seedance 2.0 1080p)
+                    dropped = [r for r in res if r not in cbr]
+                    if dropped:
+                        notes.append('دقات بلا سعر معلن أُخفيت: ' + ', '.join(dropped))
+                    res = [r for r in res if r in cbr]
+                    supports['resolutions'] = res
                     supports['cps_by_resolution'] = cbr
                     # السعر الأساسي = أرخص دقة معروضة (الزر يعرض "من X")
-                    cost_per_second = min(cbr.values()) if len(cbr) == len(res) else cost_per_second
+                    cost_per_second = min(cbr.values())
+                elif len(res) > 1 and typ == 'video':
+                    # سعر واحد بلا تفصيل بالدقة: نعرض دقة افتراض المزوّد فقط حتى يُعلن سعر الباقي
+                    keep = str((props.get('resolution') or {}).get('default') or res[0])
+                    res = [keep] if keep in res else res[:1]
+                    supports['resolutions'] = res
+                    notes.append('سعر واحد بلا تفصيل بالدقة — دقة الافتراض فقط')
                 sur = price.get('audio_surcharge_usd')
                 if isinstance(sur, (int, float)) and sur > 0:
                     supports['audio_cps'] = cps(sur)
@@ -228,6 +251,16 @@ def main() -> int:
                     notes.append('سعر بالثانية لنوع غير فيديو')
             elif unit == 'clip':
                 cost_credits = credits(usd)
+                # المقطع يُسعَّر لدقة واحدة (الأرخص المعلنة أو المذكورة في النص)؛ الدقات الأغلى تُخفى حتى يدعم modelCredits مضاعف الدقة للمقطع
+                if typ == 'video' and res:
+                    base = [r for r in res if any(str(k).lower() == r.lower() and abs(v - usd) < 1e-9 for k, v in by_res.items())]
+                    if not base:
+                        named = [r for r in res if r.lower() in ((price or {}).get('pricing_text') or '').lower()]
+                        base = named[:1] or [str((props.get('resolution') or {}).get('default') or res[0])]
+                    if base and base[0] in res and len(res) > 1:
+                        notes.append('مقطع مسعّر لدقة ' + base[0] + ' فقط')
+                        res = base[:1]
+                        supports['resolutions'] = res
                 cbd = {str(parse_seconds(k) or k): credits(v) for k, v in by_dur.items() if isinstance(v, (int, float)) and v > 0}
                 if cbd:
                     supports['credits_by_duration'] = cbd
@@ -247,14 +280,16 @@ def main() -> int:
                 if mult and typ == 'image':
                     mult.setdefault('1K', 1)
                     supports['resolution_multipliers'] = mult
-                    sizes = [s for s in ('1K', '2K', '4K') if s in mult]
+                    # الحجم يُعرض فقط إن كان المخطط يستطيع طلبه (resolution بـ1K/2K/4K) — وإلا يدفع المستخدم 2K ويأخذ 1K
+                    sizes = [s for s in sizes if s in mult] or ['1K']
                 priced = typ in ('image', 'audio', 'video')
             elif unit == 'megapixel':
                 cost_credits = credits(usd)
                 if typ == 'image':
-                    supports['resolution_multipliers'] = {'1K': 1, '2K': 4}
-                    sizes = ['1K', '2K']
-                    notes.append('تسعير بالميغابكسل: 1K=1MP، 2K=4MP (تقريب محافظ)')
+                    supports['resolution_multipliers'] = {'1K': 1, '2K': 4, '4K': 16}
+                    # الأحجام التي يطلبها المخطط فعلًا فقط (أغلب نماذج الميغابكسل عند fal تُطلب بـimage_size = 1MP تقريبًا)
+                    sizes = [s for s in sizes if s in ('1K', '2K', '4K')] or ['1K']
+                    notes.append('تسعير بالميغابكسل: 1K=1MP، 2K=4MP، 4K=16MP (تقريب محافظ)')
                     priced = True
                 else:
                     notes.append('تسعير بالميغابكسل لفيديو — غير مدعوم في المحرك بعد')
@@ -272,6 +307,9 @@ def main() -> int:
             notes.append('سعر غير مؤكد' if price else 'لا ملف سعر')
         supports['pricing'] = {'unit': unit, 'usd': usd, 'confidence': conf, 'source': (price or {}).get('source_url')}
         if typ == 'image':
+            # حجم أكبر من 1K يُعرض فقط إن كان سعره معلنًا (resolution_multipliers) — وإلا يُسعَّر بالجدول العام وقد يكون أغلى عند المزوّد
+            mult = supports.get('resolution_multipliers') or {}
+            sizes = [s for s in (sizes or ['1K']) if s == '1K' or s in mult]
             supports['sizes'] = sizes or ['1K']
 
         # ---------- الافتراضيات
@@ -295,6 +333,24 @@ def main() -> int:
 
         # ---------- التفعيل
         only_4k = typ == 'video' and bool(res_all) and not res
+        # حقول مطلوبة لا يملؤها inputs.ts (فيديو مرجعي، قناع…) ولا افتراض نصي لها → لا نرسل طلبًا سيرفضه المزوّد
+        unfillable = [k for k in ((schema or {}).get('required') or []) if k not in FILLABLE and not (
+            (props.get(k) or {}).get('default') not in (None, '') and not re.search(r'(_url|_urls)$', k))]
+        if unfillable:
+            priced = False
+            notes.append('حقول مطلوبة غير مدعومة بعد: ' + ', '.join(unfillable))
+        # عدد المراجع الأدنى: إطار أول وأخير، أو شخص + قطعة/منتج
+        req = set((schema or {}).get('required') or [])
+        if req & {'last_frame_url', 'last_image_url', 'end_image_url', 'tail_image_url', 'product_image_url', 'garment_image_url', 'product_image_urls', 'garment_image_urls'}:
+            supports['min_refs'] = 2
+        elif supports.get('requires_ref'):
+            supports['min_refs'] = 1
+        # تكلفة تعتمد على حجم صورة المستخدم (ميغابكسل المدخل/المخرج، أو مكبّرات ناتجها أضعاف المدخل): لا نعرف الحجم قبل
+        # التوليد فقد نخسر في صورة جوال 12MP — تبقى معطّلة حتى يُبنى رفع المراجع ويُقاس الحجم قبل الحجز
+        size_dependent = (unit == 'megapixel' and kind != 't2i') or kind == 'upscale' and m['family'] in ('topaz', 'seedvr', 'clarity')
+        if size_dependent:
+            priced = False
+            notes.append('التكلفة تعتمد على حجم صورة المستخدم — يُفعَّل مع رفع المراجع وقياس الحجم')
         is_4k_variant = '4K' in m['variant_en'].upper()
         enabled = bool(schema) and priced and m['tier'] == 'a' and kind in ENGINE_KINDS and not only_4k and not is_4k_variant and typ != 'audio'
         if typ == 'video' and enabled and not durs and cost_per_second is not None:
@@ -307,7 +363,8 @@ def main() -> int:
             notes.append('لا مخطط')
         if kind not in ENGINE_KINDS:
             notes.append('يحتاج مدخلات فيديو/صوت (المرحلة 2)')
-        supports['ui'] = enabled and kind in UI_KINDS and not supports['requires_ref']
+        # نسخة fal من نانو بنانا برو احتياط للـAPI فقط — الواجهة تعرض نسخة Replicate المختبرة في بوابة 1 (ADR 0003) بنفس العائلة
+        supports['ui'] = enabled and kind in UI_KINDS and not supports['requires_ref'] and mid not in HIDE_UI
         if notes:
             supports['notes'] = '؛ '.join(notes)
 
@@ -319,6 +376,7 @@ def main() -> int:
         if not enabled:
             skipped.append((mid, '؛ '.join(notes) or 'الطبقة b'))
 
+        dumped.append({'id': mid, 'name_ar': m['name_ar'], 'type': typ, 'kind': kind, 'tier': m['tier'], 'enabled': enabled, 'cost_credits': cost_credits, 'cost_per_second': cost_per_second, 'max_duration_s': max_duration, 'supports': supports, 'default_params': defaults, 'provider_slug': ep, 'input_schema': ({'required': (schema or {}).get('required') or [], 'properties': props} if schema else None)})
         badge = 'جديد' if (m.get('published_at') or '') >= '2026-09-01' else None
         input_schema = None
         if schema:
@@ -357,11 +415,17 @@ def main() -> int:
     missing_schema = sum(1 for m in launch['models'] if not (SCHEMAS / fname(m['endpoint'])).exists())
     missing_price = sum(1 for m in launch['models'] if not (PRICING / fname(m['endpoint'])).exists())
     print(f'missing schemas: {missing_schema}, missing pricing: {missing_price}')
+    if args.dump:
+        args.dump.write_text(json.dumps(dumped, ensure_ascii=False, indent=1))
+        print(f'dumped {len(dumped)} rows to {args.dump}')
+        return 0
     if args.check:
         for mid, why in skipped[:400]:
             print(f'  - {mid}: {why}')
         return 0
 
+    GENERATED.write_text(json.dumps({'generated_by': 'scripts/build-models-seed.py', 'count': len(dumped), 'models': dumped}, ensure_ascii=False, indent=1) + '\n')
+    print(f'wrote {GENERATED.relative_to(ROOT)}')
     seed = SEED.read_text()
     if BEGIN in seed and END in seed:
         pre = seed[: seed.index(BEGIN)]
