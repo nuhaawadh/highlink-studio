@@ -23,6 +23,8 @@ export const GenerateRequestSchema = z.object({
   feature_tag: z.enum(['general', 'product', 'ads', 'ugc', 'shots', 'storyboard', 'characters']).optional(),
   locale: z.enum(['ar', 'en']).optional(),
   maxCredits: z.number().int().positive().optional(),
+  /** معرّف القالب الجاهز إن جاء الطلب من /templates (للتحليلات والمجموعة الذهبية) — يُحفظ في metadata فقط */
+  template: z.string().regex(/^[a-z0-9-]{1,64}$/).optional(),
 })
 
 export type GenerateRequestInput = z.infer<typeof GenerateRequestSchema>

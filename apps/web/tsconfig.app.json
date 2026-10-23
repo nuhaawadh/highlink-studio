@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
-    "paths": { "@/*": ["./src/*"], "@shared/*": ["../../packages/shared/*"] },
+    "paths": { "@/*": ["./src/*"], "@shared/*": ["../../packages/shared/*"], "@content/*": ["../../content/*"] },
 
     /* Linting */
     "noUnusedLocals": true,

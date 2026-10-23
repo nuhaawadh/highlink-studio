@@ -11,6 +11,8 @@ import { LoginPage } from '@/app/LoginPage'
 import { PlaceholderPage } from '@/app/PlaceholderPage'
 import { PricingPage } from '@/app/PricingPage'
 import { RequireAuth } from '@/app/RequireAuth'
+import { TemplateDetailPage } from '@/app/TemplateDetailPage'
+import { TemplatesPage } from '@/app/TemplatesPage'
 
 /**
  * خريطة المسارات (المخطط §8). المرحلة 1: الرئيسية، الدخول، الباقات، توليد الصور، المكتبة حقيقية؛ الباقي placeholders مرقّمة بمرحلتها.
@@ -29,7 +31,8 @@ export default function App() {
           <Route path="data-deletion" element={<LegalPage kind="deletion" />} />
           <Route path="legal" element={<LegalCenterPage />} />
           <Route path="contact" element={<ContactPage />} />
-          <Route path="templates" element={<PlaceholderPage titleKey="nav.templates" phase={2} />} />
+          <Route path="templates" element={<TemplatesPage />} />
+          <Route path="templates/:id" element={<TemplateDetailPage />} />
           <Route element={<RequireAuth />}>
             <Route path="library" element={<LibraryPage />} />
             <Route path="account" element={<AccountPage />} />

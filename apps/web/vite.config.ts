@@ -22,6 +22,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
       '@shared': path.resolve(import.meta.dirname, '../../packages/shared'),
+      '@content': path.resolve(import.meta.dirname, '../../content'),
     },
   },
   server: { port: 5173, fs: { allow: [path.resolve(import.meta.dirname, '../..')] } },

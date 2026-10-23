@@ -1,0 +1,1573 @@
+{
+ "version": 1,
+ "note": "القوالب السعودية (الحركة 6 — docs/competitive/beat-higgsfield-halai.md). المواسم الهجرية تقديرية وتُراجع مع تقويم أم القرى. كل نموذج في tiers مفعّل ويعمل بنص فقط؛ الحارس packages/shared/templates.catalog.test.ts.",
+ "categories": [
+  {
+   "key": "ramadan",
+   "ar": "رمضان",
+   "en": "Ramadan",
+   "icon": "moon"
+  },
+  {
+   "key": "eid",
+   "ar": "الأعياد",
+   "en": "Eid",
+   "icon": "gift"
+  },
+  {
+   "key": "national",
+   "ar": "اليوم الوطني ويوم التأسيس",
+   "en": "National & Founding Day",
+   "icon": "flag"
+  },
+  {
+   "key": "seasons",
+   "ar": "المواسم والعروض",
+   "en": "Seasons & Sales",
+   "icon": "calendar"
+  },
+  {
+   "key": "realestate",
+   "ar": "العقار",
+   "en": "Real Estate",
+   "icon": "building"
+  },
+  {
+   "key": "food",
+   "ar": "المطاعم والمقاهي",
+   "en": "Restaurants & Cafes",
+   "icon": "utensils"
+  },
+  {
+   "key": "perfume",
+   "ar": "العطور والعود",
+   "en": "Perfume & Oud",
+   "icon": "sparkles"
+  },
+  {
+   "key": "fashion",
+   "ar": "العبايات والأزياء",
+   "en": "Abayas & Fashion",
+   "icon": "shirt"
+  },
+  {
+   "key": "beauty",
+   "ar": "العيادات والتجميل",
+   "en": "Clinics & Beauty",
+   "icon": "heart"
+  },
+  {
+   "key": "store",
+   "ar": "المتاجر الإلكترونية",
+   "en": "Online Stores",
+   "icon": "shopping-bag"
+  },
+  {
+   "key": "social",
+   "ar": "محتوى السوشال",
+   "en": "Social Content",
+   "icon": "layout-grid"
+  }
+ ],
+ "seasons": [
+  {
+   "key": "ramadan",
+   "ar": "رمضان",
+   "en": "Ramadan",
+   "windows": [
+    {
+     "from": "2027-01-25",
+     "to": "2027-03-09"
+    }
+   ]
+  },
+  {
+   "key": "eid_fitr",
+   "ar": "عيد الفطر",
+   "en": "Eid al-Fitr",
+   "windows": [
+    {
+     "from": "2027-03-01",
+     "to": "2027-03-14"
+    }
+   ]
+  },
+  {
+   "key": "eid_adha",
+   "ar": "عيد الأضحى",
+   "en": "Eid al-Adha",
+   "windows": [
+    {
+     "from": "2027-05-06",
+     "to": "2027-05-21"
+    }
+   ]
+  },
+  {
+   "key": "founding_day",
+   "ar": "يوم التأسيس",
+   "en": "Founding Day",
+   "recurring": {
+    "from": "02-01",
+    "to": "02-23"
+   }
+  },
+  {
+   "key": "national_day",
+   "ar": "اليوم الوطني",
+   "en": "National Day",
+   "recurring": {
+    "from": "09-01",
+    "to": "09-25"
+   }
+  },
+  {
+   "key": "white_friday",
+   "ar": "الجمعة البيضاء",
+   "en": "White Friday",
+   "recurring": {
+    "from": "11-10",
+    "to": "12-02"
+   }
+  },
+  {
+   "key": "back_to_school",
+   "ar": "العودة للمدارس",
+   "en": "Back to School",
+   "recurring": {
+    "from": "08-01",
+    "to": "08-31"
+   }
+  },
+  {
+   "key": "winter",
+   "ar": "الشتاء والكشتات",
+   "en": "Winter & Camping",
+   "recurring": {
+    "from": "11-01",
+    "to": "02-28"
+   }
+  },
+  {
+   "key": "events",
+   "ar": "موسم الفعاليات",
+   "en": "Events Season",
+   "recurring": {
+    "from": "10-01",
+    "to": "03-31"
+   }
+  },
+  {
+   "key": "summer",
+   "ar": "الصيف",
+   "en": "Summer",
+   "recurring": {
+    "from": "06-01",
+    "to": "08-31"
+   }
+  }
+ ],
+ "tiers": {
+  "text": [
+   {
+    "key": "pro",
+    "ar": "نص عربي دقيق",
+    "en": "Accurate Arabic text",
+    "model": "nano-banana-pro",
+    "imageSize": "2K"
+   }
+  ],
+  "photo": [
+   {
+    "key": "economy",
+    "ar": "اقتصادي",
+    "en": "Economy",
+    "model": "flux-3",
+    "imageSize": "1K"
+   },
+   {
+    "key": "balanced",
+    "ar": "متوازن",
+    "en": "Balanced",
+    "model": "seedream-5-pro",
+    "imageSize": "1K"
+   },
+   {
+    "key": "premium",
+    "ar": "فاخر",
+    "en": "Premium",
+    "model": "nano-banana-pro",
+    "imageSize": "2K"
+   }
+  ],
+  "video": [
+   {
+    "key": "economy",
+    "ar": "اقتصادي",
+    "en": "Economy",
+    "model": "hailuo-h3-max-turbo",
+    "resolution": "768P"
+   },
+   {
+    "key": "balanced",
+    "ar": "متوازن",
+    "en": "Balanced",
+    "model": "hailuo-h3-max",
+    "resolution": "768P"
+   },
+   {
+    "key": "cinematic",
+    "ar": "سينمائي",
+    "en": "Cinematic",
+    "model": "kling-v4",
+    "resolution": "720p"
+   }
+  ]
+ },
+ "templates": [
+  {
+   "id": "ramadan-greeting",
+   "category": "ramadan",
+   "title_ar": "بطاقة تهنئة رمضان",
+   "title_en": "Ramadan greeting card",
+   "desc_ar": "بطاقة تهنئة أنيقة باسم نشاطك لنشرها مع بداية الشهر",
+   "desc_en": "An elegant greeting card with your business name for the start of the month",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "message",
+     "label_ar": "نص التهنئة",
+     "label_en": "Greeting",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24,
+     "default": "رمضان كريم",
+     "placeholder_ar": "رمضان كريم",
+     "placeholder_en": "Ramadan Kareem"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Elegant Ramadan greeting card. Centerpiece: a glowing brass lantern (fanous) beside a crescent moon, scattered dates and a small dallah coffee pot.\n[TYPOGRAPHY] Large central headline. Arabic typography reads «{{message}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] deep midnight navy and warm gold palette, subtle Islamic geometric pattern in the background, soft bokeh lights, premium print-quality design, generous margins.\n[AVOID] warped or mirrored Arabic letters, pseudo-Arabic glyphs, extra text, human faces, watermark.",
+   "season": "ramadan"
+  },
+  {
+   "id": "ramadan-offer",
+   "category": "ramadan",
+   "title_ar": "بوستر عرض رمضان",
+   "title_en": "Ramadan offer poster",
+   "desc_ar": "ستوري عمودي لعرض أو خصم رمضاني بعنوان وتفاصيل",
+   "desc_en": "A vertical story for a Ramadan deal with headline and details",
+   "tier_set": "text",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "title",
+     "label_ar": "عنوان العرض",
+     "label_en": "Offer headline",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 22,
+     "placeholder_ar": "خصم 30% طوال رمضان",
+     "placeholder_en": "30% off all Ramadan"
+    },
+    {
+     "key": "detail",
+     "label_ar": "سطر ثانٍ (اختياري)",
+     "label_en": "Second line (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 32,
+     "placeholder_ar": "على جميع منتجات القهوة",
+     "placeholder_en": "on all coffee products"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Vertical Ramadan promotional poster, warm lantern-lit evening scene with hanging fanous lanterns, dates and Arabic coffee cups on a carved wooden tray.\n[TYPOGRAPHY] Bold headline in the upper third. Arabic typography reads «{{title}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if detail}} Smaller second line below it reads «{{detail}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] rich burgundy, gold and cream palette, high contrast between text and background, clean modern layout for Instagram stories, safe margins top and bottom.\n[AVOID] warped or mirrored Arabic letters, pseudo-Arabic glyphs, English text, clutter, watermark.",
+   "season": "ramadan"
+  },
+  {
+   "id": "ramadan-iftar-table",
+   "category": "ramadan",
+   "title_ar": "سفرة إفطار سعودية",
+   "title_en": "Saudi iftar table",
+   "desc_ar": "صورة واقعية لسفرة إفطار فيها طبقك أو منتجك في المنتصف",
+   "desc_en": "A realistic iftar spread with your dish or product at the center",
+   "tier_set": "photo",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "dish",
+     "label_ar": "الطبق أو المنتج في المنتصف",
+     "label_en": "Dish or product at the center",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "سمبوسة بالجبن",
+     "placeholder_en": "cheese sambousa"
+    }
+   ],
+   "prompt": "[SUBJECT] Overhead-angled photo of a generous Saudi iftar table at sunset; the hero item in the center is: {{dish}}. Around it: medjool dates in a ceramic bowl, Saudi coffee in small finjan cups with a brass dallah, laban, soup bowls, fresh bread.\n[LIGHTING] warm golden-hour window light with lantern glow, soft shadows.\n[LENS] 35mm, f/4, sharp focus on the hero item.\n[STYLE] editorial food photography, appetizing, natural colors, embroidered tablecloth. no text, no letters, no logos, no watermark.",
+   "season": "ramadan"
+  },
+  {
+   "id": "ramadan-lantern-reel",
+   "category": "ramadan",
+   "title_ar": "ريل أجواء رمضانية",
+   "title_en": "Ramadan mood reel",
+   "desc_ar": "ريل عمودي بفوانيس متوهجة وحركة كاميرا هادئة حول منتجك",
+   "desc_en": "A vertical reel with glowing lanterns and a slow camera move around your product",
+   "tier_set": "video",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "المنتج",
+     "label_en": "Product",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "علبة تمور فاخرة",
+     "placeholder_en": "a luxury box of dates"
+    }
+   ],
+   "prompt": "Slow cinematic push-in on {{product}} placed on a carved wooden table, surrounded by glowing brass Ramadan lanterns casting patterned light, a crescent moon visible through an arched window, gentle floating dust in warm light. Warm gold and deep blue palette, shallow depth of field, smooth steady camera, no text, no letters, no logos, no watermark.",
+   "season": "ramadan",
+   "duration": 5
+  },
+  {
+   "id": "eid-fitr-greeting",
+   "category": "eid",
+   "title_ar": "تهنئة عيد الفطر",
+   "title_en": "Eid al-Fitr greeting",
+   "desc_ar": "بطاقة عيد مبهجة باسم نشاطك",
+   "desc_en": "A joyful Eid card with your business name",
+   "tier_set": "text",
+   "aspect_ratio": "1:1",
+   "fields": [
+    {
+     "key": "message",
+     "label_ar": "نص التهنئة",
+     "label_en": "Greeting",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24,
+     "default": "عيدكم مبارك",
+     "placeholder_ar": "عيدكم مبارك",
+     "placeholder_en": "Eid Mubarak"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Festive Eid greeting card: elegant gift boxes with satin ribbons, maamoul cookies on a gold plate, delicate string lights.\n[TYPOGRAPHY] Centered headline. Arabic typography reads «{{message}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] soft pastel mint, blush and gold palette, joyful and premium, clean composition, print quality.\n[AVOID] warped Arabic letters, pseudo-Arabic glyphs, English text, faces, watermark.",
+   "season": "eid_fitr"
+  },
+  {
+   "id": "eid-adha-greeting",
+   "category": "eid",
+   "title_ar": "تهنئة عيد الأضحى",
+   "title_en": "Eid al-Adha greeting",
+   "desc_ar": "بطاقة عيد الأضحى بطابع هادئ وفاخر",
+   "desc_en": "A calm, premium Eid al-Adha card",
+   "tier_set": "text",
+   "aspect_ratio": "1:1",
+   "fields": [
+    {
+     "key": "message",
+     "label_ar": "نص التهنئة",
+     "label_en": "Greeting",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24,
+     "default": "عيد أضحى مبارك",
+     "placeholder_ar": "عيد أضحى مبارك",
+     "placeholder_en": "Blessed Eid al-Adha"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Serene Eid al-Adha greeting card: a mosque silhouette with minarets at dawn, soft clouds, crescent moon, subtle lantern accents.\n[TYPOGRAPHY] Centered headline. Arabic typography reads «{{message}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] sand beige, white and gold palette, calm and dignified, Islamic geometric border, print quality.\n[AVOID] warped Arabic letters, pseudo-Arabic glyphs, English text, faces, animals, watermark.",
+   "season": "eid_adha"
+  },
+  {
+   "id": "eid-gift-reel",
+   "category": "eid",
+   "title_ar": "ريل هدية العيد",
+   "title_en": "Eid gift reel",
+   "desc_ar": "ريل عمودي لعلبة هدية تنفتح وتكشف منتجك",
+   "desc_en": "A vertical reel of a gift box opening to reveal your product",
+   "tier_set": "video",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "المنتج داخل الهدية",
+     "label_en": "Product inside the gift",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "ساعة ذهبية",
+     "placeholder_en": "a gold watch"
+    }
+   ],
+   "prompt": "Close-up of an elegant gift box with a satin ribbon on a marble table; the ribbon unties and the lid lifts to reveal {{product}} glowing softly inside, confetti and gold sparkles drift down, festive string lights bokeh in the background. Smooth slow motion, premium commercial look, no text, no letters, no logos, no watermark.",
+   "season": "eid_fitr",
+   "duration": 5
+  },
+  {
+   "id": "national-day-post",
+   "category": "national",
+   "title_ar": "بوست اليوم الوطني",
+   "title_en": "National Day post",
+   "desc_ar": "تصميم أخضر احتفالي بعبارة من اختيارك",
+   "desc_en": "A festive green design with a phrase of your choice",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "message",
+     "label_ar": "العبارة",
+     "label_en": "Phrase",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24,
+     "default": "دام عزك يا وطن",
+     "placeholder_ar": "دام عزك يا وطن",
+     "placeholder_en": "Glory to the homeland"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Celebratory Saudi National Day social post: modern Riyadh skyline at dusk with green light beams, palm fronds and subtle confetti in green and white.\n[TYPOGRAPHY] Bold central phrase. Arabic typography reads «{{message}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] Saudi green (#006C35) and white palette with soft gold highlights, proud and modern, clean layout.\n[AVOID] the national flag's sacred inscription, the official emblem, warped Arabic letters, English text, watermark.",
+   "season": "national_day"
+  },
+  {
+   "id": "national-day-reel",
+   "category": "national",
+   "title_ar": "ريل اليوم الوطني",
+   "title_en": "National Day reel",
+   "desc_ar": "ريل احتفالي بإضاءات خضراء وأفق الرياض ومنتجك",
+   "desc_en": "A celebratory reel with green lights, the Riyadh skyline and your product",
+   "tier_set": "video",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "المنتج أو المشهد",
+     "label_en": "Product or scene",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "كوب قهوة مختصة",
+     "placeholder_en": "a specialty coffee cup"
+    }
+   ],
+   "prompt": "Night aerial-style shot of a modern Riyadh skyline lit in green, fireworks blooming in green and white, then a smooth transition to a close-up of {{product}} on a rooftop table with green ambient light and celebratory bokeh. Energetic but smooth camera, cinematic, no text, no letters, no logos, no watermark.",
+   "season": "national_day",
+   "duration": 5
+  },
+  {
+   "id": "founding-day-post",
+   "category": "national",
+   "title_ar": "بوست يوم التأسيس",
+   "title_en": "Founding Day post",
+   "desc_ar": "تصميم تراثي نجدي بنقوش السدو والطين",
+   "desc_en": "A Najdi heritage design with Sadu patterns and mudbrick architecture",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "message",
+     "label_ar": "العبارة",
+     "label_en": "Phrase",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24,
+     "default": "يوم بدينا",
+     "placeholder_ar": "يوم بدينا",
+     "placeholder_en": "The day we began"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Saudi Founding Day heritage poster: traditional Najdi mudbrick architecture with triangular crenellations at golden hour, palm trees, an ornate wooden door, Al-Sadu woven textile border.\n[TYPOGRAPHY] Central phrase. Arabic typography reads «{{message}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] earthy terracotta, ochre, deep brown and cream palette, heritage-meets-modern design, print quality.\n[AVOID] warped Arabic letters, English text, flags, emblems, watermark.",
+   "season": "founding_day"
+  },
+  {
+   "id": "founding-day-product",
+   "category": "national",
+   "title_ar": "منتجك بطابع التأسيس",
+   "title_en": "Your product, Founding Day style",
+   "desc_ar": "صورة منتج في مشهد تراثي نجدي دافئ",
+   "desc_en": "A product photo in a warm Najdi heritage setting",
+   "tier_set": "photo",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "المنتج",
+     "label_en": "Product",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "زجاجة عطر عود",
+     "placeholder_en": "an oud perfume bottle"
+    }
+   ],
+   "prompt": "[SUBJECT] {{product}} displayed on a carved stone ledge inside a traditional Najdi mudbrick house, Al-Sadu woven rug, brass dallah and small finjan cups nearby.\n[LIGHTING] warm late-afternoon sun through a small triangular window, long soft shadows.\n[LENS] 50mm, f/4, product tack-sharp.\n[STYLE] heritage editorial photography, terracotta and ochre tones, no text, no letters, no logos, no watermark.",
+   "season": "founding_day"
+  },
+  {
+   "id": "white-friday-sale",
+   "category": "seasons",
+   "title_ar": "عرض الجمعة البيضاء",
+   "title_en": "White Friday sale",
+   "desc_ar": "بوستر خصم بأسلوب جريء للجمعة البيضاء",
+   "desc_en": "A bold discount poster for White Friday",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "discount",
+     "label_ar": "الخصم",
+     "label_en": "Discount",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 16,
+     "placeholder_ar": "خصم حتى 70%",
+     "placeholder_en": "Up to 70% off"
+    },
+    {
+     "key": "detail",
+     "label_ar": "سطر ثانٍ (اختياري)",
+     "label_en": "Second line (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 28,
+     "placeholder_ar": "لمدة 3 أيام فقط",
+     "placeholder_en": "3 days only"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] High-impact White Friday sale poster: glossy white shopping bags and floating gift boxes on a clean white-to-silver gradient, dynamic diagonal light streaks.\n[TYPOGRAPHY] Huge bold discount text. Arabic typography reads «{{discount}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if detail}} Smaller line below reads «{{detail}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] white, silver and electric blue accents, very high contrast, modern retail campaign look.\n[AVOID] the words Black Friday, warped Arabic letters, English text, watermark.",
+   "season": "white_friday"
+  },
+  {
+   "id": "back-to-school",
+   "category": "seasons",
+   "title_ar": "العودة للمدارس",
+   "title_en": "Back to school",
+   "desc_ar": "بوستر مرح لعروض الأدوات المدرسية",
+   "desc_en": "A playful poster for school-supply deals",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "title",
+     "label_ar": "العنوان",
+     "label_en": "Headline",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 22,
+     "default": "العودة للمدارس",
+     "placeholder_ar": "العودة للمدارس",
+     "placeholder_en": "Back to school"
+    },
+    {
+     "key": "detail",
+     "label_ar": "العرض (اختياري)",
+     "label_en": "Offer (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 28,
+     "placeholder_ar": "خصم 20% على الحقائب",
+     "placeholder_en": "20% off backpacks"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Cheerful back-to-school poster: colorful backpack, notebooks, pencils and a lunch box arranged on a bright desk, paper-cut shapes.\n[TYPOGRAPHY] Playful bold headline. Arabic typography reads «{{title}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if detail}} Second line reads «{{detail}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] bright primary colors, friendly flat-3D illustration style, clean layout.\n[AVOID] warped Arabic letters, English text, children's faces, watermark.",
+   "season": "back_to_school"
+  },
+  {
+   "id": "winter-kashta",
+   "category": "seasons",
+   "title_ar": "منتجك في كشتة شتوية",
+   "title_en": "Your product at a winter camp",
+   "desc_ar": "صورة دافئة لمنتجك في كشتة بر مع نار وقهوة",
+   "desc_en": "A cozy photo of your product at a desert winter camp with fire and coffee",
+   "tier_set": "photo",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "المنتج",
+     "label_en": "Product",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "بطانية صوف",
+     "placeholder_en": "a wool blanket"
+    }
+   ],
+   "prompt": "[SUBJECT] {{product}} at a cozy Saudi desert winter camp (kashta) at blue hour: a crackling campfire, a brass dallah on embers, a traditional Bedouin tent with Al-Sadu cushions, soft sand dunes.\n[LIGHTING] warm firelight against cool twilight sky.\n[LENS] 35mm, f/2.8, product sharp, background softly blurred.\n[STYLE] lifestyle editorial photography, cozy and inviting, no text, no letters, no logos, no watermark.",
+   "season": "winter"
+  },
+  {
+   "id": "event-poster",
+   "category": "seasons",
+   "title_ar": "بوستر فعالية",
+   "title_en": "Event poster",
+   "desc_ar": "بوستر عمودي لفعالية أو حفل أو افتتاح",
+   "desc_en": "A vertical poster for an event, concert or opening",
+   "tier_set": "text",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "title",
+     "label_ar": "اسم الفعالية",
+     "label_en": "Event name",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 22,
+     "placeholder_ar": "ليالي الشتاء",
+     "placeholder_en": "Winter Nights"
+    },
+    {
+     "key": "date",
+     "label_ar": "التاريخ (اختياري)",
+     "label_en": "Date (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 20,
+     "placeholder_ar": "الخميس 12 ديسمبر",
+     "placeholder_en": "Thursday 12 December"
+    },
+    {
+     "key": "vibe",
+     "label_ar": "الأجواء",
+     "label_en": "Vibe",
+     "kind": "choice",
+     "required": true,
+     "max": 20,
+     "default": "festive",
+     "options": [
+      {
+       "value": "festive",
+       "ar": "احتفالية",
+       "en": "Festive"
+      },
+      {
+       "value": "elegant",
+       "ar": "فاخرة",
+       "en": "Elegant"
+      },
+      {
+       "value": "family",
+       "ar": "عائلية",
+       "en": "Family"
+      }
+     ]
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Vertical event poster with a {{vibe}} mood: an open-air venue at night with stage lights, light beams and a crowd silhouette from behind, palm trees and string lights.\n[TYPOGRAPHY] Large event name at the top. Arabic typography reads «{{title}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if date}} Date line reads «{{date}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] vibrant night palette of purple, magenta and gold, cinematic lighting, modern event branding.\n[AVOID] warped Arabic letters, English text, recognizable faces, real brand logos, watermark.",
+   "season": "events"
+  },
+  {
+   "id": "summer-offer",
+   "category": "seasons",
+   "title_ar": "عرض الصيف",
+   "title_en": "Summer offer",
+   "desc_ar": "بوستر صيفي منعش لعرضك",
+   "desc_en": "A refreshing summer poster for your offer",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "title",
+     "label_ar": "العرض",
+     "label_en": "Offer",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 22,
+     "placeholder_ar": "عروض الصيف بدأت",
+     "placeholder_en": "Summer deals are on"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Refreshing summer promo poster: iced drinks with condensation, citrus slices, splashing water and palm leaf shadows on a turquoise background.\n[TYPOGRAPHY] Bold headline. Arabic typography reads «{{title}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] turquoise, white and sunny yellow palette, crisp and cool, modern layout.\n[AVOID] warped Arabic letters, English text, watermark.",
+   "season": "summer"
+  },
+  {
+   "id": "re-listing",
+   "category": "realestate",
+   "title_ar": "إعلان عقار",
+   "title_en": "Property listing",
+   "desc_ar": "بوست إعلان بيع أو إيجار بعنوان وموقع وسعر",
+   "desc_en": "A sale or rent post with headline, location and price",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "headline",
+     "label_ar": "العنوان",
+     "label_en": "Headline",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24,
+     "placeholder_ar": "فيلا للبيع",
+     "placeholder_en": "Villa for sale"
+    },
+    {
+     "key": "location",
+     "label_ar": "الحي أو المدينة",
+     "label_en": "Neighborhood or city",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "حي الشاطئ - الخبر",
+     "placeholder_en": "Al Shati, Khobar"
+    },
+    {
+     "key": "price",
+     "label_ar": "السعر (اختياري)",
+     "label_en": "Price (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 20,
+     "placeholder_ar": "1,850,000 ريال",
+     "placeholder_en": "SAR 1,850,000"
+    },
+    {
+     "key": "style",
+     "label_ar": "نوع العقار",
+     "label_en": "Property type",
+     "kind": "choice",
+     "required": true,
+     "max": 20,
+     "default": "modern villa",
+     "options": [
+      {
+       "value": "modern villa",
+       "ar": "فيلا حديثة",
+       "en": "Modern villa"
+      },
+      {
+       "value": "apartment building",
+       "ar": "شقة/عمارة",
+       "en": "Apartment"
+      },
+      {
+       "value": "townhouse",
+       "ar": "دوبلكس/تاون هاوس",
+       "en": "Townhouse"
+      },
+      {
+       "value": "commercial building",
+       "ar": "تجاري",
+       "en": "Commercial"
+      }
+     ]
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Premium real-estate listing post: a {{style}} in contemporary Saudi architecture with clean stone facade, wooden mashrabiya accents and landscaped entrance at golden hour, photographed as an architectural hero shot.\n[TYPOGRAPHY] Headline in a clean band. Arabic typography reads «{{headline}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if location}} Location line reads «{{location}}».{{/if}}{{#if price}} Price line reads «{{price}}» in bold.{{/if}} All lines follow the same Arabic typography rules.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] navy, white and warm sand palette, upscale real-estate branding, crisp architectural photography.\n[AVOID] warped Arabic letters, English text, phone numbers, fake logos, watermark."
+  },
+  {
+   "id": "re-facade-photo",
+   "category": "realestate",
+   "title_ar": "واجهة عقار مسائية",
+   "title_en": "Evening facade shot",
+   "desc_ar": "صورة واجهة عقار حديث بإضاءة مسائية فاخرة",
+   "desc_en": "A luxury evening facade shot of a modern property",
+   "tier_set": "photo",
+   "aspect_ratio": "16:9",
+   "fields": [
+    {
+     "key": "details",
+     "label_ar": "وصف العقار",
+     "label_en": "Property description",
+     "kind": "text",
+     "required": true,
+     "max": 80,
+     "default": "two-storey modern villa with a pool",
+     "placeholder_ar": "فيلا دورين مع مسبح",
+     "placeholder_en": "two-storey villa with a pool"
+    }
+   ],
+   "prompt": "[SUBJECT] Exterior twilight photo of a {{details}} in contemporary Saudi style: limestone and travertine facade, large glass windows glowing warm from inside, palm trees and a calm reflecting pool.\n[LIGHTING] blue-hour sky with warm interior and landscape lighting.\n[LENS] 24mm architectural lens, straight verticals, wide composition.\n[STYLE] high-end real-estate photography, no text, no letters, no logos, no watermark."
+  },
+  {
+   "id": "re-walkthrough",
+   "category": "realestate",
+   "title_ar": "جولة داخل العقار",
+   "title_en": "Property walkthrough",
+   "desc_ar": "فيديو جولة سينمائية داخل صالة ومجلس حديث",
+   "desc_en": "A cinematic walkthrough of a modern living room and majlis",
+   "tier_set": "video",
+   "aspect_ratio": "16:9",
+   "fields": [
+    {
+     "key": "details",
+     "label_ar": "وصف المساحة",
+     "label_en": "Space description",
+     "kind": "text",
+     "required": true,
+     "max": 80,
+     "default": "modern living room with a Saudi majlis corner",
+     "placeholder_ar": "صالة حديثة مع مجلس",
+     "placeholder_en": "living room with a majlis"
+    }
+   ],
+   "prompt": "Smooth gimbal walkthrough of a {{details}}: bright open-plan space, floor-to-ceiling windows, neutral stone and wood finishes, elegant low seating with Al-Sadu cushions, soft daylight. Slow forward dolly with a gentle pan, real-estate showcase style, no text, no letters, no logos, no watermark.",
+   "duration": 5
+  },
+  {
+   "id": "re-project-launch",
+   "category": "realestate",
+   "title_ar": "إطلاق مشروع سكني",
+   "title_en": "Residential project launch",
+   "desc_ar": "ستوري لإطلاق مشروع سكني باسم المشروع",
+   "desc_en": "A story announcing a residential project by name",
+   "tier_set": "text",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "project",
+     "label_ar": "اسم المشروع",
+     "label_en": "Project name",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 20,
+     "placeholder_ar": "مشروع واحة الخبر",
+     "placeholder_en": "Khobar Oasis"
+    },
+    {
+     "key": "tagline",
+     "label_ar": "عبارة (اختياري)",
+     "label_en": "Tagline (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 28,
+     "placeholder_ar": "حياة عصرية بلمسة سعودية",
+     "placeholder_en": "Modern living, Saudi touch"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Vertical launch poster for a residential compound: aerial view of modern low-rise villas, green parks and a central boulevard at sunset.\n[TYPOGRAPHY] Large project name. Arabic typography reads «{{project}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if tagline}} Tagline reads «{{tagline}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] deep green, white and gold palette, prestigious developer branding.\n[AVOID] warped Arabic letters, English text, watermark."
+  },
+  {
+   "id": "food-hero-dish",
+   "category": "food",
+   "title_ar": "صورة طبق رئيسية",
+   "title_en": "Hero dish shot",
+   "desc_ar": "صورة شهية لطبقك بأسلوب إعلانات المطاعم",
+   "desc_en": "An appetizing restaurant-ad style photo of your dish",
+   "tier_set": "photo",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "dish",
+     "label_ar": "الطبق",
+     "label_en": "Dish",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "كبسة لحم مع مكسرات",
+     "placeholder_en": "lamb kabsa with nuts"
+    }
+   ],
+   "prompt": "[SUBJECT] Hero food photo of {{dish}}, generously plated on an elegant ceramic platter, garnished and glistening, with a little steam rising.\n[LIGHTING] soft side light with warm rim, controlled highlights.\n[LENS] 85mm, f/3.5, three-quarter angle, sharp hero focus.\n[STYLE] premium restaurant advertising photography, rich appetizing colors, dark wood table, no text, no letters, no logos, no watermark."
+  },
+  {
+   "id": "food-menu-offer",
+   "category": "food",
+   "title_ar": "عرض وجبة بسعر",
+   "title_en": "Meal deal with price",
+   "desc_ar": "بوست عرض وجبة بالاسم والسعر",
+   "desc_en": "A meal-deal post with name and price",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "meal",
+     "label_ar": "اسم الوجبة",
+     "label_en": "Meal name",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 22,
+     "placeholder_ar": "وجبة الشواية العائلية",
+     "placeholder_en": "Family grill meal"
+    },
+    {
+     "key": "price",
+     "label_ar": "السعر",
+     "label_en": "Price",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 14,
+     "placeholder_ar": "79 ريال",
+     "placeholder_en": "SAR 79"
+    },
+    {
+     "key": "dish",
+     "label_ar": "وصف الطبق للصورة",
+     "label_en": "Dish for the photo",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "مشاوي مشكلة مع أرز",
+     "placeholder_en": "mixed grill with rice"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Restaurant promo post featuring {{dish}} photographed appetizingly on a rustic table.\n[TYPOGRAPHY] Meal name as headline. Arabic typography reads «{{meal}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Price badge in a bold circle reads «{{price}}», same Arabic typography rules.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] warm red, charcoal and cream palette, fast-casual restaurant branding, appetizing and bold.\n[AVOID] warped Arabic letters, English text, extra prices, watermark."
+  },
+  {
+   "id": "cafe-coffee-pour",
+   "category": "food",
+   "title_ar": "ريل صب القهوة السعودية",
+   "title_en": "Saudi coffee pour reel",
+   "desc_ar": "ريل عمودي لصب القهوة من الدلة في الفنجان",
+   "desc_en": "A vertical reel of coffee poured from a dallah into a finjan",
+   "tier_set": "video",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "setting",
+     "label_ar": "المكان",
+     "label_en": "Setting",
+     "kind": "text",
+     "required": false,
+     "max": 60,
+     "default": "a modern specialty cafe counter",
+     "placeholder_ar": "مجلس تراثي",
+     "placeholder_en": "a heritage majlis"
+    }
+   ],
+   "prompt": "Extreme close-up slow motion of golden Saudi coffee poured from a brass dallah into a small white finjan cup in {{setting}}, a plate of dates beside it, steam curling up, warm backlight catching the stream. Smooth macro camera, rich warm tones, no text, no letters, no logos, no watermark.",
+   "duration": 5
+  },
+  {
+   "id": "cafe-new-drink",
+   "category": "food",
+   "title_ar": "مشروب جديد",
+   "title_en": "New drink",
+   "desc_ar": "صورة إعلانية لمشروب جديد في المقهى",
+   "desc_en": "An ad photo for a new cafe drink",
+   "tier_set": "photo",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "drink",
+     "label_ar": "المشروب",
+     "label_en": "Drink",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "لاتيه بالزعفران والهيل",
+     "placeholder_en": "saffron cardamom latte"
+    }
+   ],
+   "prompt": "[SUBJECT] {{drink}} in a clear glass on a terrazzo counter, latte art or garnish visible, a few coffee beans and cardamom pods scattered.\n[LIGHTING] bright soft daylight with a gentle shadow.\n[LENS] 50mm, f/2.8, drink tack-sharp.\n[STYLE] specialty-cafe Instagram aesthetic, clean and fresh, no text, no letters, no logos, no watermark."
+  },
+  {
+   "id": "food-steam-reel",
+   "category": "food",
+   "title_ar": "ريل طبق ساخن",
+   "title_en": "Sizzling dish reel",
+   "desc_ar": "ريل لطبق يتصاعد منه البخار وصلصة تنسكب",
+   "desc_en": "A reel of a steaming dish with sauce being poured",
+   "tier_set": "video",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "dish",
+     "label_ar": "الطبق",
+     "label_en": "Dish",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "مندي دجاج",
+     "placeholder_en": "chicken mandi"
+    }
+   ],
+   "prompt": "Close-up of {{dish}} on a platter as rich sauce is poured over it in slow motion, steam rising, a hand sprinkling fresh herbs, warm restaurant lighting with dark background. Appetizing commercial food cinematography, smooth slow camera arc, no text, no letters, no logos, no watermark.",
+   "duration": 5
+  },
+  {
+   "id": "oud-luxury-photo",
+   "category": "perfume",
+   "title_ar": "صورة عطر فاخرة",
+   "title_en": "Luxury perfume shot",
+   "desc_ar": "صورة إعلانية لعطرك مع دخان بخور ورخام",
+   "desc_en": "An ad photo of your fragrance with incense smoke and marble",
+   "tier_set": "photo",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "وصف العطر",
+     "label_en": "Fragrance description",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "زجاجة عطر سوداء بغطاء ذهبي",
+     "placeholder_en": "a black bottle with a gold cap"
+    }
+   ],
+   "prompt": "[SUBJECT] {{product}} standing on polished black marble, delicate wisps of oud incense smoke curling around it, a few agarwood chips and a small brass mabkhara nearby.\n[LIGHTING] low warm key light with a gold rim, deep shadows, controlled reflections.\n[LENS] 100mm macro, f/8, bottle tack-sharp.\n[STYLE] luxury fragrance advertising, black and gold palette, no text, no letters, no logos, no watermark."
+  },
+  {
+   "id": "perfume-reel",
+   "category": "perfume",
+   "title_ar": "ريل عطر فاخر",
+   "title_en": "Luxury perfume reel",
+   "desc_ar": "ريل عمودي فاخر لعطرك بالدخان والضوء الذهبي",
+   "desc_en": "A luxurious vertical reel with smoke and golden light",
+   "tier_set": "video",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "وصف العطر",
+     "label_en": "Fragrance description",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "زجاجة عطر كريستال",
+     "placeholder_en": "a crystal perfume bottle"
+    }
+   ],
+   "prompt": "Slow orbit around {{product}} on black marble as oud smoke swirls through a beam of golden light, tiny gold particles drifting, a drop of oil sliding down the glass. Luxury fragrance commercial, dark moody background, smooth cinematic motion, no text, no letters, no logos, no watermark.",
+   "duration": 5
+  },
+  {
+   "id": "perfume-launch",
+   "category": "perfume",
+   "title_ar": "إطلاق عطر جديد",
+   "title_en": "New fragrance launch",
+   "desc_ar": "ستوري لإطلاق عطر باسمه",
+   "desc_en": "A story launching a fragrance by name",
+   "tier_set": "text",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "name",
+     "label_ar": "اسم العطر",
+     "label_en": "Fragrance name",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 18,
+     "placeholder_ar": "عود الليل",
+     "placeholder_en": "Night Oud"
+    },
+    {
+     "key": "tagline",
+     "label_ar": "عبارة (اختياري)",
+     "label_en": "Tagline (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 26,
+     "placeholder_ar": "متوفر الآن",
+     "placeholder_en": "Available now"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Vertical luxury fragrance launch poster: an elegant dark perfume bottle on a pedestal with oud smoke and gold dust.\n[TYPOGRAPHY] Fragrance name large and centered above the bottle. Arabic typography reads «{{name}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if tagline}} Tagline reads «{{tagline}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] black, deep burgundy and gold palette, high-end perfumery branding.\n[AVOID] warped Arabic letters, English text, real brand names, watermark."
+  },
+  {
+   "id": "abaya-collection",
+   "category": "fashion",
+   "title_ar": "مجموعة عبايات جديدة",
+   "title_en": "New abaya collection",
+   "desc_ar": "بوست إطلاق مجموعة عبايات باسم المجموعة",
+   "desc_en": "A post launching an abaya collection by name",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "collection",
+     "label_ar": "اسم المجموعة",
+     "label_en": "Collection name",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 20,
+     "placeholder_ar": "مجموعة الشتاء",
+     "placeholder_en": "Winter collection"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Fashion campaign poster: a woman in an elegant flowing black abaya with subtle embroidered sleeves, wearing a hijab, photographed from a three-quarter angle in a minimalist stone courtyard; face softly turned away.\n[TYPOGRAPHY] Collection name in refined serif-style Arabic. Arabic typography reads «{{collection}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] neutral beige and black palette, high-fashion editorial, generous negative space.\n[AVOID] warped Arabic letters, English text, revealing clothing, watermark."
+  },
+  {
+   "id": "abaya-reel",
+   "category": "fashion",
+   "title_ar": "ريل عباية",
+   "title_en": "Abaya reel",
+   "desc_ar": "ريل عمودي لعباية تتحرك بانسيابية",
+   "desc_en": "A vertical reel of an abaya in flowing motion",
+   "tier_set": "video",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "details",
+     "label_ar": "وصف العباية",
+     "label_en": "Abaya description",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "default": "a black abaya with gold embroidered sleeves",
+     "placeholder_ar": "عباية سوداء بتطريز ذهبي",
+     "placeholder_en": "black abaya with gold embroidery"
+    }
+   ],
+   "prompt": "A woman wearing {{details}} and a hijab walks slowly through a sunlit stone arcade, the fabric flowing gracefully in a soft breeze, camera tracking alongside then a slow-motion detail shot of the embroidery. Elegant fashion film, warm natural light, no text, no letters, no logos, no watermark.",
+   "duration": 5
+  },
+  {
+   "id": "thobe-eid",
+   "category": "fashion",
+   "title_ar": "ثوب وشماغ للعيد",
+   "title_en": "Thobe & shemagh for Eid",
+   "desc_ar": "صورة أزياء رجالية بثوب وشماغ في مجلس",
+   "desc_en": "A menswear shot in thobe and shemagh in a majlis",
+   "tier_set": "photo",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "details",
+     "label_ar": "وصف الإطلالة",
+     "label_en": "Outfit description",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "default": "a crisp white thobe with a red shemagh",
+     "placeholder_ar": "ثوب أبيض وشماغ أحمر",
+     "placeholder_en": "white thobe and red shemagh"
+    }
+   ],
+   "prompt": "[SUBJECT] Saudi man wearing {{details}} and a black bisht draped on the shoulders, standing confidently in an elegant modern majlis with carved wooden panels.\n[LIGHTING] soft window light, warm tones.\n[LENS] 85mm, f/2.8, fabric texture visible.\n[STYLE] premium menswear editorial, no text, no letters, no logos, no watermark.",
+   "season": "eid_fitr"
+  },
+  {
+   "id": "clinic-service",
+   "category": "beauty",
+   "title_ar": "خدمة عيادة",
+   "title_en": "Clinic service",
+   "desc_ar": "بوست نظيف لخدمة طبية أو تجميلية",
+   "desc_en": "A clean post for a medical or aesthetic service",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "service",
+     "label_ar": "الخدمة",
+     "label_en": "Service",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 22,
+     "placeholder_ar": "تبييض الأسنان",
+     "placeholder_en": "Teeth whitening"
+    },
+    {
+     "key": "offer",
+     "label_ar": "العرض (اختياري)",
+     "label_en": "Offer (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "استشارة مجانية",
+     "placeholder_en": "Free consultation"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Clean medical-aesthetic promo post: bright modern clinic interior with soft curves, white and mint surfaces, a single orchid, abstract soft shapes; no people.\n[TYPOGRAPHY] Service name as headline. Arabic typography reads «{{service}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if offer}} Offer badge reads «{{offer}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] white, mint and soft teal palette, trustworthy and calm, premium healthcare branding.\n[AVOID] before/after imagery, medical claims, warped Arabic letters, English text, watermark."
+  },
+  {
+   "id": "salon-offer",
+   "category": "beauty",
+   "title_ar": "عرض صالون",
+   "title_en": "Salon offer",
+   "desc_ar": "بوست أنثوي أنيق لعرض صالون",
+   "desc_en": "An elegant feminine post for a salon offer",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "service",
+     "label_ar": "الخدمة",
+     "label_en": "Service",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 22,
+     "placeholder_ar": "بروتين الشعر",
+     "placeholder_en": "Hair protein"
+    },
+    {
+     "key": "offer",
+     "label_ar": "العرض",
+     "label_en": "Offer",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 20,
+     "placeholder_ar": "خصم 25%",
+     "placeholder_en": "25% off"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Elegant beauty-salon promo: rose-gold styling tools, silk ribbons, dried flowers and a vanity mirror on a blush marble surface; no faces.\n[TYPOGRAPHY] Service as headline. Arabic typography reads «{{service}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if offer}} Offer line reads «{{offer}}», same Arabic typography rules.{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] blush pink, cream and rose-gold palette, soft and luxurious.\n[AVOID] warped Arabic letters, English text, watermark."
+  },
+  {
+   "id": "store-free-shipping",
+   "category": "store",
+   "title_ar": "شحن مجاني / كود خصم",
+   "title_en": "Free shipping / promo code",
+   "desc_ar": "بوست مربع لكود خصم أو شحن مجاني",
+   "desc_en": "A square post for a promo code or free shipping",
+   "tier_set": "text",
+   "aspect_ratio": "1:1",
+   "fields": [
+    {
+     "key": "headline",
+     "label_ar": "العنوان",
+     "label_en": "Headline",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 20,
+     "default": "شحن مجاني",
+     "placeholder_ar": "شحن مجاني",
+     "placeholder_en": "Free shipping"
+    },
+    {
+     "key": "code",
+     "label_ar": "الكود (اختياري)",
+     "label_en": "Code (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 14,
+     "placeholder_ar": "كود: SALE20",
+     "placeholder_en": "Code: SALE20"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Bold e-commerce promo tile: a stylized delivery box with motion lines and floating shopping icons on a solid vibrant background.\n[TYPOGRAPHY] Headline very large. Arabic typography reads «{{headline}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if code}} A ticket-shaped badge reads «{{code}}» exactly (Latin characters allowed only inside this badge).{{/if}}{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] vibrant blue and lime palette, flat 3D style, extremely legible at small sizes.\n[AVOID] warped Arabic letters, extra text, watermark."
+  },
+  {
+   "id": "store-new-arrival",
+   "category": "store",
+   "title_ar": "وصل حديثًا",
+   "title_en": "New arrival",
+   "desc_ar": "بوست \"وصل حديثًا\" لمنتج جديد",
+   "desc_en": "A \"just arrived\" post for a new product",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "product",
+     "label_ar": "المنتج للصورة",
+     "label_en": "Product for the image",
+     "kind": "text",
+     "required": true,
+     "max": 60,
+     "placeholder_ar": "حقيبة جلد بنية",
+     "placeholder_en": "a brown leather bag"
+    },
+    {
+     "key": "headline",
+     "label_ar": "العنوان",
+     "label_en": "Headline",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 18,
+     "default": "وصل حديثًا",
+     "placeholder_ar": "وصل حديثًا",
+     "placeholder_en": "Just arrived"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Product launch post: {{product}} on a minimal pedestal with soft studio shadows and a clean gradient backdrop.\n[TYPOGRAPHY] Headline in the top area. Arabic typography reads «{{headline}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» at the bottom in a smaller weight, same Arabic typography rules.{{/if}}\n[STYLE] modern minimalist e-commerce aesthetic, soft neutral palette with one accent color.\n[AVOID] warped Arabic letters, English text, extra products, watermark."
+  },
+  {
+   "id": "social-tip-cover",
+   "category": "social",
+   "title_ar": "غلاف \"نصيحة تستاهل الحفظ\"",
+   "title_en": "\"Save this tip\" cover",
+   "desc_ar": "غلاف بوست كاروسيل بعنوان نصيحة يشجع على الحفظ",
+   "desc_en": "A carousel cover with a tip headline that drives saves",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "title",
+     "label_ar": "عنوان النصيحة",
+     "label_en": "Tip headline",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 32,
+     "placeholder_ar": "5 أخطاء تخسرك عملاءك",
+     "placeholder_en": "5 mistakes losing you customers"
+    },
+    {
+     "key": "brand",
+     "label_ar": "اسم النشاط (اختياري)",
+     "label_en": "Business name (optional)",
+     "kind": "arabic_text",
+     "required": false,
+     "max": 24,
+     "placeholder_ar": "مثال: مقهى الحي",
+     "placeholder_en": "e.g. Al Hay Cafe"
+    }
+   ],
+   "prompt": "[SUBJECT] Instagram carousel cover slide: minimalist editorial layout with a bold headline, a small bookmark icon hinting to save, subtle paper texture.\n[TYPOGRAPHY] The headline fills most of the slide in heavy weight. Arabic typography reads «{{title}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words.{{#if brand}} Business name «{{brand}}» as a small handle at the bottom corner, same Arabic typography rules.{{/if}}\n[STYLE] off-white background with one strong accent color, high contrast, modern creator style.\n[AVOID] warped Arabic letters, English text, clutter, watermark."
+  },
+  {
+   "id": "social-three-reasons",
+   "category": "social",
+   "title_ar": "\"3 أسباب تخليك…\"",
+   "title_en": "\"3 reasons to…\"",
+   "desc_ar": "بوست بثلاثة أسباب مرقّمة لموضوعك",
+   "desc_en": "A post with three numbered reasons on your topic",
+   "tier_set": "text",
+   "aspect_ratio": "4:5",
+   "fields": [
+    {
+     "key": "title",
+     "label_ar": "العنوان",
+     "label_en": "Headline",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 28,
+     "placeholder_ar": "3 أسباب تخليك تبدأ اليوم",
+     "placeholder_en": "3 reasons to start today"
+    },
+    {
+     "key": "r1",
+     "label_ar": "السبب الأول",
+     "label_en": "Reason 1",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24
+    },
+    {
+     "key": "r2",
+     "label_ar": "السبب الثاني",
+     "label_en": "Reason 2",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24
+    },
+    {
+     "key": "r3",
+     "label_ar": "السبب الثالث",
+     "label_en": "Reason 3",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 24
+    }
+   ],
+   "prompt": "[SUBJECT] Clean educational social post with a headline and three numbered rows with simple icons.\n[TYPOGRAPHY] Headline at the top. Arabic typography reads «{{title}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Row 1 reads «{{r1}}», row 2 reads «{{r2}}», row 3 reads «{{r3}}», each preceded by a large numeral, same Arabic typography rules, aligned right.\n[STYLE] white card on a soft colored background, generous spacing, modern infographic style.\n[AVOID] warped Arabic letters, English text, extra rows, watermark."
+  },
+  {
+   "id": "social-reel-cover",
+   "category": "social",
+   "title_ar": "غلاف ريل",
+   "title_en": "Reel cover",
+   "desc_ar": "غلاف عمودي جذاب لريلك بعنوان كبير",
+   "desc_en": "An eye-catching vertical reel cover with a big title",
+   "tier_set": "text",
+   "aspect_ratio": "9:16",
+   "fields": [
+    {
+     "key": "title",
+     "label_ar": "عنوان الريل",
+     "label_en": "Reel title",
+     "kind": "arabic_text",
+     "required": true,
+     "max": 26,
+     "placeholder_ar": "كيف ضاعفت مبيعاتي؟",
+     "placeholder_en": "How I doubled my sales"
+    },
+    {
+     "key": "scene",
+     "label_ar": "الخلفية",
+     "label_en": "Background",
+     "kind": "text",
+     "required": false,
+     "max": 60,
+     "default": "a modern home office desk with a laptop and coffee",
+     "placeholder_ar": "مكتب حديث",
+     "placeholder_en": "a modern office"
+    }
+   ],
+   "prompt": "[SUBJECT] Vertical reel cover: background photo of {{scene}}, slightly blurred and darkened for contrast.\n[TYPOGRAPHY] Big bold title in the middle third, inside a high-contrast highlight box. Arabic typography reads «{{title}}» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Keep top and bottom 15% clear for app UI.\n[STYLE] bold creator style, strong contrast, one accent color.\n[AVOID] warped Arabic letters, English text, faces, watermark."
+  }
+ ]
+}

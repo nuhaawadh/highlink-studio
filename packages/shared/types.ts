@@ -32,6 +32,8 @@ export interface GenerateRequest {
   locale?: 'ar' | 'en'
   /** سقف إنفاق لهذا الطلب — يُرفض إن تجاوزته التكلفة (مقتبس من Higgsfield §14) */
   maxCredits?: number
+  /** معرّف القالب الجاهز (content/templates) — للتحليلات فقط، لا يغيّر التسعير */
+  template?: string
 }
 
 /** رموز الأخطاء — القائمة الواحدة؛ نسخة Edge Functions في supabase/functions/_shared/types.ts (يحرسها contract.test.ts) */

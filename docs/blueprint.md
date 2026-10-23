@@ -378,7 +378,7 @@ https://media.highlink.tech/cdn-cgi/image/width=1200,quality=88,format=jpeg/cms/
 | `/pricing`، `/account`، `/account/billing`، `/account/usage` | الباقات والحساب | 1 |
 | `/login`، `/reset-password`، `/complete-profile` | الدخول | 1 |
 | `/terms`، `/privacy`، `/help`، `/contact` | القانوني والدعم | 1 |
-| `/templates` | 100+ قالب (برومبتات جاهزة مصنّفة) | 2 |
+| `/templates`، `/templates/:id` | قوالب سعودية جاهزة (38 في الإطلاق → 100+) — `content/templates/saudi.json` | 1 ✓ |
 | `/characters`، `/storyboard`، `/shots`، `/cinema` | الاستوديوهات المتقدمة | 2 |
 | `/community`، `/u/:username` | المعرض العام والملف الشخصي | 2 |
 | `/promlog`، `/promlog/:slug` | مدونة البرومبتات (سيو) | 2 |

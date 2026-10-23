@@ -195,7 +195,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
           type: model.type,
           cost_credits: 0,
           completed_at: new Date().toISOString(),
-          metadata: { ...(asset.metadata ?? {}), sandbox: true, would_cost: cost, prompt_final: body.prompt, provider_input: built.input, locale: body.locale ?? 'ar' },
+          metadata: { ...(asset.metadata ?? {}), sandbox: true, would_cost: cost, prompt_final: body.prompt, provider_input: built.input, locale: body.locale ?? 'ar', template: body.template ?? null },
         })
         .eq('id', asset.id)
         .eq('status', 'queued')
@@ -234,7 +234,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
       .update({
         ...commonFields,
         provider_job_id: jobId,
-        metadata: { ...(asset.metadata ?? {}), prompt_final: body.prompt, provider_input: built.input, locale: body.locale ?? 'ar' },
+        metadata: { ...(asset.metadata ?? {}), prompt_final: body.prompt, provider_input: built.input, locale: body.locale ?? 'ar', template: body.template ?? null },
       })
       .eq('id', asset.id)
       .eq('status', 'processing')

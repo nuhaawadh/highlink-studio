@@ -206,5 +206,31 @@
     "promptLabel": "Scene description",
     "promptPlaceholder": "e.g. Cinematic shot of Saudi coffee poured in a traditional majlis, golden light, slow camera push-in… (Ctrl+Enter to generate)",
     "empty": "Your videos will appear here as soon as generation starts — a video takes one to three minutes"
+  },
+  "templates": {
+    "title": "Saudi-style ready templates",
+    "subtitle": "{n} templates for seasons and industries — fill two fields and generate. Arabic text is rendered exactly on the design, and the cost shows before you click.",
+    "filter": "Filter templates",
+    "all": "All",
+    "inSeason": "In season",
+    "inSeasonTitle": "In season now & coming up",
+    "allTitle": "All templates",
+    "now": "Now",
+    "soon": "Soon",
+    "seasonal": "Seasonal: {name}",
+    "unavailable": "Not available right now",
+    "kind": {
+      "text": "Arabic text design",
+      "photo": "Photo",
+      "video": "Video"
+    },
+    "back": "All templates",
+    "notFound": "Template not found",
+    "quality": "Quality",
+    "required": "Fill in the fields marked with a star",
+    "needsLogin": "Sign in to generate — browsing is free",
+    "promptPreview": "The prompt sent to the model",
+    "results": "Your latest results",
+    "empty": "Your template result will appear here as soon as generation starts"
   }
 }

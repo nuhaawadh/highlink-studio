@@ -87,6 +87,8 @@ export interface GenerateRequest {
   feature_tag?: 'general' | 'product' | 'ads' | 'ugc' | 'shots' | 'storyboard' | 'characters'
   locale?: 'ar' | 'en'
   maxCredits?: number
+  /** معرّف القالب الجاهز (content/templates) — للتحليلات فقط، لا يغيّر التسعير */
+  template?: string
 }
 
 export interface GenerateResponse {
