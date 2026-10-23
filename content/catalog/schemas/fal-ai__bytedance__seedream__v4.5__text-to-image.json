@@ -1,0 +1,219 @@
+{
+ "endpoint": "fal-ai/bytedance/seedream/v4.5/text-to-image",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "prompt": {
+   "description": "The text prompt used to generate the image",
+   "title": "Prompt",
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "description": "If set to true, the safety checker will be enabled. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "sync_mode": {
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "title": "Sync Mode",
+   "default": false,
+   "type": "boolean"
+  },
+  "num_images": {
+   "description": "Number of separate model generations to be run with the prompt.",
+   "title": "Num Images",
+   "default": 1,
+   "minimum": 1,
+   "maximum": 6,
+   "type": "integer"
+  },
+  "seed": {
+   "description": "Random seed to control the stochasticity of image generation.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed"
+  },
+  "max_images": {
+   "description": "If set to a number greater than one, enables multi-image generation. The model will potentially return up to `max_images` images every generation, and in total, `num_images` generations will be carried out. In total, the number of images generated will be between `num_images` and `max_images*num_images`.",
+   "title": "Max Images",
+   "default": 1,
+   "minimum": 1,
+   "maximum": 6,
+   "type": "integer"
+  },
+  "image_size": {
+   "description": "The size of the generated image. Width and height must be between 1920 and 4096, or total number of pixels must be between 2560*1440 and 4096*4096.",
+   "anyOf": [
+    {
+     "title": "ImageSize",
+     "properties": {
+      "height": {
+       "description": "The height of the generated image.",
+       "title": "Height",
+       "exclusiveMinimum": 0,
+       "default": 512,
+       "maximum": 14142,
+       "type": "integer"
+      },
+      "width": {
+       "description": "The width of the generated image.",
+       "title": "Width",
+       "exclusiveMinimum": 0,
+       "default": 512,
+       "maximum": 14142,
+       "type": "integer"
+      }
+     },
+     "type": "object"
+    },
+    {
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9",
+      "auto_2K",
+      "auto_4K"
+     ],
+     "type": "string"
+    }
+   ],
+   "default": {
+    "height": 2048,
+    "width": 2048
+   },
+   "title": "Image Size"
+  }
+ },
+ "output": {
+  "title": "SeedDream45T2IOutput",
+  "properties": {
+   "seed": {
+    "description": "Seed used for generation",
+    "title": "Seed",
+    "examples": [
+     42
+    ],
+    "type": "integer"
+   },
+   "images": {
+    "items": {
+     "description": "Represents an image file.",
+     "title": "Image",
+     "properties": {
+      "height": {
+       "description": "The height of the image in pixels.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        1024
+       ],
+       "title": "Height"
+      },
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "title": "Url",
+       "type": "string"
+      },
+      "content_type": {
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type"
+      },
+      "file_size": {
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        4404019
+       ],
+       "title": "File Size"
+      },
+      "width": {
+       "description": "The width of the image in pixels.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        1024
+       ],
+       "title": "Width"
+      },
+      "file_name": {
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name"
+      }
+     },
+     "required": [
+      "url"
+     ],
+     "type": "object"
+    },
+    "title": "Images",
+    "description": "Generated images",
+    "examples": [
+     [
+      {
+       "url": "https://storage.googleapis.com/falserverless/example_outputs/seedreamv45/seedream_v45_t2i_output.png"
+      }
+     ]
+    ],
+    "type": "array"
+   }
+  },
+  "required": [
+   "images",
+   "seed"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T08:16:28+00:00"
+}

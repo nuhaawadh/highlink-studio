@@ -1,0 +1,144 @@
+{
+ "endpoint": "fal-ai/pixverse/lipsync",
+ "required": [
+  "video_url"
+ ],
+ "properties": {
+  "text": {
+   "description": "Text content for TTS when audio_url is not provided",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Text"
+  },
+  "video_url": {
+   "type": "string",
+   "description": "URL of the input video",
+   "title": "Video Url"
+  },
+  "voice_id": {
+   "enum": [
+    "Emily",
+    "James",
+    "Isabella",
+    "Liam",
+    "Chloe",
+    "Adrian",
+    "Harper",
+    "Ava",
+    "Sophia",
+    "Julia",
+    "Mason",
+    "Jack",
+    "Oliver",
+    "Ethan",
+    "Auto"
+   ],
+   "type": "string",
+   "description": "Voice to use for TTS when audio_url is not provided",
+   "title": "Voice Id",
+   "default": "Auto"
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "title": "Enable Safety Checker",
+   "default": true
+  },
+  "audio_url": {
+   "description": "URL of the input audio. If not provided, TTS will be used.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Audio Url"
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "LipsyncOutput",
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "file_name": "output.mp4",
+      "content_type": "video/mp4",
+      "url": "https://v3.fal.media/files/penguin/hsR_KXBJjuF3IIVYIIDA2_output.mp4",
+      "file_size": 1732359
+     }
+    ],
+    "description": "The generated video",
+    "type": "object",
+    "title": "File",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type"
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ]
+   }
+  },
+  "required": [
+   "video"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:11:46+00:00"
+}

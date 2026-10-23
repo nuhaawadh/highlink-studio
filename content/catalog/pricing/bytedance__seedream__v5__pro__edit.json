@@ -1,0 +1,10 @@
+{
+ "endpoint": "bytedance/seedream/v5/pro/edit",
+ "unit": "image",
+ "usd": 0.0675,
+ "by_resolution": {"1K": 0.0675, "2K": 0.135},
+ "pricing_text": "You will be charged for both input and output images. The first input image is not charged, and every additional input image will cost **$0.0045**. Tentative pricing is **$0.0675+ $(0.0045 x number of additional input images)** per output image for images of total area less than or equal to **1536x1536** pixels. For output images with area in between **1536x1536** and **2048x2048** pixels, the price is **$0.135 + $(0.0045 x number of additional input images)** per image.",
+ "source_url": "https://fal.ai/models/bytedance/seedream/v5/pro/edit",
+ "confidence": "high",
+ "notes": "usd = $0.0675 لصورة مخرجة بمساحة ≤ 1536×1536 (يشمل auto_1K). المساحة بين 1536² و2048² (يشمل auto_2K وهو الافتراضي في المخطط) = $0.135. زيادة $0.0045 لكل صورة مرجعية إضافية بعد الأولى (حتى 10 مراجع). تنبيه: pricing_parsed في fal-launch.json أخذ 0.0045 (سعر المرجع الإضافي) كسعر أساسي خطأً. fal تصف السعر بأنه مبدئي (tentative). num_images حتى 6."
+}

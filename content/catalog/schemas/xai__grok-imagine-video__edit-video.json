@@ -1,0 +1,179 @@
+{
+ "endpoint": "xai/grok-imagine-video/edit-video",
+ "required": [
+  "prompt",
+  "video_url"
+ ],
+ "properties": {
+  "video_url": {
+   "title": "Video URL",
+   "description": "URL of the input video to edit. The video will be resized to a maximum area of 854x480 pixels and truncated to 8 seconds.",
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "maxLength": 4096,
+   "description": "Text description of the desired edit.",
+   "type": "string"
+  },
+  "resolution": {
+   "enum": [
+    "auto",
+    "480p",
+    "720p"
+   ],
+   "default": "auto",
+   "title": "Resolution",
+   "description": "Resolution of the output video.",
+   "type": "string"
+  }
+ },
+ "output": {
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "height": 720,
+      "content_type": "video/mp4",
+      "width": 1280,
+      "duration": 5.041667,
+      "file_name": "EuDrZuQTW9m1phBXOsauz_EpJH3s8X.mp4",
+      "url": "https://v3b.fal.media/files/b/0a8b9113/EuDrZuQTW9m1phBXOsauz_EpJH3s8X.mp4",
+      "num_frames": 121,
+      "fps": 24
+     }
+    ],
+    "description": "The generated video.",
+    "properties": {
+     "height": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Height",
+      "description": "The height of the video"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file."
+     },
+     "width": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Width",
+      "description": "The width of the video"
+     },
+     "duration": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duration",
+      "description": "The duration of the video"
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided."
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes."
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "num_frames": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Num Frames",
+      "description": "The number of frames in the video"
+     },
+     "fps": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fps",
+      "description": "The FPS of the video"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "VideoFile",
+    "type": "object"
+   }
+  },
+  "required": [
+   "video"
+  ],
+  "title": "XAIVideoEditOutput",
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T08:05:39+00:00"
+}

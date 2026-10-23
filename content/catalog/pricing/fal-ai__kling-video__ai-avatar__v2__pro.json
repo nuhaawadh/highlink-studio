@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/kling-video/ai-avatar/v2/pro",
+ "unit": "second",
+ "usd": 0.115,
+ "pricing_text": "Your request will cost $0.115 per second. — Kuaishou's Kling AI Avatar v2 Pro transforms static images into synchronized talking avatar videos at $0.115 per second of output. Cost per Second: $0.115 (Approximately 8.7 seconds of video per $1.00 on fal). Cost per Minute: $6.90. Output Duration: Matches audio length.",
+ "source_url": "https://fal.ai/models/fal-ai/kling-video/ai-avatar/v2/pro",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (صندوق التكلفة + جدول الأداء) بتاريخ 2026-10-23. طول الفيديو = طول ملف الصوت المُدخل، لا خيارات دقة/مدة."
+}

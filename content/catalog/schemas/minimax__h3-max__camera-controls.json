@@ -1,0 +1,212 @@
+{
+ "endpoint": "minimax/h3-max/camera-controls",
+ "required": [
+  "image_url",
+  "prompt_expansion_mode"
+ ],
+ "properties": {
+  "prompt_expansion_mode": {
+   "description": "How much effort to spend rewriting the prompt before generation. 'disabled' skips prompt expansion. 'balanced' returns in about a second. 'quality' spends up to ~30s on a richer prompt.",
+   "type": "string",
+   "default": "balanced",
+   "title": "Prompt Expansion Mode"
+  },
+  "duration": {
+   "title": "Duration",
+   "description": "Video length in seconds. The output can run up to about 0.7 s longer than requested.",
+   "minimum": 0.92,
+   "type": "number",
+   "default": 5,
+   "maximum": 15
+  },
+  "image_url": {
+   "description": "URL of the image to use as the first frame.",
+   "type": "string",
+   "title": "Image URL"
+  },
+  "camera_trajectory": {
+   "description": "Ordered camera keyframes. The first pose is held before its time and the final pose is held for the remainder of the video. Signed full turns are preserved, with at most 32 turns of total azimuth travel.",
+   "minItems": 2,
+   "items": {
+    "required": [
+     "time",
+     "azimuth",
+     "elevation",
+     "distance"
+    ],
+    "properties": {
+     "time": {
+      "title": "Time",
+      "description": "Normalized video time, from 0 at the start to 1 at the end.",
+      "minimum": 0,
+      "type": "number",
+      "maximum": 1
+     },
+     "azimuth": {
+      "description": "Horizontal camera angle around the subject, in degrees.",
+      "type": "number",
+      "title": "Azimuth"
+     },
+     "elevation": {
+      "title": "Elevation",
+      "description": "Vertical camera angle around the subject, in degrees.",
+      "minimum": -90,
+      "type": "number",
+      "maximum": 90
+     },
+     "distance": {
+      "exclusiveMinimum": 0,
+      "description": "Camera distance from the subject in normalized scene units.",
+      "type": "number",
+      "title": "Distance"
+     }
+    },
+    "description": "One camera pose at a normalized point in the generated clip.",
+    "type": "object",
+    "title": "H3MaxCameraKeyframe"
+   },
+   "type": "array",
+   "maxItems": 12,
+   "title": "Camera Trajectory"
+  },
+  "sync_mode": {
+   "description": "Return the generated video as base64 instead of a CDN URL.",
+   "type": "boolean",
+   "default": false,
+   "title": "Sync Mode"
+  },
+  "resolution": {
+   "default": "480P",
+   "description": "The native generation resolution, or 1080P latent refinement from a native 768P source.",
+   "type": "string",
+   "enum": [
+    "480P",
+    "768P",
+    "1080P"
+   ],
+   "title": "Resolution"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Random seed. A random seed is selected when omitted.",
+   "title": "Seed"
+  },
+  "prompt": {
+   "maxLength": 50000,
+   "description": "Text prompt for video generation. When omitted or blank, defaults to preserving the frozen reference scene while only the camera moves.",
+   "type": "string",
+   "default": "The same elements in the reference are rigid. Preserve every element exactly. The entire scene is frozen. Only the camera moves. no scene motion only camera motion",
+   "title": "Prompt"
+  },
+  "enable_safety_checker": {
+   "description": "If set to true, the safety checker will be enabled.",
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     }
+    },
+    "type": "object",
+    "title": "File"
+   },
+   "timings": {
+    "anyOf": [
+     {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "Timing breakdown in seconds. 'inference' is the DiT denoising time on the GPU backend. Null on routes that do not report backend timings.",
+    "title": "Timings"
+   },
+   "expanded_prompt": {
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "The prompt after expansion, as sent to the model. Null when prompt expansion was disabled, left the prompt unchanged, or was performed internally by MiniMax's hosted API.",
+    "title": "Expanded Prompt"
+   }
+  },
+  "type": "object",
+  "title": "TurboImageToVideoHailuo03Output"
+ },
+ "fetched_at": "2026-10-23T08:11:25+00:00"
+}

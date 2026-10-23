@@ -1,0 +1,146 @@
+{
+ "endpoint": "fal-ai/vidu/q3/text-to-video",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "duration": {
+   "default": 5,
+   "maximum": 16,
+   "minimum": 1,
+   "title": "Duration",
+   "description": "Duration of the video in seconds",
+   "type": "integer"
+  },
+  "aspect_ratio": {
+   "default": "16:9",
+   "enum": [
+    "16:9",
+    "9:16",
+    "4:3",
+    "3:4",
+    "1:1"
+   ],
+   "title": "Aspect Ratio",
+   "description": "The aspect ratio of the output video",
+   "type": "string"
+  },
+  "audio": {
+   "default": true,
+   "title": "Audio",
+   "description": "Whether to use direct audio-video generation. When true, outputs video with sound.",
+   "type": "boolean"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "maxLength": 2000,
+   "description": "Text prompt for video generation, max 2000 characters",
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean"
+  },
+  "resolution": {
+   "default": "720p",
+   "enum": [
+    "360p",
+    "540p",
+    "720p",
+    "1080p"
+   ],
+   "title": "Resolution",
+   "description": "Output video resolution",
+   "type": "string"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed",
+   "description": "Random seed for reproducibility. If None, a random seed is chosen."
+  }
+ },
+ "output": {
+  "properties": {
+   "video": {
+    "description": "The generated video from text using the Q3 model",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a8c915a/8dtkty-vyhotySs--cTKS_output.mp4"
+     }
+    ],
+    "properties": {
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object"
+   }
+  },
+  "required": [
+   "video"
+  ],
+  "title": "Q3TextToVideoOutput",
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T08:11:11+00:00"
+}

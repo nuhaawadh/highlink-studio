@@ -1,0 +1,132 @@
+{
+ "endpoint": "google/gemini-omni-flash/v1.1/image-to-video",
+ "required": [
+  "prompt",
+  "image_url"
+ ],
+ "properties": {
+  "end_image_url": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "End Image URL",
+   "description": "Optional URL of the end frame. When provided, the model interpolates between the two images in their listed order."
+  },
+  "duration": {
+   "default": 8,
+   "title": "Duration",
+   "maximum": 10,
+   "type": "integer",
+   "minimum": 3,
+   "description": "The duration of the generated video, in seconds."
+  },
+  "resolution": {
+   "default": "720p",
+   "title": "Resolution",
+   "type": "string",
+   "description": "The resolution of the generated video.",
+   "enum": [
+    "360p",
+    "720p",
+    "1080p",
+    "4k"
+   ]
+  },
+  "image_url": {
+   "title": "Image URL",
+   "type": "string",
+   "description": "URL of the first frame to animate."
+  },
+  "aspect_ratio": {
+   "default": "16:9",
+   "title": "Aspect Ratio",
+   "type": "string",
+   "description": "The aspect ratio of the generated video.",
+   "enum": [
+    "16:9",
+    "9:16"
+   ]
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "The text prompt describing how the first image should be animated or interpolated into the optional end image.",
+   "type": "string",
+   "maxLength": 20000
+  }
+ },
+ "output": {
+  "title": "VideoOutput",
+  "type": "object",
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video.",
+    "type": "object",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:13:02+00:00"
+}

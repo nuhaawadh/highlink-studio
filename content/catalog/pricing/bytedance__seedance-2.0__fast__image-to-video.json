@@ -1,0 +1,10 @@
+{
+ "endpoint": "bytedance/seedance-2.0/fast/image-to-video",
+ "unit": "second",
+ "usd": 0.2419,
+ "by_resolution": {"720p": 0.2419},
+ "pricing_text": "For every second of 720p video you generated, you will be charged **$0.2419/second**. Your request will cost **$0.0112** per 1,000 tokens. The number of tokens is given by (height of output video * width of output video * duration * 24) / 1024.",
+ "source_url": "https://fal.ai/models/bytedance/seedance-2.0/fast/image-to-video",
+ "confidence": "high",
+ "notes": "usd = 720p (الافتراضي). الدقات في المخطط 480p و720p فقط؛ 480p غير مسعّر صراحةً ويُحسب من المعادلة: $0.0112 لكل 1000 توكن، توكنات = (ارتفاع×عرض×مدة×24)/1024. الصوت مضمّن بلا زيادة. المدة 4-15 ث أو auto."
+}

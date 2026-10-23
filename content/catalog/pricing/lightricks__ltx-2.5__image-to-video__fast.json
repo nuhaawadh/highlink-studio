@@ -1,0 +1,15 @@
+{
+ "endpoint": "lightricks/ltx-2.5/image-to-video/fast",
+ "unit": "second",
+ "usd": 0.09,
+ "by_resolution": {
+  "720p": 0.09,
+  "1080p": 0.13,
+  "1440p": 0.19,
+  "4k": 0.3
+ },
+ "pricing_text": "Billing is calculated per second of video generated: **$0.09 at 720p**, **$0.13 at 1080p**, **$0.19 at 1440p**, and **$0.30 at 4K**. Native audio is included at every resolution. For example, a **10-second video at 1080p costs $1.30**.",
+ "source_url": "https://fal.ai/models/lightricks/ltx-2.5/image-to-video/fast",
+ "confidence": "high",
+ "notes": "الصوت الأصلي مضمّن في كل الدقات."
+}

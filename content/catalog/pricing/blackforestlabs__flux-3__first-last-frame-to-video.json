@@ -1,0 +1,13 @@
+{
+ "endpoint": "blackforestlabs/flux-3/first-last-frame-to-video",
+ "unit": "second",
+ "usd": 0.17,
+ "by_resolution": {
+  "720p": 0.17,
+  "1080p": 0.29
+ },
+ "pricing_text": "Your request will be charged at **$0.17** per second of generated video at 720p, and **$0.29** per second at 1080p.",
+ "source_url": "https://fal.ai/models/blackforestlabs/flux-3/first-last-frame-to-video",
+ "confidence": "high",
+ "notes": "الافتراضي 720p = $0.17/ث. 1440p و2160p موجودتان في المخطط لكن بلا سعر في النص."
+}

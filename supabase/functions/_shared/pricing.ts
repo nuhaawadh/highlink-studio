@@ -18,3 +18,74 @@ export function applyModelResolution(
   const m = typeof raw === 'number' && Number.isFinite(raw) && raw > 0 ? raw : RESOLUTION_MULTIPLIER[resolution]
   return Math.ceil(baseCredits * m)
 }
+
+/**
+ * تسعير صف النموذج كاملًا (ADR 0005) — المصدر الوحيد للزر في الواجهة ولحجز الرصيد في Edge Functions.
+ * - صورة: `cost_credits` × معامل الدقة (applyModelResolution مع `supports.resolution_multipliers`).
+ * - فيديو بالثانية (`cost_per_second` رصيد/ثانية = usd/ث × 3 ÷ 0.042): السعر/ث يُؤخذ من `supports.cps_by_resolution[resolution]`
+ *   إن وُجد وإلا `cost_per_second`، يُضاف `supports.audio_cps` عند طلب الصوت، ثم × المدة والتقريب لأعلى على الإجمالي.
+ * - فيديو بالمقطع (`cost_per_second` null): `supports.credits_by_duration[duration]` إن وُجد وإلا `cost_credits`.
+ * - صوت: `cost_credits` ثابت (التسعير بالحروف يُضاف مع محرك الصوت).
+ * المدة: من الخيارات ثم `default_params.duration` ثم `supports.durations[0]` ثم `max_duration_s` — وإلا RangeError (لا خصم بصفر).
+ */
+export interface ModelPricingRow {
+  type: 'image' | 'video' | 'audio'
+  cost_credits: number | null
+  cost_per_second: number | null
+  max_duration_s: number | null
+  supports: unknown
+  default_params: unknown
+}
+
+export interface ModelPricingOptions {
+  imageSize?: keyof typeof RESOLUTION_MULTIPLIER
+  duration?: number
+  resolution?: string
+  audio?: boolean
+}
+
+function obj(x: unknown): Record<string, unknown> {
+  return x && typeof x === 'object' && !Array.isArray(x) ? (x as Record<string, unknown>) : {}
+}
+
+function positive(x: unknown): number | undefined {
+  return typeof x === 'number' && Number.isFinite(x) && x > 0 ? x : undefined
+}
+
+/** المدة الفعلية لصف فيديو — نفس الاشتقاق في الواجهة والسيرفر */
+export function resolveDuration(row: ModelPricingRow, duration?: number): number | undefined {
+  const supports = obj(row.supports)
+  const durations = Array.isArray(supports.durations) ? (supports.durations as unknown[]).filter((d): d is number => typeof d === 'number') : []
+  return positive(duration) ?? positive(obj(row.default_params).duration) ?? positive(durations[0]) ?? positive(row.max_duration_s)
+}
+
+export function modelCredits(row: ModelPricingRow, opts: ModelPricingOptions): number {
+  const supports = obj(row.supports)
+  const defaults = obj(row.default_params)
+
+  if (row.type === 'image') {
+    if (row.cost_credits == null) throw new RangeError('image model without cost_credits')
+    const size = opts.imageSize ?? (defaults.imageSize as keyof typeof RESOLUTION_MULTIPLIER | undefined) ?? '1K'
+    return applyModelResolution(row.cost_credits, size, supports.resolution_multipliers)
+  }
+
+  if (row.type === 'video') {
+    const duration = resolveDuration(row, opts.duration)
+    if (!duration) throw new RangeError('video model without duration')
+    if (row.cost_per_second != null) {
+      const resolution = opts.resolution ?? (defaults.resolution as string | undefined)
+      const byRes = obj(supports.cps_by_resolution)
+      const perSecond = (resolution ? positive(byRes[resolution]) : undefined) ?? positive(row.cost_per_second)
+      if (!perSecond) throw new RangeError('video model with non-positive cost_per_second')
+      const audio = opts.audio ? (positive(supports.audio_cps) ?? 0) : 0
+      return Math.ceil((perSecond + audio) * duration)
+    }
+    const byDur = obj(supports.credits_by_duration)
+    const flat = positive(byDur[String(duration)]) ?? positive(row.cost_credits)
+    if (!flat) throw new RangeError('video model without cost_credits')
+    return Math.ceil(flat)
+  }
+
+  if (row.cost_credits == null) throw new RangeError('audio model without cost_credits')
+  return row.cost_credits
+}

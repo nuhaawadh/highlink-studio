@@ -1,0 +1,13 @@
+{
+ "endpoint": "minimax/h3-max/recast",
+ "unit": "second",
+ "usd": 0.3,
+ "by_resolution": {
+  "768p": 0.3,
+  "1080p": 0.45
+ },
+ "pricing_text": "Your request will cost **$0.30 per second** of output video at **768p** or **$0.45 per second** at **1080p**. Reference images are included at no additional charge. Billed by output video duration: $0.30 per second at 768p and $0.45 per second at 1080p. Reference images are included.",
+ "source_url": "https://fal.ai/models/minimax/h3-max/recast",
+ "confidence": "high",
+ "notes": "لكل ثانية من فيديو المخرج؛ الافتراضي في المخطط 1080P = $0.45/ث. صور المرجع مجانًا."
+}

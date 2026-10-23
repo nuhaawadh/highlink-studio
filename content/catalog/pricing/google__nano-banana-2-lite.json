@@ -1,0 +1,10 @@
+{
+ "endpoint": "google/nano-banana-2-lite",
+ "unit": "token",
+ "usd": 0.0000375,
+ "per_image_estimate_usd": 0.048,
+ "pricing_text": "Text tokens (per 1M): **$0.3125** input, **$1.875** output. Image tokens (per 1M): **$0.3125** input, **$37.50** output. Output images are generated at a fixed 1K (1024x1024px)",
+ "source_url": "https://fal.ai/models/google/nano-banana-2-lite",
+ "confidence": "low",
+ "notes": "تسعير بالتوكنات: usd = $37.50 لكل مليون توكن صورة مخرجة = $0.0000375/توكن. صفحة النموذج وصفحة /api لا تذكران سعرًا لكل صورة ولا عدد توكنات الصورة. per_image_estimate_usd = 0.048 محسوب بافتراض خارجي (غير موجود في صفحة fal): صورة 1K في Gemini ≈ 1,290 توكن مخرج → 1,290 × $37.50 / 1,000,000 ≈ $0.048، زائد توكنات نص البرومبت (مهملة ≈ أقل من $0.001). يجب التحقق من التكلفة الفعلية بطلب تجريبي قبل اعتماد الرقم. الدقة ثابتة 1K."
+}

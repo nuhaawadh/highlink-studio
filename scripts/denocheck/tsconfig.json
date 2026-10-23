@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "ignoreDeprecations": "6.0",
+    "types": [],
+    "baseUrl": "../../apps/web/node_modules",
+    "typeRoots": ["../../apps/web/node_modules/@types"]
+  },
+  "files": ["./shim.d.ts"],
+  "include": ["../../supabase/functions/**/*.ts"],
+  "exclude": ["../../supabase/functions/**/*.test.ts"]
+}

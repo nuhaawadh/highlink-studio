@@ -1,0 +1,202 @@
+{
+ "endpoint": "fal-ai/kling-video/v3/pro/motion-control",
+ "required": [
+  "image_url",
+  "video_url",
+  "character_orientation"
+ ],
+ "properties": {
+  "image_url": {
+   "type": "string",
+   "title": "Image Url",
+   "description": "Reference image URL. The characters, backgrounds, and other elements in the generated video are based on this reference image. Characters should have clear body proportions, avoid occlusion, and occupy more than 5% of the image area."
+  },
+  "keep_original_sound": {
+   "default": true,
+   "type": "boolean",
+   "description": "Whether to keep the original sound from the reference video.",
+   "title": "Keep Original Sound"
+  },
+  "elements": {
+   "anyOf": [
+    {
+     "type": "array",
+     "items": {
+      "x-fal-order-properties": [
+       "frontal_image_url",
+       "reference_image_urls"
+      ],
+      "properties": {
+       "reference_image_urls": {
+        "anyOf": [
+         {
+          "type": "array",
+          "items": {
+           "ui": {
+            "field": "image"
+           },
+           "x-fal": {
+            "min_aspect_ratio": 0.4,
+            "timeout": 20,
+            "max_file_size": 52428800,
+            "min_height": 300,
+            "max_aspect_ratio": 2.5,
+            "min_width": 300
+           },
+           "type": "string",
+           "_fal_ui_field": "image",
+           "limit_description": "Max file size: 50.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+          }
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Reference Image Urls",
+        "description": "Additional reference images from different angles. 1-3 images supported. At least one image is required."
+       },
+       "frontal_image_url": {
+        "anyOf": [
+         {
+          "x-fal": {
+           "min_aspect_ratio": 0.4,
+           "timeout": 20,
+           "max_file_size": 52428800,
+           "min_height": 300,
+           "max_aspect_ratio": 2.5,
+           "min_width": 300
+          },
+          "type": "string",
+          "ui": {
+           "field": "image"
+          },
+          "limit_description": "Max file size: 50.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Frontal Image Url",
+        "description": "The frontal image of the element (main view)."
+       }
+      },
+      "type": "object",
+      "title": "KlingV3ImageElementInput"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Elements",
+   "description": "Optional element for facial consistency binding. Upload a facial element to enhance identity preservation in the generated video. Only 1 element is supported. Reference in prompt as @Element1. Element binding is only supported when character_orientation is 'video'."
+  },
+  "prompt": {
+   "anyOf": [
+    {
+     "maxLength": 2500,
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Prompt"
+  },
+  "video_url": {
+   "type": "string",
+   "title": "Video Url",
+   "description": "Reference video URL. The character actions in the generated video will be consistent with this reference video. Should contain a realistic style character with entire body or upper body visible, including head, without obstruction. Duration limit depends on character_orientation: 10s max for 'image', 30s max for 'video'."
+  },
+  "enable_safety_checker": {
+   "default": true,
+   "type": "boolean",
+   "description": "Disabling safety checks requires account authorization; unauthorized requests are always checked.",
+   "title": "Enable Safety Checker"
+  },
+  "character_orientation": {
+   "title": "Character Orientation",
+   "enum": [
+    "image",
+    "video"
+   ],
+   "type": "string",
+   "description": "Controls whether the output character's orientation matches the reference image or video. 'video': orientation matches reference video - better for complex motions (max 30s). 'image': orientation matches reference image - better for following camera movements (max 10s)."
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a90ffb9/CnmmxIvK05VAq4gG8WiEQ_output.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     }
+    },
+    "type": "object",
+    "title": "File"
+   }
+  },
+  "type": "object",
+  "title": "MotionControlV3ProOutput"
+ },
+ "fetched_at": "2026-10-23T02:46:07+00:00"
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "veed/clean-audio",
+ "unit": "minute",
+ "usd": 0.0125,
+ "pricing_text": "Billing is calculated at **$0.0125 per minute of input audio**. Duration is rounded to whole seconds, then up to full minutes, with a **1-minute minimum**. For example, **10 minutes** costs **$0.125**, and **30 minutes** costs **$0.375**.",
+ "source_url": "https://fal.ai/models/veed/clean-audio",
+ "confidence": "high",
+ "notes": "$0.0125 لكل دقيقة صوت مدخل، تقريب لأعلى للدقيقة الكاملة بحد أدنى دقيقة. 10 دقائق = $0.125."
+}

@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/hunyuan-video-v1.5/text-to-video",
+ "unit": "second",
+ "usd": 0.075,
+ "by_resolution": {"480p": 0.075},
+ "pricing_text": "Video costs **$0.075** per second. More resolutions are coming soon.",
+ "source_url": "https://fal.ai/models/fal-ai/hunyuan-video-v1.5/text-to-video",
+ "confidence": "high",
+ "notes": "سعر ثابت $0.075/ث. الدقة ثابتة 480p في المخطط (const). المدة تُحدد بعدد الإطارات num_frames (حتى 121 إطارًا ≈ 5 ثوانٍ عند 24fps) وليس بحقل duration."
+}

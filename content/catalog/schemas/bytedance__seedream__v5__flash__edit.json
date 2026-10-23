@@ -1,0 +1,206 @@
+{
+ "endpoint": "bytedance/seedream/v5/flash/edit",
+ "required": [
+  "prompt",
+  "image_urls"
+ ],
+ "properties": {
+  "output_format": {
+   "title": "Output Format",
+   "enum": [
+    "jpeg",
+    "png"
+   ],
+   "description": "The file format of the generated image.",
+   "type": "string",
+   "default": "jpeg"
+  },
+  "image_size": {
+   "title": "Image Size",
+   "description": "The size of the generated image. Total pixels must be between 1024x1024 and 2048x2048, with aspect ratio between 1/16 and 16.",
+   "anyOf": [
+    {
+     "title": "ImageSize",
+     "properties": {
+      "height": {
+       "title": "Height",
+       "type": "integer",
+       "description": "The height of the generated image.",
+       "exclusiveMinimum": 0,
+       "maximum": 14142,
+       "default": 512
+      },
+      "width": {
+       "title": "Width",
+       "type": "integer",
+       "description": "The width of the generated image.",
+       "exclusiveMinimum": 0,
+       "maximum": 14142,
+       "default": 512
+      }
+     },
+     "type": "object"
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9",
+      "auto_1K",
+      "auto_2K"
+     ]
+    }
+   ],
+   "default": "auto_2K"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "type": "string",
+   "description": "The text prompt used to edit the image."
+  },
+  "image_urls": {
+   "title": "Image URLs",
+   "type": "array",
+   "description": "List of URLs of input reference images. Up to 10 images are supported; if more are sent, only the last 10 are used.",
+   "items": {
+    "type": "string"
+   }
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "type": "boolean",
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "default": false
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "type": "boolean",
+   "description": "If set to true, the safety checker will be enabled. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "default": true
+  },
+  "num_images": {
+   "title": "Num Images",
+   "type": "integer",
+   "minimum": 1,
+   "description": "Number of separate model generations to run with the prompt.",
+   "maximum": 6,
+   "default": 1
+  }
+ },
+ "output": {
+  "title": "SeedDream50ProEditOutput",
+  "properties": {
+   "images": {
+    "title": "Images",
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/0aa16df4/L8veDBOTxHhmpO5wQnioS_14c2d9c1736b4803a43796669c6d4fca.png"
+      }
+     ]
+    ],
+    "type": "array",
+    "description": "Generated images.",
+    "items": {
+     "title": "Image",
+     "properties": {
+      "height": {
+       "title": "Height",
+       "examples": [
+        1024
+       ],
+       "description": "The height of the image in pixels.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_size": {
+       "title": "File Size",
+       "examples": [
+        4404019
+       ],
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "width": {
+       "title": "Width",
+       "examples": [
+        1024
+       ],
+       "description": "The width of the image in pixels.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "content_type": {
+       "title": "Content Type",
+       "examples": [
+        "image/png"
+       ],
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_name": {
+       "title": "File Name",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "type": "string",
+       "description": "The URL where the file can be downloaded from."
+      }
+     },
+     "type": "object",
+     "description": "Represents an image file.",
+     "required": [
+      "url"
+     ]
+    }
+   }
+  },
+  "type": "object",
+  "required": [
+   "images"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:15:30+00:00"
+}

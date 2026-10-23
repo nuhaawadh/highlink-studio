@@ -4,6 +4,7 @@ import { AccountPage } from '@/app/AccountPage'
 import { ContactPage } from '@/app/ContactPage'
 import { HomePage } from '@/app/HomePage'
 import { ImageGeneratePage } from '@/app/ImageGeneratePage'
+import { VideoGeneratePage } from '@/app/VideoGeneratePage'
 import { LibraryPage } from '@/app/LibraryPage'
 import { LegalCenterPage, LegalPage } from '@/app/LegalPage'
 import { LoginPage } from '@/app/LoginPage'
@@ -33,7 +34,7 @@ export default function App() {
             <Route path="library" element={<LibraryPage />} />
             <Route path="account" element={<AccountPage />} />
             <Route path="image-generate" element={<ImageGeneratePage />} />
-            <Route path="video-generate" element={<PlaceholderPage titleKey="nav.video" phase={1} />} />
+            <Route path="video-generate" element={<VideoGeneratePage />} />
             <Route path="studio/product" element={<PlaceholderPage titleKey="studios.product" phase={2} />} />
             <Route path="studio/ads" element={<PlaceholderPage titleKey="studios.ads" phase={2} />} />
             <Route path="studio/ugc" element={<PlaceholderPage titleKey="studios.ugc" phase={2} />} />

@@ -1,0 +1,9 @@
+{
+ "endpoint": "heygen/heygen-voice/turbo",
+ "unit": "1k_chars",
+ "usd": 0.004,
+ "pricing_text": "Speech costs **$0.004** per **1,000 characters** of input text.",
+ "source_url": "https://fal.ai/models/heygen/heygen-voice/turbo",
+ "confidence": "high",
+ "notes": "$0.004 لكل 1,000 حرف من النص المدخل."
+}

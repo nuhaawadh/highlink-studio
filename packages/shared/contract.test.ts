@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { API_ERROR_CODES, GENERATE_ERROR_CODES } from './types'
-import { RESOLUTION_MULTIPLIER, applyModelResolution } from './pricing'
+import { RESOLUTION_MULTIPLIER, applyModelResolution, modelCredits } from './pricing'
 import {
   API_ERROR_CODES as EDGE_API_ERROR_CODES,
   API_ERROR_HTTP_STATUS,
@@ -8,7 +8,7 @@ import {
   GENERATE_ERROR_CODES as EDGE_ERROR_CODES,
   ERROR_MESSAGES_AR,
 } from '../../supabase/functions/_shared/types'
-import { RESOLUTION_MULTIPLIER as EDGE_MULTIPLIER, applyModelResolution as edgeApplyModelResolution } from '../../supabase/functions/_shared/pricing'
+import { RESOLUTION_MULTIPLIER as EDGE_MULTIPLIER, applyModelResolution as edgeApplyModelResolution, modelCredits as edgeModelCredits } from '../../supabase/functions/_shared/pricing'
 
 /**
  * Edge Functions لا تستورد من خارج supabase/functions/ (قيود التجميع)، فالعقد منسوخ في _shared/types.ts.
@@ -46,5 +46,15 @@ describe('contract parity — packages/shared ↔ _shared', () => {
         }
       }
     }
+  })
+
+  it('modelCredits متطابقة بين النسختين على صفوف صور وفيديو بالثانية وبالمقطع (ADR 0005)', () => {
+    const rows = [
+      { type: 'image' as const, cost_credits: 11, cost_per_second: null, max_duration_s: null, supports: { resolution_multipliers: { '1K': 1, '2K': 1, '4K': 2 } }, default_params: { imageSize: '2K' } },
+      { type: 'video' as const, cost_credits: null, cost_per_second: 8, max_duration_s: 15, supports: { audio_cps: 2, cps_by_resolution: { '1080p': 12 } }, default_params: { duration: 5, resolution: '720p' } },
+      { type: 'video' as const, cost_credits: 36, cost_per_second: null, max_duration_s: 9, supports: { credits_by_duration: { '9': 60 } }, default_params: { duration: 5 } },
+    ]
+    const opts = [{}, { imageSize: '4K' as const }, { duration: 10 }, { duration: 9, audio: true }, { duration: 5, resolution: '1080p', audio: true }]
+    for (const r of rows) for (const o of opts) expect(edgeModelCredits(r, o), JSON.stringify([r.type, o])).toBe(modelCredits(r, o))
   })
 })

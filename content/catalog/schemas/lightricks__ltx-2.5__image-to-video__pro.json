@@ -1,0 +1,240 @@
+{
+ "endpoint": "lightricks/ltx-2.5/image-to-video/pro",
+ "required": [
+  "prompt",
+  "image_url"
+ ],
+ "properties": {
+  "camera_motion": {
+   "title": "Camera Motion",
+   "description": "Optional camera motion applied to the generated video.",
+   "anyOf": [
+    {
+     "type": "string",
+     "enum": [
+      "dolly_in",
+      "dolly_out",
+      "dolly_left",
+      "dolly_right",
+      "jib_up",
+      "jib_down",
+      "static",
+      "focus_shift"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "image_url": {
+   "title": "Start Image URL",
+   "type": "string",
+   "description": "The URL of the start image to use for the generated video."
+  },
+  "fps": {
+   "title": "Frames per Second",
+   "description": "The frames per second of the generated video.",
+   "type": "integer",
+   "enum": [
+    24,
+    25,
+    50
+   ],
+   "default": 25
+  },
+  "duration": {
+   "title": "Duration",
+   "description": "The duration of the generated video in seconds, up to 10 seconds. Set to 'auto' to let the model choose the duration automatically.",
+   "enum": [
+    6,
+    8,
+    10,
+    "auto"
+   ],
+   "default": "auto"
+  },
+  "resolution": {
+   "title": "Resolution",
+   "description": "The resolution of the generated video.",
+   "type": "string",
+   "enum": [
+    "720p",
+    "1080p"
+   ],
+   "default": "1080p"
+  },
+  "end_image_url": {
+   "title": "End Image URL",
+   "description": "The URL of the end image to use for the generated video. When provided, generates a transition video between start and end frames.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "aspect_ratio": {
+   "title": "Aspect Ratio",
+   "description": "The aspect ratio of the generated video. If 'auto', the aspect ratio will be determined automatically based on the input image.",
+   "type": "string",
+   "enum": [
+    "auto",
+    "16:9",
+    "9:16"
+   ],
+   "default": "auto"
+  },
+  "generate_audio": {
+   "title": "Generate Audio",
+   "description": "Whether to generate audio for the generated video",
+   "type": "boolean",
+   "default": true
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "The prompt to use for the generated video",
+   "type": "string",
+   "maxLength": 5000
+  }
+ },
+ "output": {
+  "title": "LTXV23ImageToVideoResponse",
+  "required": [
+   "video"
+  ],
+  "type": "object",
+  "properties": {
+   "video": {
+    "description": "The generated video file",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a90dd31/VUCTD0YYJIp_K4qQkkneL_wMVDWNRn.mp4",
+      "file_name": "VUCTD0YYJIp_K4qQkkneL_wMVDWNRn.mp4",
+      "content_type": "video/mp4"
+     }
+    ],
+    "title": "VideoFile",
+    "required": [
+     "url"
+    ],
+    "type": "object",
+    "properties": {
+     "num_frames": {
+      "title": "Num Frames",
+      "description": "The number of frames in the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "fps": {
+      "title": "Fps",
+      "description": "The FPS of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "duration": {
+      "title": "Duration",
+      "description": "The duration of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_size": {
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "height": {
+      "title": "Height",
+      "description": "The height of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "width": {
+      "title": "Width",
+      "description": "The width of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:10:30+00:00"
+}

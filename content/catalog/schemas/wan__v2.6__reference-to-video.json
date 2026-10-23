@@ -1,0 +1,267 @@
+{
+ "endpoint": "wan/v2.6/reference-to-video",
+ "required": [
+  "prompt",
+  "video_urls"
+ ],
+ "properties": {
+  "resolution": {
+   "type": "string",
+   "description": "Video resolution tier. R2V only supports 720p and 1080p (no 480p).",
+   "default": "1080p",
+   "enum": [
+    "720p",
+    "1080p"
+   ],
+   "title": "Resolution"
+  },
+  "prompt": {
+   "type": "string",
+   "description": "Use @Video1, @Video2, @Video3 to reference subjects from your videos. Works for people, animals, or objects. For multi-shot prompts: '[0-3s] Shot 1. [3-6s] Shot 2.' Max 1500 characters.",
+   "title": "Prompt"
+  },
+  "duration": {
+   "type": "string",
+   "description": "Duration of the generated video in seconds. R2V supports only 5 or 10 seconds (no 15s).",
+   "enum": [
+    "5",
+    "10"
+   ],
+   "default": "5",
+   "title": "Duration"
+  },
+  "enable_prompt_expansion": {
+   "type": "boolean",
+   "description": "Whether to enable prompt rewriting using LLM.",
+   "default": true,
+   "title": "Enable Prompt Expansion"
+  },
+  "video_urls": {
+   "type": "array",
+   "description": "Reference videos for subject consistency (1-3 videos). Videos' FPS must be at least 16 FPS.Reference in prompt as @Video1, @Video2, @Video3. Works for people, animals, or objects.",
+   "items": {
+    "limit_description": "Max file size: 100.0MB, Min duration: 2s, Max duration: 30s, Timeout: 30.0s",
+    "x-fal": {
+     "min_duration": 2,
+     "max_duration": 30,
+     "max_file_size": 104857600,
+     "timeout": 30
+    },
+    "type": "string",
+    "_fal_ui_field": "video"
+   },
+   "title": "Video Urls"
+  },
+  "negative_prompt": {
+   "description": "Negative prompt to describe content to avoid. Max 500 characters.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": "",
+   "title": "Negative Prompt"
+  },
+  "multi_shots": {
+   "type": "boolean",
+   "description": "When true (default), enables intelligent multi-shot segmentation for coherent narrative videos with multiple shots. When false, generates single continuous shot. Only active when enable_prompt_expansion is True.",
+   "default": true,
+   "title": "Multi Shots"
+  },
+  "seed": {
+   "description": "Random seed for reproducibility. If None, a random seed is chosen.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed"
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "description": "If set to true, the safety checker will be enabled. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "aspect_ratio": {
+   "type": "string",
+   "description": "The aspect ratio of the generated video.",
+   "default": "16:9",
+   "enum": [
+    "16:9",
+    "9:16",
+    "1:1",
+    "4:3",
+    "3:4"
+   ],
+   "title": "Aspect Ratio"
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "video": {
+    "description": "The generated video file",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a86762b/iDknfPkLFSFwWkyMgJi0U_QIzjwBDQ.mp4",
+      "content_type": "video/mp4"
+     }
+    ],
+    "type": "object",
+    "title": "VideoFile",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "duration": {
+      "title": "Duration",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The duration of the video"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file."
+     },
+     "num_frames": {
+      "title": "Num Frames",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The number of frames in the video"
+     },
+     "url": {
+      "type": "string",
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from."
+     },
+     "width": {
+      "title": "Width",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The width of the video"
+     },
+     "height": {
+      "title": "Height",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The height of the video"
+     },
+     "fps": {
+      "title": "Fps",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The FPS of the video"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes."
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided."
+     }
+    }
+   },
+   "seed": {
+    "type": "integer",
+    "description": "The seed used for generation",
+    "examples": [
+     175932751
+    ],
+    "title": "Seed"
+   },
+   "actual_prompt": {
+    "description": "The actual prompt used if prompt rewriting was enabled",
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "examples": [
+     "Dance battle between Character1 and Character2, cinematic lighting, dynamic camera movement."
+    ],
+    "title": "Actual Prompt"
+   }
+  },
+  "description": "Output for reference-to-video generation",
+  "required": [
+   "video",
+   "seed"
+  ],
+  "title": "ReferenceToVideoOutput"
+ },
+ "fetched_at": "2026-10-23T02:51:25+00:00"
+}

@@ -1,0 +1,100 @@
+{
+ "endpoint": "fal-ai/kling-video/lipsync/audio-to-video",
+ "required": [
+  "video_url",
+  "audio_url"
+ ],
+ "properties": {
+  "audio_url": {
+   "title": "Audio Url",
+   "type": "string",
+   "description": "The URL of the audio to generate the lip sync for. Minimum duration is 2s and maximum duration is 60s. Maximum file size is 5MB."
+  },
+  "enable_safety_checker": {
+   "default": true,
+   "type": "boolean",
+   "description": "Disabling safety checks requires account authorization; unauthorized requests are always checked.",
+   "title": "Enable Safety Checker"
+  },
+  "video_url": {
+   "title": "Video Url",
+   "type": "string",
+   "description": "The URL of the video to generate the lip sync for. Supports .mp4/.mov, ≤100MB, 2–10s, 720p/1080p only, width/height 720–1920px."
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video",
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/kling/kling_output.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     }
+    },
+    "type": "object",
+    "title": "File"
+   }
+  },
+  "type": "object",
+  "title": "LipsyncA2VOutput"
+ },
+ "fetched_at": "2026-10-23T02:45:22+00:00"
+}

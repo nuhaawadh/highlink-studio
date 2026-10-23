@@ -10,7 +10,7 @@ import { getBalance, holdCredits, releaseAssetHold } from './credits.ts'
 import { AppError, toAppError } from './errors.ts'
 import { buildProviderInput } from './inputs.ts'
 import { logRequest } from './log.ts'
-import { applyModelResolution } from './pricing.ts'
+import { modelCredits, resolveDuration } from './pricing.ts'
 import { getProvider } from './providers/index.ts'
 import type { GenerateRequestInput } from './request.ts'
 import { checkPromptSafety } from './safety.ts'
@@ -130,19 +130,38 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
       .maybeSingle<ModelRow>()
     if (modelErr) throw toAppError(new Error(modelErr.message))
     if (!model || !model.enabled) throw new AppError('MODEL_DISABLED')
-    if (model.type !== 'image' || model.cost_credits == null) {
-      throw new AppError('MODEL_DISABLED', 'هذا النوع من النماذج يُفعَّل في جلسة لاحقة')
+    if (model.type === 'audio') {
+      throw new AppError('MODEL_DISABLED', 'نماذج الصوت تُفعَّل في المرحلة 2')
+    }
+    // نماذج تحتاج مرجعًا (صورة→فيديو، تعديل بالمراجع…) ترفض الطلب بلا مراجع بسبب مفهوم بدل 422 من المزوّد
+    const required = ((model.input_schema as { required?: unknown } | null)?.required ?? []) as unknown[]
+    const needsRefs = ['image_url', 'image_urls', 'start_image_url', 'image_input'].some((k) => required.includes(k))
+    if (needsRefs && !(body.images && body.images.length)) {
+      throw new AppError('INVALID_INPUT', 'هذا النموذج يحتاج صورة مرجعية واحدة على الأقل')
     }
     const provider = getProvider(model.provider)
 
-    // 4) المدخلات ضد مخطط المزوّد + التسعير
+    // 4) المدخلات ضد مخطط المزوّد + التسعير (ADR 0005: صورة بالدقة، فيديو بالثانية أو بالمقطع — modelCredits هي المصدر الوحيد)
     const built = buildProviderInput(model, body.prompt, body.images, body.config)
     if (built.invalid.length) {
       const first = built.invalid[0]
       throw new AppError('INVALID_INPUT', 'إعداد غير مدعوم لهذا النموذج', { detail: `${first.key}=${String(first.value)} not in ${JSON.stringify(first.allowed)}` })
     }
     const imageSize = (body.config?.imageSize ?? (model.default_params.imageSize as '1K' | '2K' | '4K' | undefined) ?? '1K')
-    const cost = applyModelResolution(model.cost_credits, imageSize, model.supports.resolution_multipliers)
+    const duration = model.type === 'video' ? resolveDuration(model, body.config?.duration) : undefined
+    if (model.type === 'video') {
+      if (!duration) throw new AppError('MODEL_DISABLED', undefined, { detail: `model ${model.id} has no duration` })
+      if (model.max_duration_s != null && duration > model.max_duration_s) {
+        throw new AppError('INVALID_INPUT', 'المدة أطول مما يدعمه هذا النموذج', { detail: `duration=${duration} max=${model.max_duration_s}` })
+      }
+    }
+    const videoResolution = model.type === 'video' ? (body.config?.resolution ?? (model.default_params.resolution as string | undefined) ?? null) : null
+    let cost: number
+    try {
+      cost = modelCredits(model, { imageSize, duration, resolution: videoResolution ?? undefined, audio: body.config?.audio })
+    } catch (e) {
+      throw new AppError('MODEL_DISABLED', undefined, { detail: `pricing: ${e instanceof Error ? e.message : String(e)}` })
+    }
     if (body.maxCredits !== undefined && cost > body.maxCredits) {
       throw new AppError('OVER_BUDGET', undefined, { detail: `cost=${cost} max=${body.maxCredits}` })
     }
@@ -153,8 +172,8 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
 
     const commonFields = {
       prompt: body.prompt,
-      aspect_ratio: (built.input.aspect_ratio as string | undefined) ?? null,
-      resolution: imageSize,
+      aspect_ratio: (built.input.aspect_ratio as string | undefined) ?? body.config?.aspectRatio ?? null,
+      resolution: model.type === 'video' ? videoResolution : imageSize,
       feature_tag: body.feature_tag ?? 'general',
       input_urls: body.images ?? null,
     }

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/kling-video/v3/turbo/pro/text-to-video",
+ "unit": "second",
+ "usd": 0.14,
+ "pricing_text": "For every second of video you generate, you will be charged **$0.14** . For example, a **5s** video will cost **$0.70**.",
+ "source_url": "https://fal.ai/models/fal-ai/kling-video/v3/turbo/pro/text-to-video",
+ "confidence": "high",
+ "notes": "سعر ثابت لكل ثانية (1080p). المدة 3-15 ث (افتراضي 5)؛ لا خيار دقة ولا صوت في المخطط."
+}

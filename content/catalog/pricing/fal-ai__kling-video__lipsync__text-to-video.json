@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/kling-video/lipsync/text-to-video",
+ "unit": "second",
+ "usd": 0.014,
+ "pricing_text": "Your request will be priced **$0.014** per input **video seconds**, rolling up to closest **5 second increment**. For example, if your video's duration is 3 seconds, it will be billed as a 5 second video",
+ "source_url": "https://fal.ai/models/fal-ai/kling-video/lipsync/text-to-video",
+ "confidence": "high",
+ "notes": "السعر لكل ثانية من فيديو المدخل (لا المخرج)، وتُقرَّب المدة لأعلى لأقرب 5 ثوانٍ (3 ث تُفوتر 5 ث). الفيديو 2–60 ث."
+}

@@ -1,0 +1,11 @@
+{
+ "endpoint": "openai/gpt-image-2.5/sunburst/edit",
+ "unit": "token",
+ "usd": 0.00003,
+ "per_image_estimate_usd": 0.05268,
+ "by_resolution": {"1024x768": 0.03612, "1024x1024": 0.05268, "1024x1536": 0.04116, "1920x1072": 0.03945, "2560x1440": 0.05529, "3840x2160": 0.10008},
+ "pricing_text": "Text tokens (per 1M): **$5.00** input, **$1.25** cached, **$10.00** output.\nImage tokens (per 1M): **$8.00** input, **$2.00** cached, **$30.00** output. Changing the **quality** parameter significantly affects cost; by default we use **high**. Adjust it to your preference.\nSee the description at the bottom of this page for more details on how much canonical image sizes cost. Total cost is rounded up to the closest hundredth of a cent ($0.0001). | Pricing: The table below shows the output cost of one edited image at common sizes. It does not include your reference images or the text input tokens from your prompt. Size | low | medium | high | xhigh | max: 1024×768 $0.00402 | $0.00903 | $0.03612 | $0.06420 | $0.14445; 1024×1024 $0.00588 | $0.01317 | $0.05268 | $0.09366 | $0.21072; 1024×1536 $0.00474 | $0.01029 | $0.04116 | $0.07377 | $0.16464; 1920×1072 $0.00441 | $0.00951 | $0.03945 | $0.07014 | $0.15780; 2560×1440 $0.00615 | $0.01434 | $0.05529 | $0.09828 | $0.22110; 3840×2160 $0.01113 | $0.02595 | $0.10008 | $0.17790 | $0.40026. Each reference image is billed as image input, at $8.00 per 1M tokens: 1024×1024 or smaller about $0.008; 3840×2160 about $0.012. Example totals for one edit with a single 1024×1024 reference and a short prompt: 1024×1024 low $0.0142 | medium $0.0215 | high $0.0610. Prompt text at $5.00 per 1M tokens (short prompt about $0.0001). With quality: auto the model picks the quality, so the cost can reach the max column.",
+ "source_url": "https://fal.ai/models/openai/gpt-image-2.5/sunburst/edit",
+ "confidence": "high",
+ "notes": "تسعير بالتوكنات: usd = سعر توكن إخراج صورة واحد ($30 ÷ 1M). per_image_estimate_usd = مخرج 1024×1024 بجودة high (الافتراضية) = $0.05268 بدون المراجع. by_resolution = سعر المخرج عند quality=high لكل حجم. جودات أخرى (1024×1024): low $0.00588، medium $0.01317، xhigh $0.09366، max $0.21072. يُضاف لكل صورة مرجعية ≈$0.008 (≤1024²) أو ≈$0.012 (4K)، وللبرومبت ≈$0.0001. مثال من الصفحة لتعديل كامل بمرجع واحد 1024² وجودة high = $0.0610. quality=auto قد يصل لعمود max. يُقرَّب الإجمالي لأعلى إلى $0.0001."
+}

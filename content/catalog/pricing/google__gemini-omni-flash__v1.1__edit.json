@@ -1,0 +1,10 @@
+{
+ "endpoint": "google/gemini-omni-flash/v1.1/edit",
+ "unit": "second",
+ "usd": 0.03,
+ "by_resolution": {"360p": 0.03, "720p": 0.1, "1080p": 0.15, "4k": 0.3},
+ "pricing_text": "Billing is calculated per second of output video, by resolution. For **360p**, your request will cost **$0.03** per second; for **720p**, **$0.10** per second; for **1080p**, **$0.15** per second; and for **4K**, **$0.30** per second. A 10-second **1080p** clip costs **$1.50**, while the same clip at **360p** costs **$0.30**.",
+ "source_url": "https://fal.ai/models/google/gemini-omni-flash/v1.1/edit",
+ "confidence": "high",
+ "notes": "usd = 360p (الأرخص)؛ الافتراضي في المخطط 720p ($0.10/ث). السعر لكل ثانية من فيديو المخرج (= مدة فيديو المصدر). تنبيه: pricing_parsed في fal-launch.json خلط الدقات (360p = 1.5) — الصحيح من النص كما في by_resolution."
+}

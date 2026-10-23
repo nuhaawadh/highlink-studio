@@ -1,0 +1,9 @@
+{
+ "endpoint": "recraft/v4.1/flash/text-to-image",
+ "unit": "image",
+ "usd": 0.007,
+ "pricing_text": "Billing is calculated per generated image at **$0.007 per image**. Generating **100 images** costs **$0.70**.",
+ "source_url": "https://fal.ai/models/recraft/v4.1/flash/text-to-image",
+ "confidence": "high",
+ "notes": "$0.007 للصورة؛ 100 صورة = $0.70."
+}

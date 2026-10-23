@@ -12,7 +12,10 @@ import { createQueuedAsset, GenerateError, requestGeneration, useAssets } from '
 import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import { env } from '@/lib/env'
-import { modelAspectRatios, modelCost, modelDefaults, modelSizes, useModels } from '@/lib/models'
+import { modelAspectRatios, modelCost, modelDefaults, modelSizes, useModels, type ModelRow } from '@/lib/models'
+
+/** تكلفة النموذج بدقته الافتراضية — لبطاقات العائلات في المنتقي */
+const defaultImageCost = (m: ModelRow) => modelCost(m, modelDefaults(m).imageSize ?? '1K')
 
 /**
  * التوليد الحر للصور (المخطط §8): شريط إعدادات + شبكة نتائج + شريط برومبت فيه زر يعرض التكلفة قبل الضغط.
@@ -102,7 +105,7 @@ export function ImageGeneratePage() {
 
         <div>
           <h2 className="mb-2 text-xs font-semibold text-muted">{t('generate.model')}</h2>
-          <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={setModelId} />
+          <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={setModelId} defaultCost={defaultImageCost} />
         </div>
 
         {model && (

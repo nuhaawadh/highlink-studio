@@ -1,0 +1,345 @@
+{
+ "endpoint": "blackforestlabs/flux-3/klein/edit-image",
+ "required": [
+  "prompt",
+  "image_urls"
+ ],
+ "properties": {
+  "seed": {
+   "title": "Seed",
+   "description": "The same seed and the same prompt given to the same version of the model will output the same image every time.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "default": true,
+   "description": "If set to true, the safety checker will be enabled.",
+   "type": "boolean"
+  },
+  "image_urls": {
+   "title": "Image URLs",
+   "description": "The reference images to edit or compose from (up to 10).",
+   "items": {
+    "type": "string"
+   },
+   "type": "array",
+   "maxItems": 10,
+   "minItems": 1
+  },
+  "bounding_boxes": {
+   "title": "Bounding Boxes",
+   "description": "Optional layout, with (0, 0) at the top-left of each image: keep, move, resize or remove objects from the references, or place new ones. Name boxes in the prompt by label, e.g. ``.",
+   "anyOf": [
+    {
+     "items": {
+      "title": "EditBoundingBox",
+      "x-fal-order-properties": [
+       "label",
+       "description",
+       "box",
+       "source_image_index",
+       "source_box",
+       "target_box"
+      ],
+      "required": [
+       "description"
+      ],
+      "type": "object",
+      "properties": {
+       "label": {
+        "examples": [
+         "dragon"
+        ],
+        "title": "Label",
+        "description": "Short name for the object in this box, e.g. `dragon`. Write `` in the prompt to tie the box to those words; a box the prompt doesn't name is added to the scene. Defaults to `obj_`.",
+        "anyOf": [
+         {
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+          "type": "string",
+          "maxLength": 64
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "source_box": {
+        "description": "Where the object is in the reference image. Requires `source_image_index`.",
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Box"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "source_image_index": {
+        "title": "Source Image Index",
+        "description": "0-based index into `image_urls` of the reference the object comes from. Leave unset for a new object.",
+        "anyOf": [
+         {
+          "minimum": 0,
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "description": {
+        "title": "Description",
+        "description": "What to draw in this box: the object and its look.",
+        "type": "string",
+        "maxLength": 500,
+        "examples": [
+         "a large fluffy knitted dragon in terracotta and mustard yarn"
+        ]
+       },
+       "target_box": {
+        "description": "Where the object goes in the output image. Leave unset to remove a referenced object; set both boxes to move or resize it.",
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Box"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "box": {
+        "description": "Where the object goes in the output image, as on text-to-image. Use instead of `source_box`/`target_box`.",
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/Box"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      }
+     },
+     "type": "array",
+     "maxItems": 32
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "default": false,
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "type": "boolean"
+  },
+  "image_size": {
+   "title": "Image Size",
+   "description": "The size of the generated image, 256 to 4096 pixels per side. If not set, a single reference image's own size (scaled to at most 4 megapixels) is used, or the first reference image's size (at most 1 megapixel) when several are given.",
+   "anyOf": [
+    {
+     "title": "ImageSize",
+     "type": "object",
+     "properties": {
+      "width": {
+       "maximum": 14142,
+       "title": "Width",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "type": "integer",
+       "description": "The width of the generated image."
+      },
+      "height": {
+       "maximum": 14142,
+       "title": "Height",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "type": "integer",
+       "description": "The height of the generated image."
+      }
+     }
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "output_format": {
+   "title": "Output Format",
+   "description": "The format of the generated image.",
+   "default": "png",
+   "type": "string",
+   "enum": [
+    "jpeg",
+    "png",
+    "webp"
+   ]
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "A complete caption of the target image with the edit folded in. Refer to the references by their order: the first image, the second image.",
+   "type": "string"
+  },
+  "enable_prompt_expansion": {
+   "title": "Enable Prompt Expansion",
+   "default": true,
+   "description": "If set to true, the prompt is expanded into a detailed caption (grounded in the reference images when editing) before generation.",
+   "type": "boolean"
+  },
+  "num_images": {
+   "maximum": 4,
+   "title": "Number of Images",
+   "default": 1,
+   "description": "The number of images to generate.",
+   "type": "integer",
+   "minimum": 1
+  }
+ },
+ "output": {
+  "title": "Output",
+  "required": [
+   "images",
+   "timings",
+   "seed",
+   "has_nsfw_concepts",
+   "prompt"
+  ],
+  "type": "object",
+  "properties": {
+   "prompt": {
+    "title": "Prompt",
+    "description": "The prompt used for generating the image.",
+    "type": "string"
+   },
+   "timings": {
+    "title": "Timings",
+    "description": "The timings of the generation process.",
+    "additionalProperties": {
+     "type": "number"
+    },
+    "type": "object"
+   },
+   "has_nsfw_concepts": {
+    "title": "Has Nsfw Concepts",
+    "description": "Whether the generated images contain NSFW concepts.",
+    "items": {
+     "type": "boolean"
+    },
+    "type": "array"
+   },
+   "images": {
+    "title": "Images",
+    "description": "The generated images.",
+    "items": {
+     "required": [
+      "url"
+     ],
+     "title": "ImageFile",
+     "type": "object",
+     "properties": {
+      "content_type": {
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_name": {
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "height": {
+       "title": "Height",
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "width": {
+       "title": "Width",
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_size": {
+       "examples": [
+        4404019
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    },
+    "type": "array"
+   },
+   "seed": {
+    "title": "Seed",
+    "description": "Seed used to generate the first image.",
+    "type": "integer"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:15:30+00:00"
+}

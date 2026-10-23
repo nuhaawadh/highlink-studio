@@ -1,0 +1,10 @@
+{
+ "endpoint": "wan/v2.6/text-to-video",
+ "unit": "second",
+ "usd": 0.1,
+ "by_resolution": {"720p": 0.1, "1080p": 0.15},
+ "pricing_text": "Your request will cost **$0.10** per second for **720p**, **$0.15** per second for **1080p**.",
+ "source_url": "https://fal.ai/models/wan/v2.6/text-to-video",
+ "confidence": "high",
+ "notes": "usd = 720p. تنبيه: الدقة الافتراضية في المخطط 1080p ($0.15/ث). المدة 5/10/15 ث فقط (افتراضي 5). لا 480p."
+}

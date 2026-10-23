@@ -1,0 +1,18 @@
+{
+ "endpoint": "luma/agent/ray/v3.2/video-to-video",
+ "unit": "clip",
+ "usd": 0.72,
+ "by_resolution": {
+  "540p": 0.72,
+  "720p": 1.08,
+  "1080p": 2.16
+ },
+ "by_duration": {
+  "5": 0.72,
+  "10": 1.44
+ },
+ "pricing_text": "For 5s video your request will cost **$0.72** for 540p, **$1.08** for 720p and **$2.16** for 1080p. For 10s, **$1.44** at 540p, **$2.16** at 720p and **$4.32** at 1080p. HDR (720p/1080p only) costs **$2.16**/**$4.32** at 5s and **$4.32**/**$8.64** at 10s; HDR + EXR costs **$3.24**/**$6.48** at 5s and **$6.48**/**$12.96** at 10s (540p not available in HDR). For **$1** you can run this model approximately **1 time** (540p/5s).",
+ "source_url": "https://fal.ai/models/luma/agent/ray/v3.2/video-to-video",
+ "confidence": "high",
+ "notes": "by_resolution لمقطع 5 ث؛ by_duration عند 540p. 10 ث: $1.44 (540p) / $2.16 (720p) / $4.32 (1080p) — أي خطيًا ≈ $0.144/ث عند 540p. HDR (720p/1080p فقط): $2.16/$4.32 عند 5 ث و$4.32/$8.64 عند 10 ث؛ HDR+EXR: $3.24/$6.48 عند 5 ث و$6.48/$12.96 عند 10 ث."
+}

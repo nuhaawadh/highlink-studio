@@ -14,7 +14,8 @@ export const GenerateRequestSchema = z.object({
       aspectRatio: z.enum(['1:1', '9:16', '16:9', '4:5', '3:4']).optional(),
       imageSize: z.enum(['1K', '2K', '4K']).optional(),
       duration: z.number().int().min(1).max(30).optional(),
-      resolution: z.enum(['480p', '720p', '1080p']).optional(),
+      // كما يسمّيها مخطط المزوّد: 480p/720p/1080p/768P/4k… — التحقق الفعلي ضد enum النموذج في inputs.ts (ADR 0005)
+      resolution: z.string().regex(/^(\d{3,4}[pP]|[248][kK])$/).optional(),
       audio: z.boolean().optional(),
       seed: z.number().int().optional(),
     })

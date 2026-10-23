@@ -1,0 +1,193 @@
+{
+ "endpoint": "lightricks/ltx-2.5/audio-to-video/pro",
+ "required": [
+  "audio_url"
+ ],
+ "properties": {
+  "aspect_ratio": {
+   "title": "Aspect Ratio",
+   "description": "The aspect ratio of the generated video. If 'auto', the aspect ratio will be determined automatically based on the input image, or defaults to 16:9 if no image is provided.",
+   "type": "string",
+   "enum": [
+    "auto",
+    "16:9",
+    "9:16"
+   ],
+   "default": "auto"
+  },
+  "image_url": {
+   "title": "Image URL",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "URL of an image to use as the first frame of the video. If not provided, prompt is required."
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "default": true
+  },
+  "prompt": {
+   "title": "Prompt",
+   "anyOf": [
+    {
+     "type": "string",
+     "maxLength": 5000,
+     "minLength": 1
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Text description of how the video should be generated. Required if image_url is not provided. When image_url is provided, this describes how the image should be animated."
+  },
+  "audio_url": {
+   "title": "Audio URL",
+   "description": "URL of the audio file to generate a video from. Duration must be between 2 and 20 seconds; pro models support a maximum of 10 seconds. Must be publicly accessible or base64 data URI.",
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "LTXV23AudioToVideoResponse",
+  "required": [
+   "video"
+  ],
+  "type": "object",
+  "properties": {
+   "video": {
+    "description": "The generated video file",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a90dfec/qqP0ClY8E3d83X8y0zLse_shyIe9XU.mp4",
+      "file_name": "qqP0ClY8E3d83X8y0zLse_shyIe9XU.mp4",
+      "content_type": "video/mp4"
+     }
+    ],
+    "title": "VideoFile",
+    "required": [
+     "url"
+    ],
+    "type": "object",
+    "properties": {
+     "num_frames": {
+      "title": "Num Frames",
+      "description": "The number of frames in the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "fps": {
+      "title": "Fps",
+      "description": "The FPS of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "duration": {
+      "title": "Duration",
+      "description": "The duration of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_size": {
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "height": {
+      "title": "Height",
+      "description": "The height of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "width": {
+      "title": "Width",
+      "description": "The width of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:13:05+00:00"
+}

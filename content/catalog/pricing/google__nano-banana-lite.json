@@ -1,0 +1,10 @@
+{
+ "endpoint": "google/nano-banana-lite",
+ "unit": "token",
+ "usd": 0.0000375,
+ "per_image_estimate_usd": null,
+ "pricing_text": "Text tokens (per 1M): **$0.3125** input, **$1.875** output. Image tokens (per 1M): **$0.3125** input, **$37.50** output. Output images are generated at a fixed 1K (1024x1024px)",
+ "source_url": "https://fal.ai/models/google/nano-banana-lite",
+ "confidence": "low",
+ "notes": "تسعير بالتوكنات فقط: usd = سعر توكن إخراج صورة واحد ($37.50 ÷ 1,000,000). لا تذكر الصفحة (ولا صفحة /api) عدد توكنات الصورة الواحدة ولا أي مثال لسعر الصورة، فلا يمكن حساب per_image_estimate_usd من النص دون تخمين — تُرك null عمدًا. تحتاج تأكيدًا من مصدر رسمي (عدد توكنات الإخراج لصورة 1K في Gemini 3.1 Flash Lite Image) قبل اعتماد سعر للصورة. المخرجات دائمًا 1K ثابتة."
+}

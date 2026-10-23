@@ -1,0 +1,238 @@
+{
+ "endpoint": "fal-ai/vidu/q4/image-to-video",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "duration": {
+   "default": 5,
+   "maximum": 16,
+   "minimum": 3,
+   "title": "Duration",
+   "description": "Duration of the video in seconds (3-16)",
+   "type": "integer"
+  },
+  "prompt": {
+   "default": "",
+   "maxLength": 5000,
+   "description": "Text prompt for video generation, max 5000 characters",
+   "type": "string",
+   "title": "Prompt"
+  },
+  "image_url": {
+   "title": "Image Url",
+   "description": "URL or base64 data URI of the image to use as the first frame. Supports png, jpeg, jpg and webp up to 50 MB.",
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean"
+  },
+  "resolution": {
+   "default": "720p",
+   "enum": [
+    "540p",
+    "720p",
+    "1080p",
+    "2K",
+    "4K"
+   ],
+   "title": "Resolution",
+   "description": "Output video resolution",
+   "type": "string"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed",
+   "description": "Random seed for reproducibility. If None, a random seed is chosen."
+  }
+ },
+ "output": {
+  "properties": {
+   "cover_image": {
+    "anyOf": [
+     {
+      "title": "Image",
+      "properties": {
+       "file_name": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "File Name",
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "examples": [
+         "z9RV14K95DvU.png"
+        ]
+       },
+       "content_type": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Content Type",
+        "description": "The mime type of the file.",
+        "examples": [
+         "image/png"
+        ]
+       },
+       "url": {
+        "title": "Url",
+        "description": "The URL where the file can be downloaded from.",
+        "type": "string"
+       },
+       "file_size": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "File Size",
+        "description": "The size of the file in bytes.",
+        "examples": [
+         4404019
+        ]
+       },
+       "width": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Width",
+        "description": "The width of the image in pixels.",
+        "examples": [
+         1024
+        ]
+       },
+       "height": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Height",
+        "description": "The height of the image in pixels.",
+        "examples": [
+         1024
+        ]
+       }
+      },
+      "required": [
+       "url"
+      ],
+      "description": "Represents an image file.",
+      "type": "object"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "Cover image of the generated video"
+   },
+   "video": {
+    "description": "The generated video from image using the Q4 model",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a8c9189/n9z3uUDPqmU2msAtqr25-_output.mp4"
+     }
+    ],
+    "properties": {
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object"
+   },
+   "seed": {
+    "title": "Seed",
+    "description": "The random seed used for generation",
+    "type": "integer"
+   }
+  },
+  "required": [
+   "video",
+   "seed"
+  ],
+  "title": "Q4ImageToVideoOutput",
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T08:14:55+00:00"
+}

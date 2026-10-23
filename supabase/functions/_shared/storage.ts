@@ -13,6 +13,8 @@ const EXT_BY_TYPE: Record<string, string> = {
   'image/jpeg': 'jpg',
   'image/webp': 'webp',
   'video/mp4': 'mp4',
+  'video/webm': 'webm',
+  'video/quicktime': 'mov',
 }
 
 export function extensionFor(contentType: string): string | null {

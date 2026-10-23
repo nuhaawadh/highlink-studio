@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/kling-video/v3/pro/motion-control",
+ "unit": "second",
+ "usd": 0.168,
+ "pricing_text": "Your request will cost $0.168 per second.",
+ "source_url": "https://fal.ai/models/fal-ai/kling-video/v3/pro/motion-control",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص أُخذ من صندوق التكلفة في صفحة النموذج (playground) بتاريخ 2026-10-23. لا خيار دقة؛ طول المخرج يتبع فيديو المرجع (حتى 10 ث مع character_orientation=image أو 30 ث مع video)."
+}

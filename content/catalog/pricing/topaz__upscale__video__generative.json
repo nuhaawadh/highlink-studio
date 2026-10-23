@@ -1,0 +1,16 @@
+{
+ "endpoint": "topaz/upscale/video/generative",
+ "unit": "clip",
+ "usd": 1.2,
+ "by_resolution": {
+  "1080p": 1.2,
+  "4k": 2.6
+ },
+ "by_duration": {
+  "10": 1.2
+ },
+ "pricing_text": "Pricing uses the selected model, output resolution, frame rate, and duration. At 30 fps, 10 seconds costs **$1.20** up to 1080p or **$2.60** at 4K with Starlight Precise 2.6, HQ, Mini, or Sharp; Starlight Fast 2 costs **$0.60** up to 1080p or **$1.30** at 4K. At 60 fps, the same 10-second examples cost **$2.40**/**$5.10** for the quality models or **$1.20**/**$2.60** for Fast 2.",
+ "source_url": "https://fal.ai/models/topaz/upscale/video/generative",
+ "confidence": "medium",
+ "notes": "السعر يعتمد على النموذج والدقة ومعدل الإطارات والمدة. المرجع: 10 ث عند 30fps = $1.20 حتى 1080p أو $2.60 عند 4K لنماذج Starlight Precise 2.6 / HQ / Mini / Sharp (أي ≈ $0.12/ث و$0.26/ث مشتقًا)؛ Starlight Fast 2 = $0.60 / $1.30. عند 60fps تتضاعف: $2.40/$5.10 للجودة و$1.20/$2.60 لـFast 2."
+}

@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/veo3.1/extend-video",
+ "unit": "second",
+ "usd": 0.2,
+ "audio_surcharge_usd": 0.2,
+ "pricing_text": "For every second of video you generated, you will be charged **$0.20** (audio off) or **$0.40** (audio on). For example, a **5s video** with audio on will cost **$2**.",
+ "source_url": "https://fal.ai/models/fal-ai/veo3.1/extend-video",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج. usd = $0.20/ث بدون صوت؛ مع الصوت $0.40/ث (generate_audio الافتراضي true). المدة ثابتة 7s والدقة ثابتة 720p في المخطط (const)، أي ≈ $1.40 بلا صوت / $2.80 مع الصوت لكل تمديد. **تحذير: الصفحة تعلن أن هذه النقطة ستُوقف (deprecated) في 17 نوفمبر 2026.**"
+}

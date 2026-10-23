@@ -1,0 +1,288 @@
+{
+ "endpoint": "blackforestlabs/flux-3/klein/text-to-image",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "seed": {
+   "title": "Seed",
+   "description": "The same seed and the same prompt given to the same version of the model will output the same image every time.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "default": true,
+   "description": "If set to true, the safety checker will be enabled.",
+   "type": "boolean"
+  },
+  "bounding_boxes": {
+   "title": "Bounding Boxes",
+   "description": "Optional layout: draw each described object inside its box. Box edges are fractions of the image size, with (0, 0) at the top-left. Name boxes in the prompt by label, e.g. `A red fox  sits under a red umbrella `.",
+   "anyOf": [
+    {
+     "items": {
+      "title": "BoundingBox",
+      "x-fal-order-properties": [
+       "label",
+       "description",
+       "box"
+      ],
+      "required": [
+       "description",
+       "box"
+      ],
+      "type": "object",
+      "properties": {
+       "label": {
+        "examples": [
+         "fox"
+        ],
+        "title": "Label",
+        "description": "Short name for the object in this box, e.g. `fox`. Write `` in the prompt to tie the box to those words; a box the prompt doesn't name is added to the scene. Defaults to `obj_`.",
+        "anyOf": [
+         {
+          "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+          "type": "string",
+          "maxLength": 64
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "description": {
+        "title": "Description",
+        "description": "What to draw in this box: the object and its look.",
+        "type": "string",
+        "maxLength": 500,
+        "examples": [
+         "a red fox with thick orange fur and a white-tipped tail"
+        ]
+       },
+       "box": {
+        "description": "Where the object goes in the output image.",
+        "$ref": "#/components/schemas/Box"
+       }
+      }
+     },
+     "type": "array",
+     "maxItems": 32
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "default": false,
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "type": "boolean"
+  },
+  "image_size": {
+   "title": "Image Size",
+   "default": "square_hd",
+   "description": "The size of the generated image. Each side can be 256 to 4096 pixels (native 4K).",
+   "anyOf": [
+    {
+     "title": "ImageSize",
+     "type": "object",
+     "properties": {
+      "width": {
+       "maximum": 14142,
+       "title": "Width",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "type": "integer",
+       "description": "The width of the generated image."
+      },
+      "height": {
+       "maximum": 14142,
+       "title": "Height",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "type": "integer",
+       "description": "The height of the generated image."
+      }
+     }
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ]
+    }
+   ]
+  },
+  "output_format": {
+   "title": "Output Format",
+   "description": "The format of the generated image.",
+   "default": "png",
+   "type": "string",
+   "enum": [
+    "jpeg",
+    "png",
+    "webp"
+   ]
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "The prompt to generate an image from. The model is trained on detailed captions: describe framing, subject, background and lighting.",
+   "type": "string"
+  },
+  "enable_prompt_expansion": {
+   "title": "Enable Prompt Expansion",
+   "default": true,
+   "description": "If set to true, the prompt is expanded into a detailed caption (grounded in the reference images when editing) before generation.",
+   "type": "boolean"
+  },
+  "num_images": {
+   "maximum": 4,
+   "title": "Number of Images",
+   "default": 1,
+   "description": "The number of images to generate.",
+   "type": "integer",
+   "minimum": 1
+  }
+ },
+ "output": {
+  "title": "Output",
+  "required": [
+   "images",
+   "timings",
+   "seed",
+   "has_nsfw_concepts",
+   "prompt"
+  ],
+  "type": "object",
+  "properties": {
+   "prompt": {
+    "title": "Prompt",
+    "description": "The prompt used for generating the image.",
+    "type": "string"
+   },
+   "timings": {
+    "title": "Timings",
+    "description": "The timings of the generation process.",
+    "additionalProperties": {
+     "type": "number"
+    },
+    "type": "object"
+   },
+   "has_nsfw_concepts": {
+    "title": "Has Nsfw Concepts",
+    "description": "Whether the generated images contain NSFW concepts.",
+    "items": {
+     "type": "boolean"
+    },
+    "type": "array"
+   },
+   "images": {
+    "title": "Images",
+    "description": "The generated images.",
+    "items": {
+     "required": [
+      "url"
+     ],
+     "title": "ImageFile",
+     "type": "object",
+     "properties": {
+      "content_type": {
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_name": {
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "height": {
+       "title": "Height",
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "width": {
+       "title": "Width",
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_size": {
+       "examples": [
+        4404019
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    },
+    "type": "array"
+   },
+   "seed": {
+    "title": "Seed",
+    "description": "Seed used to generate the first image.",
+    "type": "integer"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:19:40+00:00"
+}

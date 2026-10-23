@@ -1,0 +1,10 @@
+{
+ "endpoint": "minimax/h3-max/insert-video",
+ "unit": "second",
+ "usd": 0.05,
+ "by_resolution": {"480p": 0.05, "768p": 0.06},
+ "pricing_text": "Your request will cost **$0.05 per second** of generated scene at **480p** or **$0.06 per second** at **768p**. Only the newly generated scene duration is billed, not the full output video. The first **4,096 reference tokens** are included; additional reference tokens cost **$0.02 per 1,000 tokens**, prorated.",
+ "source_url": "https://fal.ai/models/minimax/h3-max/insert-video",
+ "confidence": "high",
+ "notes": "يُحاسَب على مدة المشهد المولَّد فقط (duration 5-13 ث، افتراضي 5) لا على الفيديو الكامل. الدقة الافتراضية 768p ($0.06/ث). توكنات المراجع (صور حتى 9، فيديوهات حتى 3): أول 4096 مجانية ثم $0.02 لكل 1000 توكن."
+}

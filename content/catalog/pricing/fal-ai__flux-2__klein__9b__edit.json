@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2/klein/9b/edit",
+ "unit": "megapixel",
+ "usd": 0.011,
+ "pricing_text": "Requests cost **$0.011** per megapixel of input and output. Input images will be resized to 1MP. For example, a 1024×1024 generation with a 512×512 input image will cost **$0.022** (1 MP input + 1 MP output, each costing **$0.011**).",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2/klein/9b/edit",
+ "confidence": "high",
+ "notes": "السعر لكل ميغابكسل من المدخلات والمخرجات معًا بنفس السعر ($0.011) — لا فرق بين الميغابكسل الأول والإضافي. كل صورة مدخلة تُحسب 1MP (تُصغَّر إلى 1MP). تعديل بصورة واحدة ومخرج 1MP = $0.022 عمليًا؛ حتى 4 صور مدخلة."
+}

@@ -6,7 +6,7 @@
 - واجهة: Vite + React 19 + TypeScript (strict) + Tailwind v4 + مكوّنات على نمط shadcn في `apps/web`. RTL أولًا (`dir="rtl"`). لا Next.js.
 - باك إند: Supabase (Auth, Postgres + RLS, Realtime, Edge Functions بـDeno). لا سيرفر آخر.
 - ميديا: خلف محوّل واحد `supabase/functions/_shared/storage.ts` (`put`, `publicUrl`). المرحلة 1: Supabase Storage (bucket `media`). بعد نقل DNS إلى Cloudflare: R2 عبر `media.highlink.tech` — تبديل الملف الواحد فقط (ADR 0002).
-- نماذج: Replicate (أساسي لكل شيء بما فيه نانو بنانا برو `google/nano-banana-pro` — ADR 0003)، Gemini مباشرة لاحقًا إن لزم، fal (احتياط). المفاتيح في Edge Functions فقط — لا مفتاح سري في `VITE_*`. مخطط مدخلات كل نموذج في `models.input_schema` يبني مدخلات المزوّد (`_shared/inputs.ts`) — لا كود لكل نموذج.
+- نماذج: **fal أساسي للكتالوج كله** (ADR 0005 — 233 نقطة نهاية في `content/catalog/fal-launch.json`)، Replicate لنانو بنانا برو فقط (ADR 0003)، Gemini مباشرة لاحقًا إن لزم. المفاتيح (`FAL_KEY`, `REPLICATE_API_TOKEN`) في Edge Functions فقط — لا مفتاح سري في `VITE_*`. مخطط مدخلات كل نموذج في `models.input_schema` يبني مدخلات المزوّد (`_shared/inputs.ts`) — لا كود لكل نموذج. التسعير بدالة واحدة `modelCredits` (صور بالدقة، فيديو بالثانية/بالمقطع).
 - دفع: خلف محوّل واحد `_shared/payments/` — Paylink أولًا (صفحة دفع مستضافة + webhook + استعلام)، وMoyasar عند تفعيله (حفظ البطاقة + التجديد التلقائي). العملة ريال. التسعير في `packages/shared/pricing.ts` والباقات في `packages/shared/plans.ts` (المصدران الوحيدان).
 - التوزيع: API عامة `v1` (وظيفة `v1` بلا JWT، مفاتيح `api_keys` بـsha256، نفس نواة `generate-media` — ADR 0004)، وسيرفر MCP في المرحلة 2 (ADR 0002). أي مسار جديد في الـAPI يمر بـ`_shared/api-auth.ts` ويرجع `{ error: { code, message } }`، ويُوثَّق في `docs/api.md` (دليل العميل: curl + n8n لكل مسار) في نفس الالتزام.
 - البراند: هاي لينك — الألوان والخطوط معتمدة من موقع هاي لينك وموثقة في `docs/brand/palette.md`، وتُكتب في `apps/web/src/styles/tokens.css` فقط (كحلي `#0B1020`، أزرق `#7FB8FF`، خطوط Alexandria + IBM Plex Sans Arabic). الاسم الظاهر للمستخدم: "استوديو هاي لينك".
@@ -18,7 +18,7 @@
 4. النصوص من `apps/web/src/i18n/ar.json` و`en.json`. لا نص عربي مكتوب داخل JSX.
 5. Tailwind بالخصائص المنطقية (`ps/pe/ms/me/start/end`). ممنوع `ml/mr/left/right` إلا للأيقونات المتماثلة.
 6. استوديو جديد = ملف `content/studios/<id>.json` + سطر في `supabase/seed.sql`. لا صفحة جديدة إلا إذا خرج عن `StudioWizard`.
-7. نموذج جديد = سطر في `supabase/seed.sql` (جدول `models`) بتكلفة من `creditsForUsd()` — ceil(سعر المزوّد بالدولار × 3 ÷ 0.042) — ومخطط مدخلاته من المزوّد في `input_schema`.
+7. نموذج جديد = سطر في `content/catalog/fal-launch.json` + مخططه (`python -I scripts/fal-schema.py <endpoint>`) + ملف سعره الرسمي في `content/catalog/pricing/` ثم `python -I scripts/build-models-seed.py` يكتب صفه في الكتلة المولّدة داخل `supabase/seed.sql` بتكلفة ceil(سعر المزوّد بالدولار × 3 ÷ 0.042) (ADR 0005). لا تحرّر الكتلة المولّدة يدويًا. نموذج من غير fal = صف يدوي فوق الكتلة بنفس القاعدة.
 8. لا تحذف أصول المستخدمين أو سجلات الرصيد أبدًا في migration. الحذف منطقي (`deleted_at`).
 9. أي منطق يلمس المال (رصيد، تسعير، دفع) يبدأ باختبار vitest/SQL قبل الكود، ويُراجَع من جلسة Claude Code ثانية قبل الدمج.
 10. كل Edge Function تتحقق من مدخلاتها بـzod وترجع رموز الأخطاء في `packages/shared/types.ts` (`GenerateErrorCode`) ورسائل عربية.
@@ -35,14 +35,15 @@
 - حجز عالق؟ `select * from public.reconcile_holds();` عبر `db query --linked` (يحرّر/يؤكد ما هو أقدم من 30 دقيقة). بوابة 1 آليًا بعد أي نشر: `python -I scripts/smoke-gate1.py`.
 - الأسرار: `supabase/.env.local` (لا يُقرأ ولا يُطبع) → `python -I scripts/push-secrets.py <tmp>` (يتخطى `SUPABASE_*` والفارغة، يجلب `REPLICATE_WEBHOOK_SECRET`) → `npx supabase secrets set --env-file <tmp>` → حذف tmp. الواجهة: `apps/web/.env.local`.
 - مفاتيح Supabase الجديدة (`sb_secret_…`/`sb_publishable_…`) ليست JWT: في السكربتات تُرسل كـ`apikey` فقط (Auth Admin API يرفضها في `Authorization: Bearer`).
-- لا Deno محليًا: الوحدات النقية في `_shared/` تُختبر بـvitest، والباقي يُتحقق عند النشر وبالفحص الدخاني بـcurl على الرابط السحابي.
+- لا Deno محليًا: الوحدات النقية في `_shared/` تُختبر بـvitest، و`npm run typecheck:functions` يتحقق من أنواع كل Edge Functions بـtsc عبر بديل أنواع Deno في `scripts/denocheck/` (يُشغَّل مع `typecheck` قبل أي commit)، والباقي يُتحقق عند النشر وبالفحص الدخاني بـcurl على الرابط السحابي.
 
 ## حالة المشروع
 - المرحلة 0 منجزة: هيكل، تصميم، i18n، دخول، migration 0001 (مختبرة على Postgres 16: التسجيل، الحجز/التأكيد/الاسترداد، RLS)، seed، المركز القانوني، صفحة الباقات، وصفة `product-shot`، هيكل `generate-media` (يرفض 501).
 - المرحلة 1 (2026-10-22): (1) migrations 0001+0002 وseed مطبّقة على `highlink-studio-dev` والأنواع مولّدة ✓ (2) `_shared/` + `generate-media` بالخطوات التسع + `provider-webhook` موقّع مع dedupe، منشورتان، الأسرار مرفوعة ✓ (3) `/image-generate` و`/library` بـRealtime ✓. **بوابة 1 مجتازة (2026-10-22)**: توليدة حقيقية ظهرت في الواجهة عبر Realtime بلا تحديث، الرصيد نزل 30 → 19 (صف `charge` −11)، وفشل حقيقي من المزوّد (402 قبل شحن Replicate) أعاد الرصيد وعرض رسالة عربية. النماذج الأربعة الأخرى `enabled=false` حتى تُبنى.
 - المراجعة المستقلة (2026-10-22، الجلسة 4) منجزة: migration `0003_review_hardening` (حارس الأعمدة بـ`auth.role()`، سياسة INSERT، `get_balance` للمالك، `reconcile_holds()`) + حجز الأصل الذرّي في `generate-media` + تسوية الحجز في الـwebhook + zod/مهلات. ما بقي في `docs/backlog.md`.
 - API v1 منجزة (2026-10-22، ADR 0004): وظيفة `v1` (`/functions/v1/v1/{generate|assets/{id}|models|balance}`) بمفاتيح `hl_live_`/`hl_test_`، migration 0004، نواة مشتركة `_shared/generate-core.ts`، webhook موقّع للعميل، صفحة `/account`. مفتاح الاختبار = تجربة جافة بلا مزوّد ولا خصم.
-- التالي بالترتيب: (4) Kling عبر Replicate → (6) سيرفر MCP (المرحلة 2). لا تُبنى خطوة قبل اجتياز سابقتها.
+- كتالوج fal (2026-10-23، ADR 0005): محوّل `fal` بتوقيع ED25519 + `source=fal` في الـwebhook ✓، `inputs.ts` يغطي أسماء fal (image_url/image_urls، duration نصية/رقمية، image_size، generate_audio، الحقول المطلوبة بافتراضها) ✓، `modelCredits` للفيديو بالثانية/بالمقطع في نسختي التسعير ✓، المحرك يقبل `video` ويرفض نماذج المراجع بلا `images` ✓، صفحة `/video-generate` ومنتقي بالعائلات ✓، `GET /v1/models` يعرض المدد/الدقات/التكاليف ✓. الكتالوج: 233 نقطة نهاية في `fal-launch.json`، مخططاتها وأسعارها تُجلب إلى `content/catalog/{schemas,pricing}/` و`scripts/build-models-seed.py` يولّد الكتلة في `seed.sql`. **لم يُنشر بعد ولم تُجتز بوابة 2** — انظر ADR 0005 (الأثر).
+- التالي بالترتيب: (4) نشر `provider-webhook` + `generate-media` + `v1` ورفع `FAL_KEY` ثم seed → بوابة 2 (توليدة فيديو حقيقية عبر Realtime بأرخص نموذج) → (5) رفع المراجع في الواجهة (يفتح i2v/edit) → (6) سيرفر MCP (المرحلة 2). لا تُبنى خطوة قبل اجتياز سابقتها.
 - خارج النطاق حتى الآن: مجدول `reconcile_holds()` (مع `cron-renewals`) ومسح `processing` بسؤال المزوّد، المصنّف الآلي للأمان، `prompt-enhancer`، رفع المراجع، بوابة المخرجات الكاملة.
 - الدليل التشغيلي لجلسات Claude Code: `docs/claude-code-kickoff.md`.
 

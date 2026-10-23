@@ -1,0 +1,9 @@
+{
+ "endpoint": "luma/agent/uni-1/v1/text-to-image",
+ "unit": "image",
+ "usd": 0.042,
+ "pricing_text": "Billing is calculated at **$0.042 per generated image**. For example, **10 images cost $0.42**.",
+ "source_url": "https://fal.ai/models/luma/agent/uni-1/v1/text-to-image",
+ "confidence": "high",
+ "notes": "$0.042 للصورة؛ 10 صور = $0.42."
+}

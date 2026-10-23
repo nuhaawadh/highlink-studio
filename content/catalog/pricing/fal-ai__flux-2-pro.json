@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-pro",
+ "unit": "megapixel",
+ "usd": 0.03,
+ "pricing_text": "Pricing starts at **$0.03 for the first output megapixel**, plus **$0.015 per additional input or output megapixel**, with megapixels rounded up. For this pricing schedule, **1 megapixel is 1024 × 1024 pixels**. For example, a **1024 × 1024** output costs **$0.03**, and a **1920 × 1080** output costs **$0.045** without image inputs.",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-pro",
+ "confidence": "high",
+ "notes": "usd = الميغابكسل الأول للمخرج ($0.03)؛ كل ميغابكسل إضافي (مدخل أو مخرج) $0.015 مع التقريب لأعلى. الافتراضي landscape_4_3 (≈1MP) = $0.03. هذه النقطة نص→صورة بلا مدخلات صور. الحد الأقصى 2560×2560 (≈4MP ≈ $0.075)."
+}

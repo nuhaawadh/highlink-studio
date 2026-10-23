@@ -1,0 +1,10 @@
+{
+ "endpoint": "blackforestlabs/flux-3/text-to-video",
+ "unit": "second",
+ "usd": 0.17,
+ "by_resolution": {"720p": 0.17, "1080p": 0.29, "1440p": 0.32, "2160p": 0.47},
+ "pricing_text": "Your request will be charged at **$0.17** per second of generated video at 720p, **$0.29** per second at 1080p, **$0.32** per second at 2K (1440p), and **$0.47** per second at 4K (2160p).",
+ "source_url": "https://fal.ai/models/blackforestlabs/flux-3/text-to-video",
+ "confidence": "high",
+ "notes": "usd = 720p (الافتراضي والأرخص). مفاتيح by_resolution تطابق قيم enum في المخطط (1440p=2K، 2160p=4K). الصوت مضمّن (لم تُذكر زيادة). المدة auto أو 5–20 ثانية."
+}

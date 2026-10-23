@@ -1,0 +1,10 @@
+{
+ "endpoint": "kling/v4/reference-to-video",
+ "unit": "second",
+ "usd": 0.157,
+ "by_resolution": {"720p": 0.157, "1080p": 0.235},
+ "pricing_text": "Video costs **$0.157** per second at **720p** and **$0.235** per second at **1080p**. With video references or video elements, it costs **$0.094** per second at **720p** and **$0.141** per second at **1080p**, billed on the input plus output length (minimum 2× the output).",
+ "source_url": "https://fal.ai/models/kling/v4/reference-to-video",
+ "confidence": "high",
+ "notes": "السعر الأساسي لكل ثانية مخرجات مع مراجع صور فقط (720p الافتراضي الأرخص؛ المخطط افتراضيه 1080p). عند استخدام مراجع فيديو أو عناصر فيديو: $0.094/ث عند 720p و$0.141/ث عند 1080p لكن تُحسب على طول المدخلات + المخرجات (الحد الأدنى 2× طول المخرج) — أي عمليًا ≥ $0.188/ث عند 720p و≥ $0.282/ث عند 1080p لكل ثانية مخرجات."
+}

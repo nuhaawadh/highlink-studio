@@ -1,0 +1,9 @@
+{
+ "endpoint": "krea/v3/text-to-image",
+ "unit": "megapixel",
+ "usd": 0.025,
+ "pricing_text": "Billed per megapixel at **$0.025**/MP, counting the output image plus each reference image as the model processes it (references larger than the output are counted at the output’s size). 1 MP = 1024×1024 pixels.",
+ "source_url": "https://fal.ai/models/krea/v3/text-to-image",
+ "confidence": "high",
+ "notes": "$0.025 لكل ميغابكسل، تُحتسب صورة المخرج + كل صورة مرجعية (المرجع الأكبر من المخرج يُحتسب بحجم المخرج). 1 MP = 1024×1024."
+}

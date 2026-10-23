@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/pixverse/lipsync",
+ "unit": "second",
+ "usd": 0.04,
+ "pricing_text": "For every second of output videos your request will cost **$0.04**. If audio is not provided for every 100 characters your request will cost **$0.24**.",
+ "source_url": "https://fal.ai/models/fal-ai/pixverse/lipsync",
+ "confidence": "high",
+ "notes": "السعر لكل ثانية من فيديو المخرجات عند توفير audio_url. إن لم يُوفَّر صوت (نص TTS عبر text/voice_id) تُضاف $0.24 لكل 100 حرف من النص."
+}

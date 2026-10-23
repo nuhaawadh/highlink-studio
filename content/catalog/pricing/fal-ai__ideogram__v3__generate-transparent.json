@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/ideogram/v3/generate-transparent",
+ "unit": "image",
+ "usd": 0.03,
+ "pricing_text": "Each image costs **$0.03** with TURBO, **$0.06** with BALANCED, and **$0.09** with QUALITY.",
+ "source_url": "https://fal.ai/models/fal-ai/ideogram/v3/generate-transparent",
+ "confidence": "high",
+ "notes": "$0.03 للصورة بـTURBO، $0.06 BALANCED، $0.09 QUALITY (حسب rendering_speed)."
+}

@@ -1,0 +1,11 @@
+{
+ "endpoint": "luma/agent/ray/v3.2/text-to-video",
+ "unit": "clip",
+ "usd": 0.5,
+ "by_resolution": {"540p": 0.5, "720p": 1.0, "1080p": 2.0},
+ "by_duration": {"5": 0.5, "10": 1.0},
+ "pricing_text": "Billing is calculated by video duration and resolution. A **5-second video** costs **$0.50 at 540p**, **$1.00 at 720p**, or **$2.00 at 1080p**; a **10-second video** costs **$1.00**, **$2.00**, or **$4.00**, respectively.",
+ "source_url": "https://fal.ai/models/luma/agent/ray/v3.2/text-to-video",
+ "confidence": "high",
+ "notes": "الوحدة مقطع. usd = مقطع 5 ثوانٍ عند 540p (الافتراضي والأرخص). by_resolution = سعر مقطع 5s لكل دقة؛ by_duration = سعر 540p لكل مدة. الجدول الكامل: 5s → 0.50/1.00/2.00 و10s → 1.00/2.00/4.00 لـ540p/720p/1080p (أي يعادل $0.10/ث عند 540p، $0.20/ث عند 720p، $0.40/ث عند 1080p)."
+}

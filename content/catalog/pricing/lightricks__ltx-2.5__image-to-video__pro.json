@@ -1,0 +1,10 @@
+{
+ "endpoint": "lightricks/ltx-2.5/image-to-video/pro",
+ "unit": "second",
+ "usd": 0.12,
+ "by_resolution": {"720p": 0.12, "1080p": 0.17},
+ "pricing_text": "Your request will cost **$0.12** per second for 720p or **$0.17** per second for 1080p.",
+ "source_url": "https://fal.ai/models/lightricks/ltx-2.5/image-to-video/pro",
+ "confidence": "high",
+ "notes": "usd = 720p (الأرخص)؛ الافتراضي في المخطط 1080p ($0.17/ث). المدة 6/8/10 أو auto. الصوت مضمّن (لم تُذكر زيادة)."
+}

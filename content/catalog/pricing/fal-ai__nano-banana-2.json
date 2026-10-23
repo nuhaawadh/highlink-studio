@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/nano-banana-2",
+ "unit": "image",
+ "usd": 0.08,
+ "by_resolution": {"0.5K": 0.06, "1K": 0.08, "2K": 0.12, "4K": 0.16},
+ "pricing_text": "Your request will cost **$0.08** per image. For **$1.00**, you can run this model **12** times. 2K and 4K outputs will be charged at **1.5** times and **2** times the standard rate, respectively. 0.5K (512px) resolution outputs will be charged at **0.75** times the standard rate. If web search is used, an additional **$0.015** will be charged. If high thinking is used, an additional **$0.002** will be charged. **Note: Pricing is subject to change.**",
+ "source_url": "https://fal.ai/models/fal-ai/nano-banana-2",
+ "confidence": "high",
+ "notes": "usd = $0.08 لصورة 1K (الافتراضي). by_resolution محسوبة من المضاعفات المذكورة في النص: 0.5K ×0.75 = $0.06، 2K ×1.5 = $0.12، 4K ×2 = $0.16. زيادات اختيارية: بحث ويب +$0.015، thinking_level=high +$0.002. تنبيه: pricing_parsed في fal-launch.json وضع 2k = 1.0 خطأً. num_images حتى 4 (كل صورة تُحسب)."
+}

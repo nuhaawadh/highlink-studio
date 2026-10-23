@@ -35,8 +35,11 @@
 | `model` | string | معرّف من `GET /models`، مثل `nano-banana-pro` |
 | `prompt` | string | 1–4000 حرف، عربي أو إنجليزي |
 | `config.aspectRatio` | `1:1` `9:16` `16:9` `4:5` `3:4` | اختياري؛ القيم المدعومة لكل نموذج في `GET /models` |
-| `config.imageSize` | `1K` `2K` `4K` | اختياري؛ تؤثر في التكلفة (`costs` في `GET /models`) |
-| `images` | string[] | اختياري، حتى 14 رابط **https** لمراجع (منتج، شخصية) |
+| `config.imageSize` | `1K` `2K` `4K` | صور — اختياري؛ تؤثر في التكلفة (`costs` في `GET /models`) |
+| `config.duration` | integer (ثوانٍ) | فيديو — اختياري؛ من `durations` للنموذج، وإلا الافتراضي. التكلفة = السعر بالثانية × المدة |
+| `config.resolution` | string | فيديو — اختياري؛ كما يسمّيها النموذج في `resolutions` (`720p`، `1080p`، `768P`…)؛ قد تغيّر السعر |
+| `config.audio` | boolean | فيديو — اختياري؛ صوت أصلي من النموذج إن كان `audio: true`؛ قد يضيف تكلفة |
+| `images` | string[] | اختياري، حتى 14 رابط **https** لمراجع (منتج، شخصية). نماذج `requires_ref: true` (صورة→فيديو، تعديل بالمراجع) ترفض الطلب بدونها بـ`INVALID_INPUT` |
 | `maxCredits` | integer | اختياري: سقف إنفاق؛ إن تجاوزته التكلفة يُرفض الطلب بـ`OVER_BUDGET` بلا خصم |
 | `webhook_url` | string | اختياري، https: يطغى على رابط الـwebhook المضبوط في المفتاح لهذا الطلب فقط |
 | `feature_tag` | string | اختياري للتصنيف: `general` `product` `ads` `ugc` … |
@@ -136,16 +139,47 @@ curl "$HL_API/models" -H "Authorization: Bearer $HL_KEY"
       "name_ar": "نانو بنانا برو",
       "name_en": "Nano Banana Pro",
       "type": "image",
+      "kind": "t2i",
+      "family": "nano-banana",
       "cost_credits": 11,
+      "cost_per_second": null,
+      "max_duration_s": null,
       "costs": { "1K": 11, "2K": 11, "4K": 22 },
       "sizes": ["1K", "2K", "4K"],
+      "durations": [],
+      "resolutions": [],
+      "audio": false,
+      "ref_images": 14,
+      "requires_ref": false,
       "aspect_ratios": ["1:1", "9:16", "16:9", "4:5", "3:4"],
       "default_params": { "imageSize": "2K", "aspectRatio": "1:1" },
       "badge": "جديد"
+    },
+    {
+      "id": "kling-v4",
+      "name_ar": "كلينج 4",
+      "name_en": "Kling 4",
+      "type": "video",
+      "kind": "t2v",
+      "family": "kling",
+      "cost_credits": null,
+      "cost_per_second": 11.2143,
+      "max_duration_s": 30,
+      "costs": { "3s": 34, "4s": 45, "5s": 57, "10s": 113 },
+      "sizes": [],
+      "durations": [3, 4, 5, 6, 7, 8, 9, 10],
+      "resolutions": ["720p", "1080p"],
+      "audio": false,
+      "ref_images": 0,
+      "requires_ref": false,
+      "aspect_ratios": ["1:1", "9:16", "16:9"],
+      "default_params": { "duration": 5, "resolution": "1080p", "aspectRatio": "16:9" }
     }
   ]
 }
 ```
+
+`kind` يصف العملية: `t2i` نص→صورة، `edit` تعديل بالمراجع (يحتاج `images`)، `t2v` نص→فيديو، `i2v` صورة→فيديو (يحتاج `images[0]`)، `ref2v` مراجع→فيديو، `flf2v` إطار أول وأخير (`images[0]` و`images[1]`). للفيديو `costs` بالمدة على الدقة الافتراضية؛ دقة أعلى أو صوت قد يرفعان السعر — مرّر `maxCredits` دائمًا.
 
 `costs` هو ما سيُخصم لكل دقة؛ مرّره إلى `maxCredits` لتضمن ألا يتغير السعر تحتك. **n8n**: HTTP Request `GET` ثم **Split Out** على `data` إن أردت صفًا لكل نموذج.
 

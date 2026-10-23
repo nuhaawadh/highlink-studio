@@ -1,0 +1,9 @@
+{
+ "endpoint": "bytedance/seedream/v5/lite/text-to-image",
+ "unit": "image",
+ "usd": 0.035,
+ "pricing_text": "Your request will cost $0.035 per image. — Cost per Image: $0.035 (Cheaper than Seedream 4.5 and Nano Banana). Max Resolution: 9MP (3072x3072); total pixel count between 3.7MP and 9.43MP supported. Resolution Range: 2560x1440 to 3072x3072 total pixels.",
+ "source_url": "https://fal.ai/models/bytedance/seedream/v5/lite/text-to-image",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (صندوق التكلفة + جدول المقاييس، 2026-10-23). سعر ثابت لكل صورة بغض النظر عن الحجم. تنبيه: أصغر حجم ممكن 2560×1440 (≈3.7MP) والافتراضي auto_2K — لا يوجد مخرج 1K، فملفات PNG كبيرة (المثال 3.7MB). num_images حتى 6 وmax_images حتى 6 (كل صورة تُحاسَب)."
+}

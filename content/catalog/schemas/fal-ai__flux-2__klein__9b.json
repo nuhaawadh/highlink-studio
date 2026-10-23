@@ -1,0 +1,238 @@
+{
+ "endpoint": "fal-ai/flux-2/klein/9b",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "description": "If set to true, the safety checker will be enabled. Disabling it requires account authorization; unauthorized requests are always checked, and images flagged as unsafe are returned as black images.",
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "prompt": {
+   "description": "The prompt to generate an image from.",
+   "type": "string",
+   "title": "Prompt"
+  },
+  "sync_mode": {
+   "description": "If `True`, the media will be returned as a data URI. Output is not stored when this is True.",
+   "type": "boolean",
+   "default": false,
+   "title": "Sync Mode"
+  },
+  "output_format": {
+   "title": "Output Format",
+   "description": "The format of the generated image.",
+   "type": "string",
+   "default": "png",
+   "enum": [
+    "jpeg",
+    "png",
+    "webp"
+   ]
+  },
+  "image_size": {
+   "anyOf": [
+    {
+     "type": "object",
+     "properties": {
+      "height": {
+       "type": "integer",
+       "title": "Height",
+       "description": "The height of the generated image.",
+       "exclusiveMinimum": 0,
+       "maximum": 14142,
+       "default": 512
+      },
+      "width": {
+       "type": "integer",
+       "title": "Width",
+       "description": "The width of the generated image.",
+       "exclusiveMinimum": 0,
+       "maximum": 14142,
+       "default": 512
+      }
+     },
+     "title": "ImageSize"
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ]
+    }
+   ],
+   "description": "The size of the image to generate.",
+   "default": "landscape_4_3",
+   "title": "Image Size"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The seed to use for the generation. If not provided, a random seed will be used.",
+   "title": "Seed"
+  },
+  "num_inference_steps": {
+   "minimum": 4,
+   "description": "The number of inference steps to perform.",
+   "type": "integer",
+   "default": 4,
+   "maximum": 8,
+   "title": "Number of Inference Steps"
+  },
+  "num_images": {
+   "minimum": 1,
+   "description": "The number of images to generate.",
+   "type": "integer",
+   "default": 1,
+   "maximum": 4,
+   "title": "Number of Images"
+  }
+ },
+ "output": {
+  "required": [
+   "images",
+   "timings",
+   "seed",
+   "has_nsfw_concepts",
+   "prompt"
+  ],
+  "properties": {
+   "images": {
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/0a8a6905/DuNRy1OODaGrlUGEfl9SX.png"
+      }
+     ]
+    ],
+    "description": "The generated images",
+    "type": "array",
+    "items": {
+     "type": "object",
+     "properties": {
+      "height": {
+       "title": "Height",
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_size": {
+       "title": "File Size",
+       "examples": [
+        4404019
+       ],
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "width": {
+       "title": "Width",
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "content_type": {
+       "title": "Content Type",
+       "examples": [
+        "image/png"
+       ],
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_name": {
+       "title": "File Name",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "url": {
+       "type": "string",
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from."
+      }
+     },
+     "title": "ImageFile",
+     "required": [
+      "url"
+     ]
+    },
+    "title": "Images"
+   },
+   "has_nsfw_concepts": {
+    "description": "Whether the generated images contain NSFW concepts.",
+    "type": "array",
+    "items": {
+     "type": "boolean"
+    },
+    "title": "Has Nsfw Concepts"
+   },
+   "prompt": {
+    "description": "The prompt used for generating the image.",
+    "type": "string",
+    "title": "Prompt"
+   },
+   "seed": {
+    "description": "\n            Seed of the generated Image. It will be the same value of the one passed in the\n            input or the randomly generated that was used in case none was passed.\n        ",
+    "type": "integer",
+    "title": "Seed"
+   },
+   "timings": {
+    "additionalProperties": {
+     "type": "number"
+    },
+    "type": "object",
+    "title": "Timings"
+   }
+  },
+  "type": "object",
+  "title": "Klein9BDistilledT2IOutput"
+ },
+ "fetched_at": "2026-10-23T08:18:42+00:00"
+}

@@ -1,0 +1,15 @@
+{
+ "endpoint": "minimax/h3-max/lip-sync/image-to-video",
+ "unit": "second",
+ "usd": 0.05,
+ "by_resolution": {
+  "480p": 0.05,
+  "768p": 0.08,
+  "1080p": 0.16,
+  "2k": 0.32
+ },
+ "pricing_text": "Billing is calculated per second of generated video. Video costs **$0.05** per second at **480p**, **$0.08** per second at **768p**, **$0.16** per second at **1080p**, and **$0.32** per second at **2K**. A 1.2x multiplier is added to videos over 15 seconds. A **5-second** video at **768p** costs **$0.40**. A **30-second** video at **768p** costs **$2.88**.",
+ "source_url": "https://fal.ai/models/minimax/h3-max/lip-sync/image-to-video",
+ "confidence": "high",
+ "notes": "usd للأرخص (480p)؛ الافتراضي 768P = $0.08/ث. مضاعف 1.2× للفيديوهات الأطول من 15 ث. مدة المخرج = مدة الصوت المدخل (≥5 ث، حتى 15 دقيقة)."
+}

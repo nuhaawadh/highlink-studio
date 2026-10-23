@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/bytedance/seedance/v1.5/pro/image-to-video",
+ "unit": "clip",
+ "usd": 0.26,
+ "by_duration": {"5": 0.26},
+ "pricing_text": "Each 720p 5 second video with audio costs roughly **$0.26**. For other resolutions, 1 million video tokens with audio costs **$2.40**. Without audio, the price is **$1.20** per million tokens. tokens(video) = (height x width x FPS x duration) / 1024.",
+ "source_url": "https://fal.ai/models/fal-ai/bytedance/seedance/v1.5/pro/image-to-video",
+ "confidence": "medium",
+ "notes": "السعر الصريح الوحيد هو مقطع 720p/5ث مع صوت ≈ $0.26 (أي ≈ $0.052/ث عند 720p مع صوت). التسعير الفعلي بالتوكنات: $2.40 لكل مليون توكن مع صوت، $1.20 بدون صوت، توكنات = (ارتفاع×عرض×FPS×مدة)/1024 — فالمدد الأخرى (4-12 ث) والدقات (480p/1080p) تُحسب من المعادلة خطيًا تقريبًا. generate_audio افتراضيًا true. الثقة medium لأن النص يقول roughly ولا يعطي أسعارًا صريحة للدقات الأخرى."
+}

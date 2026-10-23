@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/vidu/q4/reference-to-video",
+ "unit": "second",
+ "usd": 0.0315,
+ "by_resolution": {"540p": 0.0315, "720p": 0.0665, "1080p": 0.084, "2K": 0.133, "4K": 0.273},
+ "pricing_text": "Billing is calculated per second of video generated: **$0.0315 at 540p**, **$0.0665 at 720p**, **$0.084 at 1080p**, **$0.133 at 2K**, and **$0.273 at 4K**. Enabling audio does not change the price. For example, a **5-second video at 720p costs $0.3325**.",
+ "source_url": "https://fal.ai/models/fal-ai/vidu/q4/reference-to-video",
+ "confidence": "high",
+ "notes": "usd = 540p (الأرخص)؛ الافتراضي في المخطط 720p ($0.0665/ث). الصوت لا يغيّر السعر. مفاتيح by_resolution تطابق enum المخطط (2K/4K بحروف كبيرة). المدة 3–16 ثانية."
+}

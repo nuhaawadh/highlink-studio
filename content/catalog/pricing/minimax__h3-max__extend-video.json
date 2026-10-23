@@ -1,0 +1,10 @@
+{
+ "endpoint": "minimax/h3-max/extend-video",
+ "unit": "second",
+ "usd": 0.05,
+ "by_resolution": {"480p": 0.05, "768p": 0.08, "1080p": 0.16, "2k": 0.32},
+ "pricing_text": "Billing is calculated per second of generated video, plus reference input charges beyond the included allowance. Video costs **$0.05** per second at **480p**, **$0.08** per second at **768p**, **$0.16** per second at **1080p**, and **$0.32** per second at **2K**. Each request includes **4,096 reference tokens** at no additional charge. Reference usage above this allowance costs **$0.02 per 1,000 tokens**, prorated to the actual token count.",
+ "source_url": "https://fal.ai/models/minimax/h3-max/extend-video",
+ "confidence": "high",
+ "notes": "usd للأرخص (480p)؛ الافتراضي في المخطط 768P = $0.08/ث. السعر لكل ثانية من الفيديو المولَّد (الجديد). يشمل 4,096 توكن مرجعي مجانًا، وما زاد $0.02/1000 توكن. المدة المضافة 0.71–15 ث."
+}

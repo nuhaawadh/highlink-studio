@@ -9,7 +9,8 @@ export type FeatureTag = 'general' | 'product' | 'ads' | 'ugc' | 'shots' | 'stor
 export type Provider = 'replicate' | 'fal' | 'google'
 export type AspectRatio = '1:1' | '9:16' | '16:9' | '4:5' | '3:4'
 export type ImageSize = '1K' | '2K' | '4K'
-export type VideoResolution = '480p' | '720p' | '1080p'
+/** دقة الفيديو كما يسمّيها مخطط المزوّد ('720p'، '1080p'، '768P'، '4k') — القائمة المتاحة لكل نموذج في models.supports.resolutions (ADR 0005) */
+export type VideoResolution = '480p' | '720p' | '1080p' | (string & {})
 
 export interface GenerateConfig {
   aspectRatio?: AspectRatio

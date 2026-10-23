@@ -1,0 +1,121 @@
+{
+ "endpoint": "blackforestlabs/flux-video-upscale",
+ "required": [
+  "video_url"
+ ],
+ "properties": {
+  "upscale_factor": {
+   "minimum": 1.5,
+   "description": "Output scaling factor. The source aspect ratio is preserved.",
+   "title": "Upscale Factor",
+   "default": 2,
+   "maximum": 3,
+   "type": "number"
+  },
+  "creativity": {
+   "default": 1,
+   "description": "Use 0 for a source-faithful upscale or 1 for creative detail enhancement.",
+   "title": "Creativity",
+   "enum": [
+    0,
+    1
+   ],
+   "type": "integer"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "Optional description used to guide creative detail enhancement.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "safety_tolerance": {
+   "minimum": 0,
+   "description": "Moderation strictness. Lower values are stricter.",
+   "title": "Safety Tolerance",
+   "default": 2,
+   "maximum": 4,
+   "type": "integer"
+  },
+  "video_url": {
+   "title": "Video Url",
+   "description": "URL of the MP4 video to upscale. The video must be at most 20 seconds and 50 MB.",
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "FluxVideoUpscaleOutput",
+  "properties": {
+   "video": {
+    "description": "The upscaled MP4 video.",
+    "title": "File",
+    "properties": {
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   }
+  },
+  "required": [
+   "video"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T08:11:11+00:00"
+}

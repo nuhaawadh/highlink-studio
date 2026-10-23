@@ -1,0 +1,109 @@
+{
+ "endpoint": "blackforestlabs/flux-3/edit-video",
+ "required": [
+  "prompt",
+  "video_url"
+ ],
+ "properties": {
+  "prompt": {
+   "description": "The text prompt describing how to change the input video. The clip is re-rendered preserving motion, timing, and framing.",
+   "maxLength": 4096,
+   "title": "Prompt",
+   "type": "string"
+  },
+  "safety_tolerance": {
+   "minimum": 0,
+   "description": "The safety tolerance level for the generated video. 0 is the strictest and 4 is the most permissive.",
+   "default": 2,
+   "title": "Safety Tolerance",
+   "maximum": 4,
+   "type": "integer"
+  },
+  "video_url": {
+   "description": "URL of the input video. MP4, under 50 MB and under 15 seconds.",
+   "title": "Video URL",
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "Flux3VideoOutput",
+  "required": [
+   "video",
+   "seed"
+  ],
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/veo3-i2v-output.mp4"
+     }
+    ],
+    "description": "The generated video.",
+    "title": "File",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "seed": {
+    "title": "Seed",
+    "description": "The seed used for the generation.",
+    "type": "integer"
+   }
+  },
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T08:13:05+00:00"
+}

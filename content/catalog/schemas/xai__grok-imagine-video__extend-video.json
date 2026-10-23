@@ -1,0 +1,176 @@
+{
+ "endpoint": "xai/grok-imagine-video/extend-video",
+ "required": [
+  "prompt",
+  "video_url"
+ ],
+ "properties": {
+  "duration": {
+   "description": "Length of the extension in seconds.",
+   "type": "integer",
+   "maximum": 10,
+   "default": 6,
+   "minimum": 2,
+   "title": "Duration"
+  },
+  "video_url": {
+   "description": "URL of the source video to extend. Must be MP4 format (H.264, H.265, or AV1 codec), 2-15 seconds long.",
+   "type": "string",
+   "title": "Video URL"
+  },
+  "prompt": {
+   "description": "Text description of what should happen next in the video.",
+   "type": "string",
+   "maxLength": 4096,
+   "title": "Prompt"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  }
+ },
+ "output": {
+  "type": "object",
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The extended video (original + extension stitched together).",
+    "examples": [
+     {
+      "width": 1280,
+      "content_type": "video/mp4",
+      "fps": 24,
+      "num_frames": 384,
+      "duration": 16,
+      "height": 720,
+      "url": "https://v3b.fal.media/files/b/0a8b9113/extended_video.mp4",
+      "file_name": "extended_video.mp4"
+     }
+    ],
+    "type": "object",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "width": {
+      "description": "The width of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Width"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "fps": {
+      "description": "The FPS of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fps"
+     },
+     "num_frames": {
+      "description": "The number of frames in the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Num Frames"
+     },
+     "duration": {
+      "description": "The duration of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duration"
+     },
+     "height": {
+      "description": "The height of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Height"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     }
+    },
+    "title": "VideoFile"
+   }
+  },
+  "title": "XAIVideoExtensionOutput"
+ },
+ "fetched_at": "2026-10-23T08:11:26+00:00"
+}

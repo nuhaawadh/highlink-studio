@@ -1,0 +1,10 @@
+{
+ "endpoint": "bytedance/seedance-2.0/mini/image-to-video",
+ "unit": "second",
+ "usd": 0.0721,
+ "by_resolution": {"480p": 0.0721, "720p": 0.1547},
+ "pricing_text": "For every second of video generated, you will be charged roughly **$0.0721**/second for **480p** and **$0.1547**/second for **720p**.\n Actual cost calculations are based on token prices, with token costs being **$0.007** per **1,000** tokens for both **480p** and **720p**. The number of tokens is given by (height of output video * width of output video * duration * 24) / 1024.",
+ "source_url": "https://fal.ai/models/bytedance/seedance-2.0/mini/image-to-video",
+ "confidence": "high",
+ "notes": "الفوترة فعليًا بالتوكنات ($0.007/1000 توكن)؛ الأرقام لكل ثانية تقريبية لنسبة 16:9. الافتراضي في المخطط 720p = $0.1547/ث؛ usd للأرخص (480p). الصوت مضمّن بلا زيادة حسب وصف المخطط."
+}

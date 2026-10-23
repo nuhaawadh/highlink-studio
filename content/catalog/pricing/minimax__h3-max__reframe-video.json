@@ -1,0 +1,10 @@
+{
+ "endpoint": "minimax/h3-max/reframe-video",
+ "unit": "second",
+ "usd": 0.05,
+ "by_resolution": {"480p": 0.05, "768p": 0.08},
+ "pricing_text": "Billing is calculated per second of video generated at **$0.05** for **480p** or **$0.08** for **768p**. For short videos, billing follows the output duration; a **5-second** video at **768p** costs **$0.40**. Longer source videos are processed in overlapping windows, and generated overlap seconds are also billable, so billed duration can exceed the final video duration. Longer videos are processed in overlapping windows. Generated overlap seconds are billable, so billed duration can exceed final output duration.",
+ "source_url": "https://fal.ai/models/minimax/h3-max/reframe-video",
+ "confidence": "medium",
+ "notes": "usd = 480p (الأرخص)؛ الافتراضي 768p ($0.08/ث). المخطط يتيح أيضًا 1080p لكن النص لا يذكر سعره — غير معروف. للمصادر الطويلة (>15 ثانية) تُحتسب ثوانٍ التداخل أيضًا فقد تتجاوز المدة المفوترة مدة المخرج؛ لذلك الثقة متوسطة للمصادر الطويلة."
+}

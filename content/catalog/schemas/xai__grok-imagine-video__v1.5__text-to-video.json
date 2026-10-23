@@ -1,0 +1,196 @@
+{
+ "endpoint": "xai/grok-imagine-video/v1.5/text-to-video",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "duration": {
+   "description": "Video duration in seconds.",
+   "type": "integer",
+   "maximum": 15,
+   "default": 6,
+   "minimum": 1,
+   "title": "Duration"
+  },
+  "prompt": {
+   "description": "Text description of the desired video.",
+   "type": "string",
+   "maxLength": 4096,
+   "title": "Prompt"
+  },
+  "resolution": {
+   "description": "Resolution of the output video.",
+   "type": "string",
+   "enum": [
+    "480p",
+    "720p",
+    "1080p"
+   ],
+   "title": "Resolution",
+   "default": "720p"
+  },
+  "aspect_ratio": {
+   "description": "Aspect ratio of the generated video.",
+   "type": "string",
+   "enum": [
+    "16:9",
+    "4:3",
+    "3:2",
+    "1:1",
+    "2:3",
+    "3:4",
+    "9:16"
+   ],
+   "title": "Aspect Ratio",
+   "default": "16:9"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  }
+ },
+ "output": {
+  "type": "object",
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video.",
+    "examples": [
+     {
+      "width": 1280,
+      "content_type": "video/mp4",
+      "fps": 24,
+      "num_frames": 145,
+      "duration": 6.041667,
+      "height": 720,
+      "url": "https://v3b.fal.media/files/b/0a8b90e4/RUAbFYlssdqnbjNLmE8qP_IX7BNYGP.mp4",
+      "file_name": "RUAbFYlssdqnbjNLmE8qP_IX7BNYGP.mp4"
+     }
+    ],
+    "type": "object",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "width": {
+      "description": "The width of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Width"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "fps": {
+      "description": "The FPS of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fps"
+     },
+     "num_frames": {
+      "description": "The number of frames in the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Num Frames"
+     },
+     "duration": {
+      "description": "The duration of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duration"
+     },
+     "height": {
+      "description": "The height of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Height"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     }
+    },
+    "title": "VideoFile"
+   }
+  },
+  "title": "XAITextToVideoOutput"
+ },
+ "fetched_at": "2026-10-23T08:09:28+00:00"
+}

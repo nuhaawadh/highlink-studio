@@ -1,0 +1,9 @@
+{
+ "endpoint": "elevenlabs/music/v2.5",
+ "unit": "minute",
+ "usd": 0.6,
+ "pricing_text": "Your request will cost **$0.6** per output audio minute. The audio will be **rounded up** to the closest minute. For instance, a generation with 30 seconds output will be billed as 1 minute.",
+ "source_url": "https://fal.ai/models/elevenlabs/music/v2.5",
+ "confidence": "high",
+ "notes": "$0.60 لكل دقيقة صوت مخرج، تُقرَّب لأعلى لأقرب دقيقة (30 ث تُفوتر دقيقة)."
+}

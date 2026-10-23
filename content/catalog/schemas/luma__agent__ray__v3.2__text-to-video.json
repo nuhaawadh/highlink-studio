@@ -1,0 +1,210 @@
+{
+ "endpoint": "luma/agent/ray/v3.2/text-to-video",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "prompt": {
+   "type": "string",
+   "description": "Text prompt describing the video to generate.",
+   "maxLength": 6000,
+   "title": "Prompt"
+  },
+  "resolution": {
+   "description": "Resolution of the generated video. Higher resolutions cost more.",
+   "type": "string",
+   "enum": [
+    "540p",
+    "720p",
+    "1080p"
+   ],
+   "title": "Resolution",
+   "default": "540p"
+  },
+  "loop": {
+   "description": "Generate a seamless loop. Only valid for 5s, standard-dynamic-range generations without an end frame.",
+   "type": "boolean",
+   "title": "Loop",
+   "default": false
+  },
+  "exr_export": {
+   "description": "Also export an EXR file alongside the MP4. Requires hdr=true and HDR access.",
+   "type": "boolean",
+   "title": "Exr Export",
+   "default": false
+  },
+  "duration": {
+   "description": "Duration of the generated video.",
+   "type": "string",
+   "enum": [
+    "5s",
+    "10s"
+   ],
+   "title": "Duration",
+   "default": "5s"
+  },
+  "hdr": {
+   "description": "Generate an HDR-encoded MP4. Requires HDR access on the account and a resolution of 720p or 1080p; not supported with 10s or loop.",
+   "type": "boolean",
+   "title": "Hdr",
+   "default": false
+  },
+  "aspect_ratio": {
+   "type": "string",
+   "enum": [
+    "3:4",
+    "4:3",
+    "1:1",
+    "9:16",
+    "16:9",
+    "21:9"
+   ],
+   "title": "Aspect Ratio",
+   "description": "Aspect ratio of the generated video.",
+   "default": "16:9"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "VideoOutput",
+  "properties": {
+   "exr_file": {
+    "description": "The generated EXR sidecar when exr_export is true. This may be a single EXR file or a ZIP package depending on Luma's export shape.",
+    "anyOf": [
+     {
+      "type": "object",
+      "title": "File",
+      "properties": {
+       "file_name": {
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "title": "File Name"
+       },
+       "file_size": {
+        "examples": [
+         4404019
+        ],
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The size of the file in bytes.",
+        "title": "File Size"
+       },
+       "content_type": {
+        "examples": [
+         "image/png"
+        ],
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The mime type of the file.",
+        "title": "Content Type"
+       },
+       "url": {
+        "description": "The URL where the file can be downloaded from.",
+        "type": "string",
+        "title": "Url"
+       }
+      },
+      "required": [
+       "url"
+      ]
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "video": {
+    "description": "The generated video.",
+    "type": "object",
+    "title": "File",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     }
+    },
+    "required": [
+     "url"
+    ]
+   }
+  },
+  "required": [
+   "video"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:10:30+00:00"
+}

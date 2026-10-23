@@ -1,0 +1,112 @@
+{
+ "endpoint": "fal-ai/kling-video/ai-avatar/v2/pro",
+ "required": [
+  "image_url",
+  "audio_url"
+ ],
+ "properties": {
+  "audio_url": {
+   "title": "Audio Url",
+   "type": "string",
+   "description": "The URL of the audio file."
+  },
+  "image_url": {
+   "title": "Image Url",
+   "type": "string",
+   "description": "The URL of the image to use as your avatar"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "default": ".",
+   "type": "string",
+   "description": "The prompt to use for the video generation."
+  },
+  "enable_safety_checker": {
+   "default": true,
+   "type": "boolean",
+   "description": "Disabling safety checks requires account authorization; unauthorized requests are always checked.",
+   "title": "Enable Safety Checker"
+  }
+ },
+ "output": {
+  "required": [
+   "video",
+   "duration"
+  ],
+  "properties": {
+   "duration": {
+    "type": "number",
+    "description": "Duration of the output video in seconds.",
+    "title": "Duration"
+   },
+   "video": {
+    "description": "The generated video",
+    "examples": [
+     {
+      "url": "https://v3.fal.media/files/penguin/ln3x7H1p1jL0Pwo7675NI_output.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     }
+    },
+    "type": "object",
+    "title": "File"
+   }
+  },
+  "type": "object",
+  "title": "AIAvatarOutput"
+ },
+ "fetched_at": "2026-10-23T02:46:07+00:00"
+}

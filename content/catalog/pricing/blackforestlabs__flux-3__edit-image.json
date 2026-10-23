@@ -1,0 +1,10 @@
+{
+ "endpoint": "blackforestlabs/flux-3/edit-image",
+ "unit": "image",
+ "usd": 0.048,
+ "by_resolution": {"1k": 0.048},
+ "pricing_text": "Image pricing varies by resolution. A 1K (1 MP) image costs **$0.048**.",
+ "source_url": "https://fal.ai/models/blackforestlabs/flux-3/edit-image",
+ "confidence": "medium",
+ "notes": "usd = $0.048 لصورة 1K (الدقة الافتراضية في المخطط). الصفحة تقول إن السعر يختلف بالدقة لكنها لا تذكر أسعار 768sq/1.5k/2k/4k — غير معروفة ويجب التحقق منها قبل تفعيل تلك الدقات. الصفحة تؤكد: سعر واحد للصورة مهما كان عدد المراجع (حتى 10)."
+}

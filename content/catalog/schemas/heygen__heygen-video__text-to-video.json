@@ -1,0 +1,154 @@
+{
+ "endpoint": "heygen/heygen-video/text-to-video",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "prompt_enhancement": {
+   "type": "string",
+   "default": "turbo",
+   "enum": [
+    "turbo",
+    "quality",
+    "ultraquality",
+    "disabled"
+   ],
+   "title": "Prompt Enhancement"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "maxLength": 32000,
+   "type": "string"
+  },
+  "duration": {
+   "type": "integer",
+   "minimum": 5,
+   "default": 5,
+   "maximum": 15,
+   "title": "Duration"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "minimum": 0,
+     "maximum": 4294967295,
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed"
+  },
+  "aspect_ratio": {
+   "type": "string",
+   "default": "16:9",
+   "enum": [
+    "21:9",
+    "16:9",
+    "4:3",
+    "1:1",
+    "3:4",
+    "9:16"
+   ],
+   "title": "Aspect Ratio"
+  },
+  "resolution": {
+   "type": "string",
+   "default": "768p",
+   "enum": [
+    "480p",
+    "768p",
+    "1080p",
+    "2k"
+   ],
+   "title": "Resolution"
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "video": {
+    "type": "object",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File"
+   },
+   "seed": {
+    "anyOf": [
+     {
+      "type": "integer"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "title": "Seed"
+   }
+  },
+  "required": [
+   "video"
+  ],
+  "title": "VideoOutput"
+ },
+ "fetched_at": "2026-10-23T08:13:28+00:00"
+}

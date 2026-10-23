@@ -11,7 +11,7 @@ import { getBalance } from '../_shared/credits.ts'
 import { AppError, jsonResponse, toAppError } from '../_shared/errors.ts'
 import { runGenerate } from '../_shared/generate-core.ts'
 import { logRequest } from '../_shared/log.ts'
-import { applyModelResolution } from '../_shared/pricing.ts'
+import { modelCredits, resolveDuration } from '../_shared/pricing.ts'
 import { GenerateRequestSchema } from '../_shared/request.ts'
 import { supabaseAdmin } from '../_shared/supabaseAdmin.ts'
 import type { ModelRow } from '../_shared/types.ts'
@@ -115,23 +115,41 @@ async function handleGenerate(req: Request, p: ApiPrincipal, started: number): P
 async function handleModels(p: ApiPrincipal): Promise<Response> {
   const { data, error } = await supabaseAdmin()
     .from('models')
-    .select('id, name_ar, name_en, type, cost_credits, supports, default_params, badge, sort')
+    .select('id, name_ar, name_en, type, cost_credits, cost_per_second, max_duration_s, supports, default_params, badge, sort')
     .eq('enabled', true)
     .order('sort', { ascending: true })
   if (error) throw toAppError(new Error(error.message))
   const models = (data ?? []).map((m) => {
     const supports = (m.supports ?? {}) as Record<string, unknown>
+    const row = { ...m, type: m.type as ModelRow['type'], default_params: (m.default_params ?? {}) as Record<string, unknown> }
     const sizes = (Array.isArray(supports.sizes) ? supports.sizes : ['1K']) as Array<'1K' | '2K' | '4K'>
+    const durations = Array.isArray(supports.durations) ? (supports.durations as number[]) : []
+    const resolutions = Array.isArray(supports.resolutions) ? (supports.resolutions as string[]) : []
+    // تكلفة كل خيار بنفس دالة الحجز (ADR 0005): للصور حسب الحجم، للفيديو حسب المدة بالدقة الافتراضية
     const costs: Record<string, number> = {}
-    if (m.cost_credits != null) for (const s of sizes) costs[s] = applyModelResolution(m.cost_credits, s, supports.resolution_multipliers)
+    try {
+      if (m.type === 'image') for (const s of sizes) costs[s] = modelCredits(row, { imageSize: s })
+      else if (m.type === 'video') for (const d of durations.length ? durations : [resolveDuration(row, undefined) ?? 0]) if (d) costs[`${d}s`] = modelCredits(row, { duration: d })
+    } catch {
+      // صف بلا سعر صالح لا يُفترض أن يكون مفعّلًا؛ نرجعه بلا تكاليف بدل إسقاط القائمة كلها
+    }
     return {
       id: m.id,
       name_ar: m.name_ar,
       name_en: m.name_en,
       type: m.type as ModelRow['type'],
+      kind: (supports.kind as string | undefined) ?? (m.type === 'video' ? 't2v' : 't2i'),
+      family: (supports.family as string | undefined) ?? null,
       cost_credits: m.cost_credits,
+      cost_per_second: m.cost_per_second,
+      max_duration_s: m.max_duration_s,
       costs,
-      sizes,
+      sizes: m.type === 'image' ? sizes : [],
+      durations,
+      resolutions,
+      audio: supports.audio === true,
+      ref_images: typeof supports.ref_images === 'number' ? supports.ref_images : 0,
+      requires_ref: supports.requires_ref === true,
       aspect_ratios: Array.isArray(supports.aspect_ratios) ? supports.aspect_ratios : ['1:1'],
       default_params: m.default_params ?? {},
       badge: m.badge,

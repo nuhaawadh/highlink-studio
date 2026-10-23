@@ -1,0 +1,234 @@
+{
+ "endpoint": "openai/gpt-image-2.5/flare/text-to-image",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "prompt": {
+   "type": "string",
+   "description": "The prompt for image generation",
+   "maxLength": 32000,
+   "title": "Prompt"
+  },
+  "image_size": {
+   "description": "The size of the generated image. Supports preset names, explicit {width, height}, or 'auto' to let the model pick the best size. Concrete sizes must have both dimensions as multiples of 16, max edge 3840px, aspect ratio <= 3:1, total pixels between 655,360 and 8,294,400.",
+   "anyOf": [
+    {
+     "type": "object",
+     "title": "ImageSize",
+     "properties": {
+      "height": {
+       "description": "The height of the generated image.",
+       "type": "integer",
+       "title": "Height",
+       "maximum": 14142,
+       "default": 512,
+       "exclusiveMinimum": 0
+      },
+      "width": {
+       "description": "The width of the generated image.",
+       "type": "integer",
+       "title": "Width",
+       "maximum": 14142,
+       "default": 512,
+       "exclusiveMinimum": 0
+      }
+     }
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9",
+      "auto"
+     ]
+    }
+   ],
+   "title": "Image Size",
+   "default": "landscape_4_3"
+  },
+  "num_images": {
+   "type": "integer",
+   "description": "Number of images to generate",
+   "title": "Number of Images",
+   "maximum": 10,
+   "default": 1,
+   "minimum": 1
+  },
+  "quality": {
+   "description": "Quality for the generated image. Higher settings increase detail, latency, and token usage. Use 'auto' to let the model choose.",
+   "type": "string",
+   "enum": [
+    "auto",
+    "low",
+    "medium",
+    "high",
+    "xhigh",
+    "max"
+   ],
+   "title": "Quality",
+   "default": "high"
+  },
+  "output_format": {
+   "description": "Output format for the images",
+   "type": "string",
+   "enum": [
+    "jpeg",
+    "png",
+    "webp"
+   ],
+   "title": "Output Format",
+   "default": "png"
+  },
+  "sync_mode": {
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "type": "boolean",
+   "title": "Sync Mode",
+   "default": false
+  },
+  "background": {
+   "description": "Background for the generated image",
+   "type": "string",
+   "enum": [
+    "auto",
+    "transparent",
+    "opaque"
+   ],
+   "title": "Background",
+   "default": "auto"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  },
+  "output_compression": {
+   "description": "Compression level from 0 to 100. Only supported when output_format is 'jpeg' or 'webp'.",
+   "anyOf": [
+    {
+     "type": "integer",
+     "maximum": 100,
+     "minimum": 0
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Output Compression"
+  }
+ },
+ "output": {
+  "type": "object",
+  "required": [
+   "images"
+  ],
+  "properties": {
+   "images": {
+    "description": "The generated images.",
+    "type": "array",
+    "examples": [
+     [
+      {
+       "height": 1024,
+       "file_name": "EnWrO3XWjPE0nxBDpaQrj.png",
+       "url": "https://v3b.fal.media/files/b/0a869129/EnWrO3XWjPE0nxBDpaQrj.png",
+       "content_type": "image/png",
+       "width": 1024
+      }
+     ]
+    ],
+    "title": "Images",
+    "items": {
+     "type": "object",
+     "required": [
+      "url"
+     ],
+     "properties": {
+      "height": {
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Height"
+      },
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string",
+       "title": "Url"
+      },
+      "file_size": {
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        4404019
+       ],
+       "title": "File Size"
+      },
+      "content_type": {
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type"
+      },
+      "width": {
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Width"
+      },
+      "file_name": {
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name"
+      }
+     },
+     "title": "ImageFile"
+    }
+   }
+  },
+  "title": "ImageResponse"
+ },
+ "fetched_at": "2026-10-23T08:17:31+00:00"
+}

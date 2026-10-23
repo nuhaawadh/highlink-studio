@@ -7,6 +7,7 @@
     "dev": "npm --prefix apps/web run dev",
     "build": "npm --prefix apps/web run build",
     "typecheck": "npm --prefix apps/web run typecheck",
+    "typecheck:functions": "apps/web/node_modules/.bin/tsc -p scripts/denocheck/tsconfig.json",
     "test": "npm --prefix apps/web run test",
     "lint": "npm --prefix apps/web run lint",
     "install:web": "npm --prefix apps/web install",

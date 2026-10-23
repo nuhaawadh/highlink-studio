@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/fibo-2/edit",
+ "unit": "image",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost $0.04 per image",
+ "source_url": "https://fal.ai/models/bria/fibo-2/edit",
+ "confidence": "high",
+ "notes": "$0.04 للصورة."
+}

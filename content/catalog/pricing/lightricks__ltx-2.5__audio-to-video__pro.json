@@ -1,0 +1,10 @@
+{
+ "endpoint": "lightricks/ltx-2.5/audio-to-video/pro",
+ "unit": "second",
+ "usd": 0.17,
+ "by_resolution": {"1080p": 0.17},
+ "pricing_text": "Billing is calculated at **$0.17 per second of input audio at 1080p**. Native audio is included. For example, **10 seconds of input audio cost $1.70**.",
+ "source_url": "https://fal.ai/models/lightricks/ltx-2.5/audio-to-video/pro",
+ "confidence": "high",
+ "notes": "الوحدة = ثانية من الصوت المُدخل (الفيديو الناتج بنفس الطول). الصوت 2-20 ث لكن نسخة pro تدعم 10 ث كحد أقصى. لا معامل دقة في المخطط (1080p ثابتة). image_url اختياري؛ بدونه prompt مطلوب."
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "bytedance/seedream/v5/lite/edit",
+ "unit": "image",
+ "usd": 0.035,
+ "pricing_text": "Your request will cost $0.035 per image.",
+ "source_url": "https://fal.ai/models/bytedance/seedream/v5/lite/edit",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground، ويؤكده جدول الصفحة: Cost per Image $0.035). سعر ثابت لكل صورة مخرجة بغض النظر عن الدقة (2K–4K) وعدد المراجع (حتى 10). مع max_images > 1 قد يخرج أكثر من صورة لكل توليدة وكل صورة تُحسب."
+}

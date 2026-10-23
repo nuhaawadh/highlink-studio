@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/ideogram/object-removal",
+ "unit": "request",
+ "usd": 0.03,
+ "pricing_text": "Your request will cost **$0.03** per generation.",
+ "source_url": "https://fal.ai/models/fal-ai/ideogram/object-removal",
+ "confidence": "high",
+ "notes": "$0.03 لكل عملية توليد (طلب)."
+}

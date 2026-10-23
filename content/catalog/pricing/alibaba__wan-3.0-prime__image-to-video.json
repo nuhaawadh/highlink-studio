@@ -1,0 +1,14 @@
+{
+ "endpoint": "alibaba/wan-3.0-prime/image-to-video",
+ "unit": "second",
+ "usd": 0.068,
+ "by_resolution": {
+  "480p": 0.068,
+  "720p": 0.14,
+  "1080p": 0.28
+ },
+ "pricing_text": "Billing is calculated per second of video generated: **$0.068 at 480p**, **$0.14 at 720p**, or **$0.28 at 1080p**. For example, a **5-second video at 720p costs $0.70**. Pricing is subject to change.",
+ "source_url": "https://fal.ai/models/alibaba/wan-3.0-prime/image-to-video",
+ "confidence": "high",
+ "notes": "usd للأرخص (480p). الافتراضي في المخطط 1080p = $0.28/ث. الصوت مضمّن (audio افتراضيه true). المدة 2–30 ث أو null للمدة الذكية."
+}

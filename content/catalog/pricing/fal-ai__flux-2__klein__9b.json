@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2/klein/9b",
+ "unit": "megapixel",
+ "usd": 0.006,
+ "pricing_text": "Your request will cost $0.006 per megapixel.",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2/klein/9b",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground). $0.006 لكل ميغابكسل مخرج — صورة 1MP ≈ $0.006، landscape_4_3 الافتراضي (≈1.3MP) ≈ $0.008. num_images حتى 4 (كل صورة تُحسب). النموذج متاح أيضًا مجانًا في Sandbox."
+}

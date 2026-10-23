@@ -1,0 +1,11 @@
+{
+ "endpoint": "openai/gpt-image-2.5/sunburst/text-to-image",
+ "unit": "token",
+ "usd": 0.00003,
+ "per_image_estimate_usd": 0.05268,
+ "by_resolution": {"1024x768": 0.03612, "1024x1024": 0.05268, "1024x1536": 0.04116, "1920x1072": 0.03945, "2560x1440": 0.05529, "3840x2160": 0.10008},
+ "pricing_text": "Text tokens (per 1M): **$5.00** input, **$1.25** cached, **$10.00** output.\nImage tokens (per 1M): **$8.00** input, **$2.00** cached, **$30.00** output. Changing the **quality** parameter significantly affects cost; by default we use **high**. Adjust it to your preference.\nSee the description at the bottom of this page for more details on how much canonical image sizes cost. Total cost is rounded up to the closest hundredth of a cent ($0.0001.)\n\n**Pricing** — The table below shows the output cost of one image at common sizes. It does not include text input tokens from your prompt.\n| Size | low | medium | high | xhigh | max |\n| 1024×768 | $0.00402 | $0.00903 | $0.03612 | $0.06420 | $0.14445 |\n| 1024×1024 | $0.00588 | $0.01317 | $0.05268 | $0.09366 | $0.21072 |\n| 1024×1536 | $0.00474 | $0.01029 | $0.04116 | $0.07377 | $0.16464 |\n| 1920×1072 | $0.00441 | $0.00951 | $0.03945 | $0.07014 | $0.15780 |\n| 2560×1440 | $0.00615 | $0.01434 | $0.05529 | $0.09828 | $0.22110 |\n| 3840×2160 | $0.01113 | $0.02595 | $0.10008 | $0.17790 | $0.40026 |\nYour total cost per request is the table price plus: Prompt text, at $5.00 per 1M tokens. A short prompt adds about $0.0001, and a 500-word prompt adds about $0.003. Each extra image when num_images is above 1. Partial images when streaming, 100 output tokens ($0.003) each. With quality: auto the model picks the quality, so the cost can reach the max column.",
+ "source_url": "https://fal.ai/models/openai/gpt-image-2.5/sunburst/text-to-image",
+ "confidence": "high",
+ "notes": "تسعير بالتوكنات: usd = $30/مليون توكن صورة مخرجة = $0.00003/توكن. per_image_estimate_usd = $0.05268 لصورة 1024×1024 بجودة high (الافتراضية) حسب جدول الصفحة. by_resolution = سعر الصورة بجودة high لكل حجم (الافتراضي في المخطط landscape_4_3 ≈ 1024×768 = $0.03612). الجودات الأخرى في النص (low ≈ ×0.11، medium ≈ ×0.25، xhigh ≈ ×1.78، max ≈ ×4 من high). يُضاف ≈ $0.0001–$0.003 لنص البرومبت. quality=auto قد يصل للعمود max — يُنصح بتثبيت الجودة."
+}

@@ -1,0 +1,102 @@
+{
+ "endpoint": "google/gemini-omni-flash/v1.1/edit",
+ "required": [
+  "prompt",
+  "video_url"
+ ],
+ "properties": {
+  "video_url": {
+   "title": "Video URL",
+   "type": "string",
+   "description": "URL of the video to edit."
+  },
+  "resolution": {
+   "default": "720p",
+   "title": "Resolution",
+   "type": "string",
+   "description": "The resolution of the edited video.",
+   "enum": [
+    "360p",
+    "720p",
+    "1080p",
+    "4k"
+   ]
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "A simple instruction describing the edit.",
+   "type": "string",
+   "maxLength": 20000
+  }
+ },
+ "output": {
+  "title": "VideoOutput",
+  "type": "object",
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video.",
+    "type": "object",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:12:23+00:00"
+}

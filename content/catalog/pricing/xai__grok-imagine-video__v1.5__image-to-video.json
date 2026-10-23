@@ -1,0 +1,14 @@
+{
+ "endpoint": "xai/grok-imagine-video/v1.5/image-to-video",
+ "unit": "second",
+ "usd": 0.08,
+ "by_resolution": {
+  "480p": 0.08,
+  "720p": 0.14,
+  "1080p": 0.25
+ },
+ "pricing_text": "Priced per second of output video, by resolution: 480p at **$0.08**/sec, 720p at **$0.14**/sec, 1080p at **$0.25**/sec. A 5-second clip costs **$0.40** at 480p, **$0.70** at 720p, and **$1.25** at 1080p. Cost scales linearly with duration. Each reference image adds **$0.01** (1–7 supported). A reference audio clip, if provided, is included at no extra cost. Pricing is subject to change",
+ "source_url": "https://fal.ai/models/xai/grok-imagine-video/v1.5/image-to-video",
+ "confidence": "high",
+ "notes": "usd للأرخص (480p)؛ الافتراضي 720p = $0.14/ث. كل صورة مرجعية +$0.01. الصوت المرجعي مجانًا. (pricing_parsed في fal-launch.json كان يخلط الدقات — الصحيح هنا.)"
+}

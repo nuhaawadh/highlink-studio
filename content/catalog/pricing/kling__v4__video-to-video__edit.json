@@ -1,0 +1,13 @@
+{
+ "endpoint": "kling/v4/video-to-video/edit",
+ "unit": "second",
+ "usd": 0.094,
+ "by_resolution": {
+  "720p": 0.094,
+  "1080p": 0.141
+ },
+ "pricing_text": "Video costs **$0.094** per second at **720p** and **$0.141** per second at **1080p**, billed on the input plus output length (minimum 2× the output).",
+ "source_url": "https://fal.ai/models/kling/v4/video-to-video/edit",
+ "confidence": "high",
+ "notes": "السعر لكل ثانية؛ الافتراضي في المخطط 1080p = $0.141/ث. يُحتسب على طول المدخل + المخرج (بحد أدنى 2× طول المخرج) — أي فيديو 5 ث يُفوتر كـ10 ث على الأقل."
+}

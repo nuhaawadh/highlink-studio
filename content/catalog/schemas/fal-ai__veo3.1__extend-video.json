@@ -1,0 +1,168 @@
+{
+ "endpoint": "fal-ai/veo3.1/extend-video",
+ "required": [
+  "prompt",
+  "video_url"
+ ],
+ "properties": {
+  "auto_fix": {
+   "title": "Auto Fix",
+   "default": false,
+   "type": "boolean",
+   "description": "Whether to automatically attempt to fix prompts that fail content policy or other validation checks by rewriting them."
+  },
+  "duration": {
+   "title": "Duration",
+   "default": "7s",
+   "type": "string",
+   "description": "The duration of the generated video."
+  },
+  "prompt": {
+   "title": "Prompt",
+   "type": "string",
+   "maxLength": 20000,
+   "description": "The text prompt describing how the video should be extended"
+  },
+  "safety_tolerance": {
+   "title": "Safety Tolerance",
+   "enum": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "default": "4",
+   "type": "string",
+   "description": "The safety tolerance level for content moderation. 1 is the most strict (blocks most content), 6 is the least strict."
+  },
+  "generate_audio": {
+   "title": "Generate Audio",
+   "default": true,
+   "type": "boolean",
+   "description": "Whether to generate audio for the video."
+  },
+  "resolution": {
+   "title": "Resolution",
+   "default": "720p",
+   "type": "string",
+   "description": "The resolution of the generated video."
+  },
+  "seed": {
+   "title": "Seed",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The seed for the random number generator."
+  },
+  "aspect_ratio": {
+   "title": "Aspect Ratio",
+   "enum": [
+    "auto",
+    "16:9",
+    "9:16"
+   ],
+   "default": "auto",
+   "type": "string",
+   "description": "The aspect ratio of the generated video."
+  },
+  "negative_prompt": {
+   "title": "Negative Prompt",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "A negative prompt to guide the video generation."
+  },
+  "video_url": {
+   "title": "Video URL",
+   "type": "string",
+   "description": "URL of the video to extend. The video should be 720p or 1080p resolution in 16:9 or 9:16 aspect ratio."
+  }
+ },
+ "output": {
+  "title": "Veo31VideoToVideoOutput",
+  "type": "object",
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a86711b/B_Z96VS4X9Dfd4M5ArB4H_c666e63f729f4a8fa1145c6727cef97d.mp4"
+     }
+    ],
+    "description": "The extended video.",
+    "title": "File",
+    "type": "object",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "file_name": {
+      "title": "File Name",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided."
+     },
+     "file_size": {
+      "title": "File Size",
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes."
+     },
+     "url": {
+      "title": "Url",
+      "type": "string",
+      "description": "The URL where the file can be downloaded from."
+     },
+     "content_type": {
+      "title": "Content Type",
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file."
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T02:49:46+00:00"
+}

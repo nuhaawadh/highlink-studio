@@ -24,8 +24,8 @@ interface AssetRow {
 const FAILED_MESSAGE_AR = 'فشل التوليد عند المزوّد — استُرجع رصيدك كاملًا'
 const CANCELED_MESSAGE_AR = 'أُلغي التوليد — استُرجع رصيدك كاملًا'
 
-/** المزوّدون الذين نقبل منهم webhooks (CLAUDE.md القاعدة 10) — fal/google يُضافان مع محوّلاتهم */
-const Source = z.enum(['replicate'])
+/** المزوّدون الذين نقبل منهم webhooks (CLAUDE.md القاعدة 10) — google يُضاف مع محوّله */
+const Source = z.enum(['replicate', 'fal'])
 
 Deno.serve(async (req) => {
   const started = Date.now()

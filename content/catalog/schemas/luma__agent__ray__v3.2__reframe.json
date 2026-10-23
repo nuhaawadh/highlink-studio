@@ -1,0 +1,252 @@
+{
+ "endpoint": "luma/agent/ray/v3.2/reframe",
+ "required": [
+  "prompt",
+  "video_url",
+  "aspect_ratio"
+ ],
+ "properties": {
+  "duration": {
+   "description": "Duration of the reframed video. Defaults to matching the source video's duration; set explicitly to 5s or 10s to override.",
+   "anyOf": [
+    {
+     "type": "string",
+     "enum": [
+      "5s",
+      "10s"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Duration"
+  },
+  "video_url": {
+   "type": "string",
+   "description": "URL of the source video to reframe (must be 10 seconds or less).",
+   "title": "Video Url"
+  },
+  "prompt": {
+   "type": "string",
+   "description": "Text prompt describing the content to paint into the newly exposed canvas area when reframing to the target aspect ratio.",
+   "maxLength": 6000,
+   "title": "Prompt"
+  },
+  "resolution": {
+   "description": "Resolution of the reframed video. Higher resolutions cost more.",
+   "type": "string",
+   "enum": [
+    "540p",
+    "720p",
+    "1080p"
+   ],
+   "title": "Resolution",
+   "default": "540p"
+  },
+  "aspect_ratio": {
+   "type": "string",
+   "enum": [
+    "3:4",
+    "4:3",
+    "1:1",
+    "9:16",
+    "16:9",
+    "21:9"
+   ],
+   "title": "Aspect Ratio",
+   "description": "Target aspect ratio for the reframed video."
+  },
+  "source_position": {
+   "description": "Optional normalized source rectangle controlling where the source video sits in the output canvas.",
+   "anyOf": [
+    {
+     "type": "object",
+     "title": "RayReframeSourcePosition",
+     "properties": {
+      "w_norm": {
+       "description": "Width of the source rectangle as a fraction of output width.",
+       "type": "number",
+       "title": "W Norm",
+       "maximum": 2,
+       "exclusiveMinimum": 0
+      },
+      "y_norm": {
+       "description": "Top edge of the source rectangle as a fraction of output height.",
+       "type": "number",
+       "title": "Y Norm",
+       "maximum": 2,
+       "minimum": -2
+      },
+      "x_norm": {
+       "description": "Left edge of the source rectangle as a fraction of output width.",
+       "type": "number",
+       "title": "X Norm",
+       "maximum": 2,
+       "minimum": -2
+      },
+      "h_norm": {
+       "description": "Height of the source rectangle as a fraction of output height.",
+       "type": "number",
+       "title": "H Norm",
+       "maximum": 2,
+       "exclusiveMinimum": 0
+      }
+     },
+     "required": [
+      "x_norm",
+      "y_norm",
+      "w_norm",
+      "h_norm"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "VideoOutput",
+  "properties": {
+   "exr_file": {
+    "description": "The generated EXR sidecar when exr_export is true. This may be a single EXR file or a ZIP package depending on Luma's export shape.",
+    "anyOf": [
+     {
+      "type": "object",
+      "title": "File",
+      "properties": {
+       "file_name": {
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "title": "File Name"
+       },
+       "file_size": {
+        "examples": [
+         4404019
+        ],
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The size of the file in bytes.",
+        "title": "File Size"
+       },
+       "content_type": {
+        "examples": [
+         "image/png"
+        ],
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The mime type of the file.",
+        "title": "Content Type"
+       },
+       "url": {
+        "description": "The URL where the file can be downloaded from.",
+        "type": "string",
+        "title": "Url"
+       }
+      },
+      "required": [
+       "url"
+      ]
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "video": {
+    "description": "The generated video.",
+    "type": "object",
+    "title": "File",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     }
+    },
+    "required": [
+     "url"
+    ]
+   }
+  },
+  "required": [
+   "video"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:14:54+00:00"
+}

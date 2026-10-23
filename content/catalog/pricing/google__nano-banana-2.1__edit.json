@@ -1,0 +1,11 @@
+{
+ "endpoint": "google/nano-banana-2.1/edit",
+ "unit": "token",
+ "usd": 0.000035294,
+ "by_resolution": {"1K": 0.044, "2K": 0.063, "4K": 0.138},
+ "per_image_estimate_usd": 0.044,
+ "pricing_text": "Text/thinking tokens (per 1M): **$1.764** input, **$8.823** output.\nImage tokens (per 1M): **$1.764** input, **$35.294** output. Changing the **resolution** parameter significantly affects cost; by default we use **1K**. — Pricing: Nano Banana 2.1 is billed on the tokens each request actually uses, as reported by Google. There are no flat per-image fees or surcharges for resolution, web search, or thinking; those settings only change how many tokens a request uses. Input (prompt text, images, and other media) $1.764 / 1M tokens; Output text and thinking $8.823 / 1M; Output image $35.294 / 1M. Representative costs for one output image from a short prompt (about 100 tokens), excluding thinking and web search tokens — Text-to-image / Edit with two 1K input images: 1K $0.040 / $0.044; 2K $0.059 / $0.063; 4K $0.134 / $0.138. Google lists output images at about 1,120 tokens at 1K, 1,680 at 2K, and 3,780 at 4K. Each input image is about 1,120 tokens, roughly $0.002. Each image is billed separately with num_images above 1.",
+ "source_url": "https://fal.ai/models/google/nano-banana-2.1/edit",
+ "confidence": "high",
+ "notes": "تسعير بالتوكنات: usd = سعر توكن واحد من صورة المخرج ($35.294 لكل مليون). per_image_estimate_usd = تقدير fal الرسمي لصورة 1K في وضع التحرير مع صورتي إدخال 1K ($0.044؛ نص→صورة $0.040). by_resolution = تقديرات fal لكل صورة (تحرير): 1K $0.044، 2K $0.063، 4K $0.138 — لا تشمل توكنات التفكير (thinking_level افتراضيًا medium) ولا البحث. كل صورة إدخال إضافية ≈ $0.002 (حتى 14 صورة). الدقة الافتراضية 1K."
+}

@@ -1,0 +1,10 @@
+{
+ "endpoint": "bytedance/seedream/v5/pro/text-to-image",
+ "unit": "image",
+ "usd": 0.0675,
+ "by_resolution": {"1K": 0.0675, "2K": 0.135},
+ "pricing_text": "Tentative pricing is **$0.0675 per output image** for an area up to and including **1536 × 1536 pixels**, or **$0.135 per output image** for an area above **1536 × 1536** and up to **2048 × 2048 pixels**. For example, **2 images at 1536 × 1536 would cost $0.135**. Final pricing is not yet confirmed.",
+ "source_url": "https://fal.ai/models/bytedance/seedream/v5/pro/text-to-image",
+ "confidence": "medium",
+ "notes": "سعر مبدئي (Tentative — Final pricing is not yet confirmed) لذا الثقة medium. usd = صورة بمساحة ≤ 1536×1536 (auto_1K وأحجام 1024-1536)؛ المساحة الأكبر حتى 2048×2048 (auto_2K) = $0.135. تنبيه: الحجم الافتراضي في المخطط auto_2K أي $0.135 — اضبط auto_1K للسعر الأساسي. المساحة الدنيا 1024×1024. num_images حتى 6."
+}

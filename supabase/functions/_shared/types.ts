@@ -72,7 +72,8 @@ export interface GenerateConfig {
   aspectRatio?: AspectRatio
   imageSize?: ImageSize
   duration?: number
-  resolution?: '480p' | '720p' | '1080p'
+  /** دقة الفيديو كما يسمّيها مخطط المزوّد ('720p'، '1080p'، '768P'، '4k') — القائمة المتاحة في models.supports.resolutions (ADR 0005) */
+  resolution?: string
   audio?: boolean
   seed?: number
 }

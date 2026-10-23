@@ -1,0 +1,10 @@
+{
+ "endpoint": "xai/grok-imagine-video/extend-video",
+ "unit": "second",
+ "usd": 0.05,
+ "by_resolution": {"480p": 0.05, "720p": 0.07},
+ "pricing_text": "Cost is **$0.05** per second of 480p output video (**$0.07** at 720p) plus **$0.01** per second of input video. For example, a **6-second** 480p video from a 6-second input costs **$0.36**.",
+ "source_url": "https://fal.ai/models/xai/grok-imagine-video/extend-video",
+ "confidence": "high",
+ "notes": "usd = 480p لكل ثانية من مقطع التمديد (duration 2-10 ث، افتراضي 6) + $0.01 لكل ثانية من الفيديو المُدخل (2-15 ث). لا معامل دقة في المخطط — الدقة تتبع الفيديو المصدر على الأرجح. المخرج = الأصل + التمديد مدمجَين."
+}

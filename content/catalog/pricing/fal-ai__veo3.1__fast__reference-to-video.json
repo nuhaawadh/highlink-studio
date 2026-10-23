@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/veo3.1/fast/reference-to-video",
+ "unit": "second",
+ "usd": 0.1,
+ "audio_surcharge_usd": 0.05,
+ "pricing_text": "For every second of video you generated, you will be charged **$0.10** (audio off) or **$0.15** (audio on). For example, a **5s video** with audio on will cost **$0.75**.",
+ "source_url": "https://fal.ai/models/fal-ai/veo3.1/fast/reference-to-video",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (2026-10-23). usd = بدون صوت؛ مع الصوت $0.15/ث (generate_audio افتراضيًا true). لا تفريق بالدقة في النص رغم أن المخطط يتيح 720p/1080p/4k. المدة ثابتة 8s. تحذير مهم: الصفحة تعلن «This endpoint will be deprecated on November 17, 2026»."
+}

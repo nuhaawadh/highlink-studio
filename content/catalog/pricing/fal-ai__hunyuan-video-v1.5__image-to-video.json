@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/hunyuan-video-v1.5/image-to-video",
+ "unit": "second",
+ "usd": 0.075,
+ "pricing_text": "Your request will cost $0.075 per second.",
+ "source_url": "https://fal.ai/models/fal-ai/hunyuan-video-v1.5/image-to-video",
+ "confidence": "high",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.075per second.\" (مسافات مفقودة في الاستخراج). الدقة ثابتة 480p (const في المخطط)، 24 إطار/ث تقريبًا، num_frames حتى 121 (≈5 ث)."
+}

@@ -1,0 +1,10 @@
+{
+ "endpoint": "kling/v4/image-to-video",
+ "unit": "second",
+ "usd": 0.157,
+ "by_resolution": {"720p": 0.157, "1080p": 0.235},
+ "pricing_text": "Video costs **$0.157** per second at **720p** and **$0.235** per second at **1080p**.",
+ "source_url": "https://fal.ai/models/kling/v4/image-to-video",
+ "confidence": "high",
+ "notes": "السعر لكل ثانية؛ usd = 720p (الأرخص). الدقة الافتراضية في المخطط 1080p ($0.235/ث). المدة 3–30 ثانية."
+}

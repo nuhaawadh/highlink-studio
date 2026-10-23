@@ -1,0 +1,16 @@
+{
+ "endpoint": "blackforestlabs/flux-3/klein/edit-image",
+ "unit": "image",
+ "usd": 0.008,
+ "by_resolution": {
+  "768": 0.008,
+  "1k": 0.009,
+  "1.5k": 0.011,
+  "2k": 0.014,
+  "4k": 0.036
+ },
+ "pricing_text": "Planned pricing per output image is **$0.008 at 768 × 768**, **$0.009 at 1K**, **$0.011 at 1.5K**, **$0.014 at 2K**, and **$0.036 at 4K**. The same planned rates apply to generation and editing; for example, **10 images at 1K would cost $0.09**. Final pricing is not yet confirmed.",
+ "source_url": "https://fal.ai/models/blackforestlabs/flux-3/klein/edit-image",
+ "confidence": "medium",
+ "notes": "تسعير \"مخطط له\" غير مؤكد نهائيًا بحسب نص fal. نفس الأسعار للتوليد والتعديل. مثال: 10 صور 1K = $0.09."
+}

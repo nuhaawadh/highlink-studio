@@ -1,0 +1,10 @@
+{
+ "endpoint": "blackforestlabs/flux-3/klein/text-to-image",
+ "unit": "image",
+ "usd": 0.009,
+ "by_resolution": {"768": 0.008, "1K": 0.009, "1.5K": 0.011, "2K": 0.014, "4K": 0.036},
+ "pricing_text": "Planned pricing per output image is **$0.008 at 768 × 768**, **$0.009 at 1K**, **$0.011 at 1.5K**, **$0.014 at 2K**, and **$0.036 at 4K**. The same planned rates apply to generation and editing; for example, **10 images at 1K would cost $0.09**. Final pricing is not yet confirmed.",
+ "source_url": "https://fal.ai/models/blackforestlabs/flux-3/klein/text-to-image",
+ "confidence": "medium",
+ "notes": "النص يقول صراحة إن التسعير \"مخطط\" وغير مؤكد نهائيًا (Final pricing is not yet confirmed) — لذا الثقة متوسطة. usd للافتراضي (square_hd ≈ 1K = $0.009)؛ الأرخص 768×768 = $0.008. الدقة تُحدَّد عبر image_size (256–4096 لكل ضلع). num_images حتى 4."
+}

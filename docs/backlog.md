@@ -18,6 +18,12 @@
 | B10 | إعادة إرسال webhook العميل الفاشلة (ADR 0004): الآن 3 محاولات خلال 8 ثوانٍ فقط ثم تُسجَّل فاشلة | `_shared/client-webhook.ts` + `cron-renewals` | تسليم موثوق لعملاء n8n/سلة؛ إعادة بتراجع أسّي حتى 24 ساعة من `api_webhook_deliveries` | مع `cron-renewals` |
 | B11 | عرض الاستخدام اليومي وسجل التسليم في صفحة الحساب (`api_daily_usage`, `api_webhook_deliveries` مقروءان للمالك عبر RLS) | `apps/web/src/app/AccountPage.tsx` | الجداول جاهزة؛ ينقص العرض فقط | مع لوحة الحساب الكاملة (§8 البند 8) |
 | B12 | إعادة إرسال webhook العميل لأصل API يفشل متزامنًا في `v1` (الآن الرد نفسه يحمل الخطأ ولا يُرسل حدث `asset.failed`) | `supabase/functions/v1/index.ts` | اتساق: كل حالة نهائية = حدث | عند طلب أول عميل |
+| B13 | رفع المراجع في الواجهة (Uppy + رابط موقّع) — يفتح `i2v`/`edit`/`ref2v` (عشرات النماذج المفعّلة للـAPI فقط) لمستخدمي الواجهة | صفحة الصور والفيديو، Edge Function `upload-url` | أكبر قيمة محجوزة في الكتالوج بعد ADR 0005 | التالي بعد بوابة 2 |
+| B14 | مدخلات فيديو/صوت في عقد `generate` (`video_url`, `audio_url`) + نوع `audio` في `copyFromUrl` — يفتح الطبقة b (motion، lipsync، avatar، TTS، upscale فيديو، Ad Multiplier) | `request.ts`, `inputs.ts`, `storage.ts`, `provider-webhook` | 66 نموذجًا مزروعًا معطّلًا ينتظرها | المرحلة 2 |
+| B15 | `sweep-processing`: سؤال fal عن الطلبات الطويلة عبر `status_url` قبل أن تعتبرها `reconcile_holds` فاشلة بعد 30 دقيقة (Seedance 30 ث وKling 4 يأخذان دقائق) | وظيفة جديدة + `cron-renewals` | الفيديو الطويل قد ينجح متأخرًا؛ الاسترداد المبكر يخسر تكلفة المزوّد | مع أول نماذج الفيديو الطويلة |
+| B16 | فتح 4K (`kling-v3-4k`، Veo `4k`) بعد الانتقال إلى R2 ورفع حد 50MB؛ وإزالة الاستبعاد في `build-models-seed.py` | `storage.ts`, migration bucket, السكربت | ADR 0005 القرار 5 | نقل DNS/R2 |
+| B17 | مراقبة أسعار fal: تشغيل `fal-catalog.py` أسبوعيًا ومقارنة `pricing_text` لكل نموذج مفعّل بما في `pricing/`؛ تنبيه عند التغيّر (fal يكتب "subject to change") | سكربت + GitHub Action | هامش ×3 يتآكل بصمت إن ارتفع سعر مزوّد | قبل الإطلاق العام |
+| B18 | النموذج "تلقائي" (`auto-image`/`auto-video`) + `prompt-enhancer` عربي→إنجليزي | `generate-core` (مزوّد داخلي يختار صفًا حقيقيًا)، Edge Function | الحركة 1 في `docs/competitive/beat-higgsfield-halai.md` | بعد بوابة 2 |
 
 ## ما يجب تذكّره عند لمس هذه الملفات
 - أي تعديل على الرصيد أو السياسات: اختبار SQL أولًا في `supabase/tests/credits.test.sql` (يعمل على القاعدة السحابية داخل معاملة تُلغى وفي CI).

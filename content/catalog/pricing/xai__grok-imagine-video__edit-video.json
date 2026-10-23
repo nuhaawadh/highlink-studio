@@ -1,0 +1,13 @@
+{
+ "endpoint": "xai/grok-imagine-video/edit-video",
+ "unit": "second",
+ "usd": 0.05,
+ "by_resolution": {
+  "480p": 0.05,
+  "720p": 0.07
+ },
+ "pricing_text": "Cost is **$0.05** per second of 480p output video (**$0.07** at 720p) plus **$0.01** per second of input video. For example, a **6-second** 480p video from a 6-second input costs **$0.36**.",
+ "source_url": "https://fal.ai/models/xai/grok-imagine-video/edit-video",
+ "confidence": "high",
+ "notes": "لكل ثانية مخرج + $0.01 لكل ثانية من فيديو المدخل. مثال fal: 6 ث 480p من مدخل 6 ث = $0.36. الافتراضي resolution=auto."
+}

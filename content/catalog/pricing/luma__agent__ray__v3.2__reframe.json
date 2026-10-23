@@ -1,0 +1,10 @@
+{
+ "endpoint": "luma/agent/ray/v3.2/reframe",
+ "unit": "second",
+ "usd": 0.06,
+ "by_resolution": {"540p": 0.06, "720p": 0.12, "1080p": 0.36},
+ "pricing_text": "Reframe is billed per started source second: **$0.06/s** at 540p, **$0.12/s** at 720p and **$0.36/s** at 1080p. A 5s source will cost **$0.30** for 540p, **$0.60** for 720p and **$1.80** for 1080p. A 10s source costs **$0.60** at 540p, **$1.20** at 720p and **$3.60** at 1080p. For **$1** you can reframe approximately **3 five-second clips** (540p).",
+ "source_url": "https://fal.ai/models/luma/agent/ray/v3.2/reframe",
+ "confidence": "high",
+ "notes": "الوحدة = ثانية مبدوءة من الفيديو المصدر (حتى 10 ث). usd = 540p وهي الافتراضية في المخطط. الثواني الجزئية تُحسب ثانية كاملة."
+}

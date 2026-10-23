@@ -1,0 +1,187 @@
+{
+ "endpoint": "kling/v4/image-to-video",
+ "required": [
+  "start_image_url"
+ ],
+ "properties": {
+  "start_image_url": {
+   "title": "Start Image Url",
+   "type": "string",
+   "description": "Image to use as the first frame of the video.\n\nMax file size: 30.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+  },
+  "resolution": {
+   "title": "Resolution",
+   "default": "1080p",
+   "enum": [
+    "720p",
+    "1080p"
+   ],
+   "type": "string",
+   "description": "Output resolution."
+  },
+  "multi_prompt": {
+   "anyOf": [
+    {
+     "minItems": 1,
+     "type": "array",
+     "items": {
+      "x-fal-order-properties": [
+       "prompt",
+       "duration"
+      ],
+      "required": [
+       "prompt"
+      ],
+      "properties": {
+       "prompt": {
+        "minLength": 1,
+        "maxLength": 512,
+        "type": "string",
+        "description": "The prompt for this shot.",
+        "title": "Prompt"
+       },
+       "duration": {
+        "maximum": 30,
+        "minimum": 1,
+        "default": 5,
+        "type": "integer",
+        "description": "Shot duration in seconds.",
+        "title": "Duration"
+       }
+      },
+      "type": "object",
+      "title": "KlingV4Shot"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Multi Prompt",
+   "description": "Per-shot prompts for multi-shot generation. The video duration is the sum of the shot durations."
+  },
+  "end_image_url": {
+   "anyOf": [
+    {
+     "x-fal": {
+      "min_aspect_ratio": 0.4,
+      "timeout": 20,
+      "max_file_size": 31457280,
+      "min_height": 300,
+      "max_aspect_ratio": 2.5,
+      "min_width": 300
+     },
+     "type": "string",
+     "ui": {
+      "field": "image"
+     },
+     "limit_description": "Max file size: 30.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "End Image Url",
+   "description": "Image to use as the last frame of the video."
+  },
+  "prompt": {
+   "anyOf": [
+    {
+     "maxLength": 26000,
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Prompt",
+   "description": "Text prompt. Either prompt or multi_prompt must be provided."
+  },
+  "duration": {
+   "title": "Duration",
+   "minimum": 3,
+   "default": 5,
+   "maximum": 30,
+   "type": "integer",
+   "description": "Video duration in seconds (3-30)."
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video.",
+    "examples": [
+     {
+      "content_type": "video/mp4",
+      "url": "https://v3b.fal.media/files/b/0aac4496/HjUbnyfTPVcavQNpRh1QJ_clip_image.mp4",
+      "file_size": 2953131,
+      "file_name": "output.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     }
+    },
+    "type": "object",
+    "title": "File"
+   }
+  },
+  "type": "object",
+  "title": "ImageToVideoOutput"
+ },
+ "fetched_at": "2026-10-23T02:43:27+00:00"
+}

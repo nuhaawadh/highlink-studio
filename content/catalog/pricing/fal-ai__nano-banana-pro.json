@@ -1,0 +1,14 @@
+{
+ "endpoint": "fal-ai/nano-banana-pro",
+ "unit": "image",
+ "usd": 0.15,
+ "by_resolution": {
+  "1k": 0.15,
+  "2k": 0.15,
+  "4k": 0.3
+ },
+ "pricing_text": "Your request will cost **$0.15** per image. For **$1.00**, you can generate **6** standard images. 4K outputs will be charged at double the standard rate. If web search is used, an additional **$0.015** will be charged. Note: Pricing may change in the future.",
+ "source_url": "https://fal.ai/models/fal-ai/nano-banana-pro",
+ "confidence": "high",
+ "notes": "$0.15 للصورة القياسية؛ 4K بالضعف ($0.30). بحث الويب إن استُخدم +$0.015. fal ينبّه أن السعر قد يتغير."
+}

@@ -1,0 +1,100 @@
+{
+ "endpoint": "fal-ai/ideogram/object-removal",
+ "required": [
+  "image_url",
+  "mask_url"
+ ],
+ "properties": {
+  "mask_url": {
+   "title": "Mask URL",
+   "description": "A black-and-white mask matching the source image dimensions. White pixels are removed and black pixels are preserved (maximum file size 10MB).",
+   "type": "string"
+  },
+  "image_url": {
+   "title": "Image URL",
+   "description": "The source image containing the object to remove (maximum file size 10MB).",
+   "type": "string"
+  },
+  "sync_mode": {
+   "default": false,
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "title": "Sync Mode",
+   "type": "boolean"
+  }
+ },
+ "output": {
+  "properties": {
+   "image": {
+    "description": "The image with the masked object removed.",
+    "examples": [
+     {
+      "url": "https://v3.fal.media/files/panda/xr7EI_0X5kM8fDOjjcMei_image.png"
+     }
+    ],
+    "properties": {
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     }
+    },
+    "title": "File",
+    "type": "object",
+    "required": [
+     "url"
+    ]
+   }
+  },
+  "title": "ObjectRemovalOutput",
+  "type": "object",
+  "required": [
+   "image"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:19:23+00:00"
+}

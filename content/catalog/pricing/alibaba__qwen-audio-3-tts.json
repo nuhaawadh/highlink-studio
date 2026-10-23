@@ -1,0 +1,9 @@
+{
+ "endpoint": "alibaba/qwen-audio-3-tts",
+ "unit": "1k_chars",
+ "usd": 0.05,
+ "pricing_text": "\n  Usage is billed at $0.05 per 1,000 input characters.",
+ "source_url": "https://fal.ai/models/alibaba/qwen-audio-3-tts",
+ "confidence": "high",
+ "notes": "$0.05 لكل 1,000 حرف مدخل."
+}

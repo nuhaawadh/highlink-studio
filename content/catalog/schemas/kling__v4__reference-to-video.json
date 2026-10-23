@@ -1,0 +1,377 @@
+{
+ "endpoint": "kling/v4/reference-to-video",
+ "required": [],
+ "properties": {
+  "start_image_url": {
+   "anyOf": [
+    {
+     "x-fal": {
+      "min_aspect_ratio": 0.4,
+      "timeout": 20,
+      "max_file_size": 31457280,
+      "min_height": 300,
+      "max_aspect_ratio": 2.5,
+      "min_width": 300
+     },
+     "type": "string",
+     "ui": {
+      "field": "image"
+     },
+     "limit_description": "Max file size: 30.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Start Image Url",
+   "description": "Optional image to use as the first frame. Counts toward the image reference limit."
+  },
+  "image_urls": {
+   "anyOf": [
+    {
+     "maxItems": 10,
+     "type": "array",
+     "items": {
+      "ui": {
+       "field": "image"
+      },
+      "x-fal": {
+       "min_aspect_ratio": 0.4,
+       "timeout": 20,
+       "max_file_size": 31457280,
+       "min_height": 300,
+       "max_aspect_ratio": 2.5,
+       "min_width": 300
+      },
+      "type": "string",
+      "_fal_ui_field": "image",
+      "limit_description": "Max file size: 30.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Image Urls",
+   "description": "Reference images, referenced as @Image1, @Image2, ... (max 10)."
+  },
+  "multi_prompt": {
+   "anyOf": [
+    {
+     "minItems": 1,
+     "type": "array",
+     "items": {
+      "x-fal-order-properties": [
+       "prompt",
+       "duration"
+      ],
+      "required": [
+       "prompt"
+      ],
+      "properties": {
+       "prompt": {
+        "minLength": 1,
+        "maxLength": 512,
+        "type": "string",
+        "description": "The prompt for this shot.",
+        "title": "Prompt"
+       },
+       "duration": {
+        "maximum": 30,
+        "minimum": 1,
+        "default": 5,
+        "type": "integer",
+        "description": "Shot duration in seconds.",
+        "title": "Duration"
+       }
+      },
+      "type": "object",
+      "title": "KlingV4Shot"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Multi Prompt",
+   "description": "Per-shot prompts for multi-shot generation. The video duration is the sum of the shot durations."
+  },
+  "elements": {
+   "anyOf": [
+    {
+     "maxItems": 7,
+     "type": "array",
+     "items": {
+      "x-fal-order-properties": [
+       "frontal_image_url",
+       "reference_image_urls",
+       "video_url",
+       "voice_id"
+      ],
+      "properties": {
+       "voice_id": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Voice Id",
+        "description": "Voice bound to this element. Create one with https://fal.ai/models/fal-ai/kling-video/create-voice"
+       },
+       "video_url": {
+        "anyOf": [
+         {
+          "x-fal": {
+           "max_duration": 30.05,
+           "min_height": 700,
+           "max_fps": 60.05,
+           "max_file_size": 314572800,
+           "max_aspect_ratio": 2.5,
+           "max_width": 4553,
+           "min_aspect_ratio": 0.4,
+           "timeout": 30,
+           "min_width": 700,
+           "max_height": 4553,
+           "min_duration": 3,
+           "min_fps": 23.9
+          },
+          "type": "string",
+          "ui": {
+           "field": "video"
+          },
+          "limit_description": "Max file size: 300.0MB, Min width: 700px, Min height: 700px, Max width: 4553px, Max height: 4553px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Min duration: 3.0s, Max duration: 30.05s, Min FPS: 23.9, Max FPS: 60.05, Timeout: 30.0s"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Video Url",
+        "description": "A video of the element, used instead of images (3-30s)."
+       },
+       "frontal_image_url": {
+        "anyOf": [
+         {
+          "x-fal": {
+           "min_aspect_ratio": 0.4,
+           "timeout": 20,
+           "max_file_size": 31457280,
+           "min_height": 300,
+           "max_aspect_ratio": 2.5,
+           "min_width": 300
+          },
+          "type": "string",
+          "ui": {
+           "field": "image"
+          },
+          "limit_description": "Max file size: 30.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Frontal Image Url",
+        "description": "The frontal image of the element (main view)."
+       },
+       "reference_image_urls": {
+        "anyOf": [
+         {
+          "maxItems": 3,
+          "type": "array",
+          "items": {
+           "ui": {
+            "field": "image"
+           },
+           "x-fal": {
+            "min_aspect_ratio": 0.4,
+            "timeout": 20,
+            "max_file_size": 31457280,
+            "min_height": 300,
+            "max_aspect_ratio": 2.5,
+            "min_width": 300
+           },
+           "type": "string",
+           "_fal_ui_field": "image",
+           "limit_description": "Max file size: 30.0MB, Min width: 300px, Min height: 300px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Timeout: 20.0s"
+          }
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Reference Image Urls",
+        "description": "Additional views of the element from different angles (1-3)."
+       }
+      },
+      "type": "object",
+      "title": "KlingV4Element"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Elements",
+   "description": "Characters/objects, referenced as @Element1, @Element2, ... (max 7). Up to 3 elements may carry a voice_id and up to 3 may be video elements."
+  },
+  "duration": {
+   "title": "Duration",
+   "minimum": 3,
+   "default": 5,
+   "maximum": 30,
+   "type": "integer",
+   "description": "Video duration in seconds (3-30)."
+  },
+  "aspect_ratio": {
+   "title": "Aspect Ratio",
+   "default": "16:9",
+   "enum": [
+    "auto",
+    "16:9",
+    "9:16",
+    "1:1",
+    "21:9"
+   ],
+   "type": "string",
+   "description": "Aspect ratio of the generated video. 'auto' adapts it to the references."
+  },
+  "resolution": {
+   "title": "Resolution",
+   "default": "1080p",
+   "enum": [
+    "720p",
+    "1080p"
+   ],
+   "type": "string",
+   "description": "Output resolution."
+  },
+  "video_urls": {
+   "anyOf": [
+    {
+     "maxItems": 5,
+     "type": "array",
+     "items": {
+      "ui": {
+       "field": "video"
+      },
+      "x-fal": {
+       "max_duration": 30.05,
+       "min_height": 700,
+       "max_fps": 60.05,
+       "max_file_size": 314572800,
+       "max_aspect_ratio": 2.5,
+       "max_width": 4553,
+       "min_aspect_ratio": 0.4,
+       "timeout": 30,
+       "min_width": 700,
+       "max_height": 4553,
+       "min_duration": 3,
+       "min_fps": 23.9
+      },
+      "type": "string",
+      "_fal_ui_field": "video",
+      "limit_description": "Max file size: 300.0MB, Min width: 700px, Min height: 700px, Max width: 4553px, Max height: 4553px, Min aspect ratio: 0.40, Max aspect ratio: 2.50, Min duration: 3.0s, Max duration: 30.05s, Min FPS: 23.9, Max FPS: 60.05, Timeout: 30.0s"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Video Urls",
+   "description": "Reference videos (3-30s each, 30s combined with element videos), referenced as @Video1, @Video2, ... (max 5)."
+  },
+  "prompt": {
+   "anyOf": [
+    {
+     "maxLength": 26000,
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Prompt",
+   "description": "Text prompt. Reference inputs as @Image1, @Video1, @Element1, etc. Either prompt or multi_prompt must be provided."
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "description": "The generated video.",
+    "examples": [
+     {
+      "content_type": "video/mp4",
+      "url": "https://v3b.fal.media/files/b/0aac4497/-fHk6MiMZhLy2FncCbyM7_clip_reference.mp4",
+      "file_size": 3020124,
+      "file_name": "output.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     }
+    },
+    "type": "object",
+    "title": "File"
+   }
+  },
+  "type": "object",
+  "title": "ReferenceToVideoOutput"
+ },
+ "fetched_at": "2026-10-23T02:43:44+00:00"
+}

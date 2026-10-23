@@ -1,8 +1,9 @@
 import { AppError } from '../errors.ts'
 import type { Provider } from '../types.ts'
+import { fal } from './fal.ts'
 import { replicate } from './replicate.ts'
 
-/** واجهة المزوّد الواحدة (المخطط §5). محوّل واحد الآن (Replicate)؛ fal/google لاحقًا بنفس الواجهة. */
+/** واجهة المزوّد الواحدة (المخطط §5). محوّلان: Replicate (نانو بنانا برو — ADR 0003) وfal (الكتالوج — ADR 0005)؛ google لاحقًا بنفس الواجهة. */
 export interface ProviderJob {
   slug: string
   input: Record<string, unknown>
@@ -28,7 +29,7 @@ export interface ProviderAdapter {
   parseWebhook(rawBody: string): ProviderWebhookResult
 }
 
-const adapters: Record<string, ProviderAdapter> = { replicate }
+const adapters: Record<string, ProviderAdapter> = { replicate, fal }
 
 export function getProvider(name: string): ProviderAdapter {
   const p = adapters[name]

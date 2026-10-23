@@ -1,0 +1,183 @@
+{
+ "endpoint": "blackforestlabs/flux-3/text-to-image",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "aspect_ratio": {
+   "title": "Aspect Ratio",
+   "description": "Output aspect ratio. Auto uses the first reference image when editing.",
+   "default": "auto",
+   "type": "string",
+   "enum": [
+    "auto",
+    "21:9",
+    "2:1",
+    "16:9",
+    "3:2",
+    "7:5",
+    "4:3",
+    "5:4",
+    "1:1",
+    "4:5",
+    "3:4",
+    "5:7",
+    "2:3",
+    "9:16",
+    "1:2"
+   ]
+  },
+  "resolution": {
+   "title": "Resolution",
+   "description": "Output resolution tier. 4k can take several minutes.",
+   "default": "1k",
+   "type": "string",
+   "enum": [
+    "768sq",
+    "1k",
+    "1.5k",
+    "2k",
+    "4k"
+   ]
+  },
+  "output_format": {
+   "title": "Output Format",
+   "description": "The format of the generated image.",
+   "default": "jpeg",
+   "type": "string",
+   "enum": [
+    "jpeg",
+    "png"
+   ]
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "description": "Return the image as a data URI instead of storing it in request history.",
+   "default": false,
+   "type": "boolean"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "The prompt to generate an image from.",
+   "type": "string"
+  },
+  "version": {
+   "title": "Version",
+   "description": "The model version.",
+   "type": "string",
+   "default": "latest"
+  },
+  "safety_tolerance": {
+   "maximum": 4,
+   "title": "Safety Tolerance",
+   "description": "Safety tolerance, from 0 (strictest) to 4.",
+   "default": 2,
+   "minimum": 0,
+   "type": "integer"
+  },
+  "enable_prompt_expansion": {
+   "title": "Enable Prompt Expansion",
+   "description": "Expand the prompt while preserving its intent and reference roles.",
+   "default": false,
+   "type": "boolean"
+  }
+ },
+ "output": {
+  "required": [
+   "images"
+  ],
+  "title": "Flux3ImageOutput",
+  "type": "object",
+  "properties": {
+   "images": {
+    "title": "Images",
+    "description": "The generated image.",
+    "items": {
+     "required": [
+      "url"
+     ],
+     "title": "ImageFile",
+     "type": "object",
+     "properties": {
+      "content_type": {
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_name": {
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "height": {
+       "title": "Height",
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "width": {
+       "title": "Width",
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_size": {
+       "examples": [
+        4404019
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    },
+    "type": "array"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:20:14+00:00"
+}

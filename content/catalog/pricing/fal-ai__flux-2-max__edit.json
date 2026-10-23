@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-max/edit",
+ "unit": "megapixel",
+ "usd": 0.07,
+ "pricing_text": "The first processed megapixel will cost **$0.07**. Each additional megapixel will cost **$0.03**. Input images counted as processed megapixel.",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-max/edit",
+ "confidence": "high",
+ "notes": "usd = الميغابكسل الأول $0.07؛ كل ميغابكسل إضافي $0.03. تُحسب ميغابكسلات صور الإدخال ضمن المعالَج. مثال: صورة مرجعية 1MP + مخرج 1MP ≈ $0.07 + $0.03 = $0.10."
+}

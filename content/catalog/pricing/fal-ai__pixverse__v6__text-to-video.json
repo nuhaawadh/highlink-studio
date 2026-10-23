@@ -1,0 +1,11 @@
+{
+ "endpoint": "fal-ai/pixverse/v6/text-to-video",
+ "unit": "second",
+ "usd": 0.025,
+ "by_resolution": {"360p": 0.025, "540p": 0.035, "720p": 0.045, "1080p": 0.09},
+ "audio_surcharge_usd": 0.015,
+ "pricing_text": "Billing is calculated per second of video generated. Rates **without audio / with audio** are **360p: $0.025 / $0.035**; **540p: $0.035 / $0.045**; **720p: $0.045 / $0.060**; **1080p: $0.090 / $0.115**. For example, a **5-second video at 720p** costs **$0.225 without audio** or **$0.300 with audio**.",
+ "source_url": "https://fal.ai/models/fal-ai/pixverse/v6/text-to-video",
+ "confidence": "high",
+ "notes": "by_resolution بدون صوت (generate_audio_switch الافتراضي false). مع الصوت: 360p $0.035، 540p $0.045، 720p $0.060، 1080p $0.115 — الزيادة $0.01 لـ360p/540p و$0.015 لـ720p و$0.025 لـ1080p (audio_surcharge_usd = زيادة الدقة الافتراضية 720p). تنبيه: pricing_parsed في fal-launch.json وضع سعر 1080p = 0.06 خطأً؛ الصحيح 0.09. الافتراضي 720p. المدة 1–15 ثانية."
+}

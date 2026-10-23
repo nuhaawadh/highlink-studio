@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/kling-video/o3/pro/reference-to-video",
+ "unit": "second",
+ "usd": 0.112,
+ "audio_surcharge_usd": 0.028,
+ "pricing_text": "For every second of video you generated, you will be charged **$0.112** (audio off) or **$0.14** (audio on). For example, a 5s video with audio on will cost **$0.70**",
+ "source_url": "https://fal.ai/models/fal-ai/kling-video/o3/pro/reference-to-video",
+ "confidence": "high",
+ "notes": "usd = $0.112/ث بدون صوت (generate_audio الافتراضي false). مع الصوت $0.14/ث (زيادة $0.028/ث). المدة 3–15 ثانية، نسب 16:9/9:16/1:1."
+}

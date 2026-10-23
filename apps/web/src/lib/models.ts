@@ -1,32 +1,53 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Tables } from '@shared/db'
-import { applyModelResolution } from '@shared/pricing'
+import { modelCredits, resolveDuration } from '@shared/pricing'
 import type { AspectRatio, ImageSize } from '@shared/types'
 import { supabase } from './supabase'
 
 /**
  * كتالوج النماذج من جدول `models` (RLS: المفعّل فقط). لا نموذج مكتوب في الكود — كل شيء من البيانات (CLAUDE.md القاعدة 7).
- * التكلفة تُحسب بنفس دالة التسعير التي تستخدمها Edge Functions (applyModelResolution) حتى يطابق الزر ما يُخصم فعلًا.
+ * التكلفة تُحسب بنفس دالة التسعير التي تستخدمها Edge Functions (modelCredits — ADR 0005) حتى يطابق الزر ما يُخصم فعلًا.
+ * الصفوف المولّدة من كتالوج fal تحمل في `supports` العائلة والإصدار ونوع العملية وقوائم المدد/الدقات المشتقة من مخطط المزوّد.
  */
 export type ModelRow = Tables<'models'>
 
-interface Supports {
+export interface Supports {
+  family?: string
+  family_ar?: string
+  family_en?: string
+  variant_ar?: string
+  variant_en?: string
+  kind?: string
+  lab?: string
+  /** يظهر في صفحات التوليد الحر (نص فقط)؛ false = متاح عبر API/الاستوديوهات فقط (يحتاج مراجع أو مدخلات أخرى) */
+  ui?: boolean
   sizes?: ImageSize[]
   aspect_ratios?: AspectRatio[]
+  /** دقات الفيديو كما يسمّيها المزوّد */
+  resolutions?: string[]
+  durations?: number[]
+  audio?: boolean
   resolution_multipliers?: Record<string, number>
+  cps_by_resolution?: Record<string, number>
+  audio_cps?: number
+  credits_by_duration?: Record<string, number>
   ref_images?: number
-  text?: boolean
+  requires_ref?: boolean
+}
+
+export interface ModelDefaults {
+  imageSize?: ImageSize
+  aspectRatio?: AspectRatio
+  duration?: number
+  resolution?: string
 }
 
 export function modelSupports(model: ModelRow): Supports {
   return (model.supports && typeof model.supports === 'object' ? model.supports : {}) as Supports
 }
 
-export function modelDefaults(model: ModelRow): { imageSize?: ImageSize; aspectRatio?: AspectRatio } {
-  return (model.default_params && typeof model.default_params === 'object' ? model.default_params : {}) as {
-    imageSize?: ImageSize
-    aspectRatio?: AspectRatio
-  }
+export function modelDefaults(model: ModelRow): ModelDefaults {
+  return (model.default_params && typeof model.default_params === 'object' ? model.default_params : {}) as ModelDefaults
 }
 
 export function modelSizes(model: ModelRow): ImageSize[] {
@@ -39,13 +60,79 @@ export function modelAspectRatios(model: ModelRow): AspectRatio[] {
   return a && a.length ? a : ['1:1']
 }
 
+export function modelDurations(model: ModelRow): number[] {
+  const d = modelSupports(model).durations
+  if (d && d.length) return d
+  const fallback = resolveDuration({ ...model, type: model.type as 'image' | 'video' | 'audio' }, undefined)
+  return fallback ? [fallback] : []
+}
+
+export function modelResolutions(model: ModelRow): string[] {
+  return modelSupports(model).resolutions ?? []
+}
+
+export function modelHasAudio(model: ModelRow): boolean {
+  return modelSupports(model).audio === true
+}
+
 /** تكلفة صورة واحدة بهذا النموذج وبهذه الدقة — نفس حساب السيرفر */
 export function modelCost(model: ModelRow, imageSize: ImageSize): number {
-  return applyModelResolution(model.cost_credits ?? 0, imageSize, modelSupports(model).resolution_multipliers)
+  return safeCredits(model, { imageSize })
+}
+
+/** تكلفة فيديو بهذه المدة/الدقة/الصوت — نفس حساب السيرفر (modelCredits) */
+export function videoCost(model: ModelRow, opts: { duration?: number; resolution?: string; audio?: boolean }): number {
+  return safeCredits(model, opts)
+}
+
+function safeCredits(model: ModelRow, opts: Parameters<typeof modelCredits>[1]): number {
+  try {
+    // عمود type نصي في الأنواع المولّدة؛ القيد في القاعدة يحصره في image/video/audio
+    return modelCredits({ ...model, type: model.type as 'image' | 'video' | 'audio' }, opts)
+  } catch {
+    // صف بلا سعر صالح (لا يُفترض أن يصل للواجهة لأن RLS تعرض المفعّل فقط) — نعرض 0 ولا نخفي النموذج، والسيرفر يرفض
+    return 0
+  }
 }
 
 export function modelName(model: ModelRow, locale: 'ar' | 'en'): string {
   return locale === 'ar' ? model.name_ar : model.name_en
+}
+
+export function familyName(model: ModelRow, locale: 'ar' | 'en'): string {
+  const s = modelSupports(model)
+  return (locale === 'ar' ? s.family_ar : s.family_en) ?? modelName(model, locale)
+}
+
+export function variantName(model: ModelRow, locale: 'ar' | 'en'): string {
+  const s = modelSupports(model)
+  return (locale === 'ar' ? s.variant_ar : s.variant_en) ?? ''
+}
+
+export interface ModelFamily {
+  key: string
+  models: ModelRow[]
+  /** أرخص تكلفة افتراضية بين إصدارات العائلة — لبطاقة العائلة */
+  fromCost: number
+  isNew: boolean
+}
+
+/** يجمّع النماذج بالعائلة (كلينج، سيدانس…) مع الحفاظ على ترتيب `sort`؛ نموذج بلا عائلة يكوّن عائلة بنفسه */
+export function groupByFamily(models: ModelRow[], defaultCost: (m: ModelRow) => number): ModelFamily[] {
+  const map = new Map<string, ModelFamily>()
+  for (const m of models) {
+    const key = modelSupports(m).family ?? m.id
+    const cost = defaultCost(m)
+    const f = map.get(key)
+    if (f) {
+      f.models.push(m)
+      f.fromCost = Math.min(f.fromCost, cost)
+      f.isNew = f.isNew || Boolean(m.badge)
+    } else {
+      map.set(key, { key, models: [m], fromCost: cost, isNew: Boolean(m.badge) })
+    }
+  }
+  return Array.from(map.values())
 }
 
 export function useModels(type: 'image' | 'video') {
@@ -77,5 +164,8 @@ export function useModels(type: 'image' | 'video') {
     }
   }, [type])
 
-  return { models, loading, error }
+  // صفحات التوليد الحر تعرض ما يعمل بنص فقط؛ ما يحتاج مراجع (تعديل، صورة→فيديو) يبقى للـAPI والاستوديوهات حتى يُبنى رفع المراجع
+  const uiModels = useMemo(() => models.filter((m) => modelSupports(m).ui !== false && modelSupports(m).requires_ref !== true), [models])
+
+  return { models: uiModels, allModels: models, loading, error }
 }

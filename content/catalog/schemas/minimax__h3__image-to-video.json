@@ -1,0 +1,191 @@
+{
+ "endpoint": "minimax/h3/image-to-video",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "seed": {
+   "title": "Seed",
+   "description": "Random seed. A random seed is selected when omitted.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "type": "boolean",
+   "description": "Return the generated video as base64 instead of a CDN URL.",
+   "default": false
+  },
+  "target_audio_url": {
+   "title": "Target Audio Url",
+   "description": "Optional URL of an audio clip at least 2 seconds long (maximum 15 MB) to pin to the generated soundtrack. Longer clips are trimmed to the generated video's length, keeping the beginning. The original audio replaces the output soundtrack, padded with silence if shorter than the video, without changing playback speed. Exceptionally high sample rates may be resampled to 96 kHz. Accepts an HTTP(S) URL or a base64 data URI.",
+   "anyOf": [
+    {
+     "type": "string",
+     "minLength": 1,
+     "pattern": "\\S"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "prompt_expansion_mode": {
+   "title": "Prompt Expansion Mode",
+   "description": "How much effort to spend rewriting the prompt before generation. 'disabled' skips prompt expansion. 'fast' returns in about a second. 'balanced' picks per request. 'quality' spends up to ~30s on a richer prompt.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": "balanced"
+  },
+  "end_image_url": {
+   "title": "End Image URL",
+   "description": "Optional URL of the image to use as the last frame. It may be provided alone for end-only keyframe generation; in that case the output canvas follows this image.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "prompt": {
+   "type": "string",
+   "maxLength": 50000,
+   "description": "Text prompt for video generation",
+   "title": "Prompt"
+  },
+  "image_url": {
+   "title": "Image URL",
+   "description": "Optional URL of the image to use as the first frame. When provided, the output canvas follows this image. If only end_image_url is provided, the canvas follows that last frame instead. If both images are omitted, the request is handled as text-to-video (16:9 by default).",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "resolution": {
+   "title": "Resolution",
+   "type": "string",
+   "enum": [
+    "480P",
+    "768P",
+    "2K",
+    "4K"
+   ],
+   "description": "The resolution of the generated video. 480P and 768P are native generation modes; 2K and 4K upscale a 768P base result.",
+   "default": "2K"
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "type": "boolean",
+   "description": "If set to true, the safety checker will be enabled.",
+   "default": true
+  },
+  "duration": {
+   "minimum": 5,
+   "title": "Duration",
+   "type": "integer",
+   "description": "The duration of the video in seconds.",
+   "maximum": 15,
+   "default": 5
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "expanded_prompt": {
+    "title": "Expanded Prompt",
+    "description": "The prompt after expansion, as sent to the model. Null when prompt expansion was disabled, left the prompt unchanged, or was performed internally by MiniMax's hosted API.",
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "video": {
+    "description": "The generated video",
+    "title": "File",
+    "required": [
+     "url"
+    ],
+    "type": "object",
+    "properties": {
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     }
+    }
+   }
+  },
+  "title": "ImageToVideoHailuo03Output",
+  "required": [
+   "video"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:06:53+00:00"
+}

@@ -1,0 +1,227 @@
+{
+ "endpoint": "minimax/h3-max/reframe-video",
+ "required": [
+  "video_url"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "aspect_ratio": {
+   "default": "16:9",
+   "description": "Target canvas aspect ratio; the source is contain-fitted and the rest is outpainted.",
+   "type": "string",
+   "enum": [
+    "16:9",
+    "9:16",
+    "1:1",
+    "4:3",
+    "3:4",
+    "21:9",
+    "9:21"
+   ],
+   "title": "Aspect Ratio"
+  },
+  "resolution": {
+   "default": "768p",
+   "description": "Target canvas resolution profile. 1080p uses learned latent upscaling from a native 768p reframe.",
+   "type": "string",
+   "enum": [
+    "480p",
+    "768p",
+    "1080p"
+   ],
+   "title": "Resolution"
+  },
+  "prompt": {
+   "maxLength": 50000,
+   "description": "Optional guidance for the new surroundings. Expansion captions the source automatically.",
+   "type": "string",
+   "default": "",
+   "title": "Prompt"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 4294967295
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed"
+  },
+  "video_url": {
+   "description": "Source video, 0.25 to 300 seconds; fitted onto the target canvas with its timeline and audio preserved.",
+   "type": "string",
+   "title": "Video Url"
+  }
+ },
+ "output": {
+  "required": [
+   "video",
+   "seed",
+   "placement",
+   "frame_count"
+  ],
+  "properties": {
+   "video": {
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     },
+     "duration": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The duration of the video",
+      "title": "Duration"
+     },
+     "width": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The width of the video",
+      "title": "Width"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "num_frames": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The number of frames in the video",
+      "title": "Num Frames"
+     },
+     "height": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The height of the video",
+      "title": "Height"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     },
+     "fps": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The FPS of the video",
+      "title": "Fps"
+     }
+    },
+    "type": "object",
+    "title": "VideoFile"
+   },
+   "frame_count": {
+    "type": "integer",
+    "title": "Frame Count"
+   },
+   "expanded_prompt": {
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "title": "Expanded Prompt"
+   },
+   "seed": {
+    "type": "integer",
+    "title": "Seed"
+   },
+   "placement": {
+    "additionalProperties": {
+     "type": "integer"
+    },
+    "type": "object",
+    "title": "Placement"
+   },
+   "frames_per_second": {
+    "type": "integer",
+    "default": 24,
+    "title": "Frames Per Second"
+   }
+  },
+  "type": "object",
+  "title": "TurboOutpaintVideoOutput"
+ },
+ "fetched_at": "2026-10-23T08:06:53+00:00"
+}

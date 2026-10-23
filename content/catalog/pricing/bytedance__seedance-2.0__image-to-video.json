@@ -1,0 +1,10 @@
+{
+ "endpoint": "bytedance/seedance-2.0/image-to-video",
+ "unit": "second",
+ "usd": 0.3034,
+ "by_resolution": {"720p": 0.3034, "1080p": 0.682},
+ "pricing_text": "For every second of 720p video you generated, you will be charged **$0.3034/second** and for 1080p you will be charged **$0.682/second**. Your request will cost **$0.014** per 1,000 tokens for **480p, 720p and 1080p**. Your request will cost **$0.008** per 1,000 tokens for **4k**. The number of tokens is given by (height of output video * width of output video * duration * 24) / 1024.",
+ "source_url": "https://fal.ai/models/bytedance/seedance-2.0/image-to-video",
+ "confidence": "medium",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground). usd = 720p (الافتراضي). التسعير فعليًا بالتوكنات: $0.014/1k توكن لـ480p/720p/1080p و$0.008/1k لـ4k. لم يُذكر سعر 480p لكل ثانية صراحة؛ بتطبيق المعادلة على 864×496 (16:9) يخرج ≈10,044 توكن/ث ≈ $0.14/ث، و4k (3840×2160) ≈ 194,400 توكن/ث ≈ $1.56/ث — تقديرات محسوبة وليست في النص. الثقة متوسطة لأن جدول Pricing في نفس الصفحة يذكر $0.3024/ث لـ720p (فرق طفيف عن $0.3034). الصوت مضمّن بلا زيادة. المدة 4–15 ثانية."
+}

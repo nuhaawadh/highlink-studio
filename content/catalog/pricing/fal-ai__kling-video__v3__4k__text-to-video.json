@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/kling-video/v3/4k/text-to-video",
+ "unit": "second",
+ "usd": 0.42,
+ "pricing_text": "For every second of video you generated, you will be charged **$0.42** regardless of whether audio is on or off. For example, a **5s** video will cost **$2.10**.",
+ "source_url": "https://fal.ai/models/fal-ai/kling-video/v3/4k/text-to-video",
+ "confidence": "high",
+ "notes": "سعر ثابت لكل ثانية بغض النظر عن الصوت. دقة 4K فقط (لا خيار دقة في المخطط)."
+}

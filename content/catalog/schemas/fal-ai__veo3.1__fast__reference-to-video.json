@@ -1,0 +1,151 @@
+{
+ "endpoint": "fal-ai/veo3.1/fast/reference-to-video",
+ "required": [
+  "prompt",
+  "image_urls"
+ ],
+ "properties": {
+  "duration": {
+   "type": "string",
+   "description": "The duration of the generated video.",
+   "title": "Duration",
+   "default": "8s"
+  },
+  "image_urls": {
+   "items": {
+    "type": "string"
+   },
+   "description": "URLs of the reference images to use for consistent subject appearance",
+   "type": "array",
+   "title": "Image Urls"
+  },
+  "safety_tolerance": {
+   "enum": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6"
+   ],
+   "type": "string",
+   "description": "The safety tolerance level for content moderation. 1 is the most strict (blocks most content), 6 is the least strict.",
+   "title": "Safety Tolerance",
+   "default": "4"
+  },
+  "resolution": {
+   "enum": [
+    "720p",
+    "1080p",
+    "4k"
+   ],
+   "type": "string",
+   "description": "The resolution of the generated video.",
+   "title": "Resolution",
+   "default": "720p"
+  },
+  "generate_audio": {
+   "type": "boolean",
+   "description": "Whether to generate audio for the video.",
+   "title": "Generate Audio",
+   "default": true
+  },
+  "aspect_ratio": {
+   "enum": [
+    "16:9",
+    "9:16"
+   ],
+   "type": "string",
+   "description": "The aspect ratio of the generated video.",
+   "title": "Aspect Ratio",
+   "default": "16:9"
+  },
+  "prompt": {
+   "type": "string",
+   "description": "The text prompt describing the video you want to generate",
+   "title": "Prompt",
+   "maxLength": 20000
+  },
+  "auto_fix": {
+   "type": "boolean",
+   "description": "Whether to automatically attempt to fix prompts that fail content policy or other validation checks by rewriting them.",
+   "title": "Auto Fix",
+   "default": false
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "Veo31ReferenceToVideoOutput",
+  "properties": {
+   "video": {
+    "description": "The generated video.",
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/veo31-r2v-output.mp4"
+     }
+    ],
+    "type": "object",
+    "title": "File",
+    "properties": {
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size"
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     }
+    },
+    "required": [
+     "url"
+    ]
+   }
+  },
+  "required": [
+   "video"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:06:08+00:00"
+}

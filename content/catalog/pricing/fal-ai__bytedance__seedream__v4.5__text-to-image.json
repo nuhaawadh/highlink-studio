@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/bytedance/seedream/v4.5/text-to-image",
+ "unit": "image",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost $0.04 per image. | Cost per Image: $0.04 — 25 generations per $1.00 on fal. Max Resolution 4MP (2048x2048).",
+ "source_url": "https://fal.ai/models/fal-ai/bytedance/seedream/v4.5/text-to-image",
+ "confidence": "high",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.04per image.\" (مسافات مفقودة في الاستخراج). سعر ثابت لكل صورة بغض النظر عن image_size (2K–4K). num_images حتى 6، وmax_images قد يرفع عدد الصور (كل صورة مخرجة تُحسب)."
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "google/virtual-try-on",
+ "unit": "image",
+ "usd": 0.075,
+ "pricing_text": "Your request will cost **$0.075** per generated image.",
+ "source_url": "https://fal.ai/models/google/virtual-try-on",
+ "confidence": "high",
+ "notes": "$0.075 لكل صورة مولّدة."
+}

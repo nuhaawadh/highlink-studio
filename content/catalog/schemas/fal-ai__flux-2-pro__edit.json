@@ -1,0 +1,221 @@
+{
+ "endpoint": "fal-ai/flux-2-pro/edit",
+ "required": [
+  "prompt",
+  "image_urls"
+ ],
+ "properties": {
+  "seed": {
+   "title": "Seed",
+   "description": "The seed to use for the generation.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "default": true,
+   "description": "Whether to enable the safety checker. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "type": "boolean"
+  },
+  "image_urls": {
+   "title": "Image URLs",
+   "description": "List of URLs of input images for editing",
+   "items": {
+    "type": "string"
+   },
+   "type": "array"
+  },
+  "output_format": {
+   "title": "Output Format",
+   "default": "jpeg",
+   "description": "The format of the generated image.",
+   "type": "string",
+   "enum": [
+    "jpeg",
+    "png"
+   ]
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "default": false,
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "type": "boolean"
+  },
+  "image_size": {
+   "title": "Image Size",
+   "default": "auto",
+   "description": "The size of the generated image. If `auto`, the size will be determined by the model.",
+   "anyOf": [
+    {
+     "title": "ImageSize",
+     "type": "object",
+     "properties": {
+      "width": {
+       "maximum": 14142,
+       "title": "Width",
+       "description": "The width of the generated image.",
+       "exclusiveMinimum": 0,
+       "type": "integer",
+       "default": 512
+      },
+      "height": {
+       "maximum": 14142,
+       "title": "Height",
+       "description": "The height of the generated image.",
+       "exclusiveMinimum": 0,
+       "type": "integer",
+       "default": 512
+      }
+     }
+    },
+    {
+     "type": "string",
+     "enum": [
+      "auto",
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ]
+    }
+   ]
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "The prompt to generate an image from.",
+   "type": "string"
+  },
+  "safety_tolerance": {
+   "title": "Safety Tolerance",
+   "default": "2",
+   "description": "The safety tolerance level for the generated image. 1 being the most strict and 5 being the most permissive.",
+   "type": "string",
+   "enum": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5"
+   ]
+  }
+ },
+ "output": {
+  "required": [
+   "images",
+   "seed"
+  ],
+  "title": "Flux2ProEditOutput",
+  "type": "object",
+  "properties": {
+   "images": {
+    "title": "Images",
+    "description": "The generated images.",
+    "items": {
+     "required": [
+      "url"
+     ],
+     "title": "ImageFile",
+     "type": "object",
+     "properties": {
+      "file_name": {
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "content_type": {
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "height": {
+       "title": "Height",
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "width": {
+       "title": "Width",
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "file_size": {
+       "examples": [
+        4404019
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     }
+    },
+    "type": "array",
+    "examples": [
+     [
+      {
+       "url": "https://storage.googleapis.com/falserverless/example_outputs/flux2_pro_edit_output.png"
+      }
+     ]
+    ]
+   },
+   "seed": {
+    "title": "Seed",
+    "description": "The seed used for the generation.",
+    "type": "integer"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T08:17:31+00:00"
+}

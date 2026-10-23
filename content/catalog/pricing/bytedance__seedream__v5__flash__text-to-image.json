@@ -1,0 +1,9 @@
+{
+ "endpoint": "bytedance/seedream/v5/flash/text-to-image",
+ "unit": "image",
+ "usd": 0.027,
+ "pricing_text": "Your request will cost $0.027 per image.",
+ "source_url": "https://fal.ai/models/bytedance/seedream/v5/flash/text-to-image",
+ "confidence": "high",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.027per image.\" (مسافات مفقودة في الاستخراج). سعر ثابت لكل صورة بغض النظر عن image_size (1K–2K). num_images حتى 6."
+}

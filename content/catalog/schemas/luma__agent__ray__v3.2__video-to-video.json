@@ -1,0 +1,354 @@
+{
+ "endpoint": "luma/agent/ray/v3.2/video-to-video",
+ "required": [
+  "prompt",
+  "video_url"
+ ],
+ "properties": {
+  "prompt": {
+   "type": "string",
+   "description": "Text prompt describing how to edit the source video.",
+   "maxLength": 6000,
+   "title": "Prompt"
+  },
+  "resolution": {
+   "description": "Resolution of the edited video. Higher resolutions cost more.",
+   "type": "string",
+   "enum": [
+    "540p",
+    "720p",
+    "1080p"
+   ],
+   "title": "Resolution",
+   "default": "540p"
+  },
+  "auto_controls": {
+   "description": "Let the model derive the edit conditioning schedule from the source video. Cannot be combined with edit_strength.",
+   "type": "boolean",
+   "title": "Auto Controls",
+   "default": false
+  },
+  "exr_export": {
+   "description": "Also export an EXR file alongside the MP4. Requires hdr=true and HDR access.",
+   "type": "boolean",
+   "title": "Exr Export",
+   "default": false
+  },
+  "user": {
+   "description": "Optional opaque identifier for the end user making the request. Used only for abuse attribution; never interpreted by fal.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "User"
+  },
+  "start_image_url": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Optional URL of an image to use as the edited video's first frame — e.g. a restyled version of the source's opening frame to steer the look of the edit. Leave unset to let the model derive the first frame from the source video.",
+   "title": "Start Image Url"
+  },
+  "edit_strength": {
+   "description": "How closely the edit preserves the source video. 'adhere_*' stays closest to the source, 'flex_*' is balanced, and 'reimagine_*' diverges most. Leave unset to use Luma's default. Cannot be combined with auto_controls.",
+   "anyOf": [
+    {
+     "type": "string",
+     "enum": [
+      "adhere_1",
+      "adhere_2",
+      "adhere_3",
+      "flex_1",
+      "flex_2",
+      "flex_3",
+      "reimagine_1",
+      "reimagine_2",
+      "reimagine_3"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Edit Strength"
+  },
+  "video_url": {
+   "type": "string",
+   "description": "URL of the source video to edit.",
+   "title": "Video Url"
+  },
+  "hdr": {
+   "description": "Generate an HDR-encoded MP4. Requires HDR access on the account and a resolution of 720p or 1080p.",
+   "type": "boolean",
+   "title": "Hdr",
+   "default": false
+  },
+  "keyframe_indexes": {
+   "description": "Source-video frame positions where each keyframes[i] is anchored. Non-negative, unique, and the same length as keyframes.",
+   "anyOf": [
+    {
+     "type": "array",
+     "maxItems": 64,
+     "minItems": 1,
+     "items": {
+      "type": "integer"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Keyframe Indexes"
+  },
+  "keyframes": {
+   "description": "Multi-keyframe edit guide frames: up to 64 image URLs pinned at the source-frame positions given by keyframe_indexes. Mutually exclusive with start_image_url. Provide keyframes and keyframe_indexes together (same length).",
+   "anyOf": [
+    {
+     "type": "array",
+     "maxItems": 64,
+     "minItems": 1,
+     "items": {
+      "type": "string"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Keyframes"
+  },
+  "controls": {
+   "description": "Per-signal conditioning controls (pose, depth, normals, trajectory, face) for finer control than edit_strength. Cannot be combined with auto_controls.",
+   "anyOf": [
+    {
+     "description": "Per-signal conditioning controls for ray-3.2 video editing.\n\nEach signal is optional; include only the signals you want to tune. Cannot\nbe combined with auto_controls. Mirrors the Luma Agents ``video.edit.controls``\nobject — see https://docs.agents.lumalabs.ai/api/resources/generations.",
+     "type": "object",
+     "title": "RayEditControls",
+     "properties": {
+      "normals": {
+       "description": "Surface-normals conditioning.",
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/RayEditNormalsControl"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "pose": {
+       "description": "Pose / skeleton conditioning.",
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/RayEditPoseControl"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "depth": {
+       "description": "Depth / scene-geometry conditioning.",
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/RayEditDepthControl"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "trajectory": {
+       "description": "Motion-trajectory conditioning.",
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/RayEditTrajectoryControl"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "face": {
+       "description": "Face-identity conditioning.",
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/RayEditFaceControl"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      }
+     },
+     "additionalProperties": false
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  },
+  "duration": {
+   "description": "Duration of the edited video.",
+   "type": "string",
+   "enum": [
+    "5s",
+    "10s"
+   ],
+   "title": "Duration",
+   "default": "5s"
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "VideoOutput",
+  "properties": {
+   "exr_file": {
+    "description": "The generated EXR sidecar when exr_export is true. This may be a single EXR file or a ZIP package depending on Luma's export shape.",
+    "anyOf": [
+     {
+      "type": "object",
+      "title": "File",
+      "properties": {
+       "file_name": {
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "title": "File Name"
+       },
+       "file_size": {
+        "examples": [
+         4404019
+        ],
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The size of the file in bytes.",
+        "title": "File Size"
+       },
+       "content_type": {
+        "examples": [
+         "image/png"
+        ],
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The mime type of the file.",
+        "title": "Content Type"
+       },
+       "url": {
+        "description": "The URL where the file can be downloaded from.",
+        "type": "string",
+        "title": "Url"
+       }
+      },
+      "required": [
+       "url"
+      ]
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "video": {
+    "description": "The generated video.",
+    "type": "object",
+    "title": "File",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     }
+    },
+    "required": [
+     "url"
+    ]
+   }
+  },
+  "required": [
+   "video"
+  ]
+ },
+ "fetched_at": "2026-10-23T08:09:29+00:00"
+}

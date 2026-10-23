@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/kling-video/v3/standard/text-to-video",
+ "unit": "second",
+ "usd": 0.084,
+ "audio_surcharge_usd": 0.042,
+ "pricing_text": "For every second of video you generated, you will be charged **$0.084** (audio off) or **$0.126** (audio on), if voice control is used while generating audio you will be charged **$0.154**. For example, a 5s video with audio on and voice control will cost **$0.77**",
+ "source_url": "https://fal.ai/models/fal-ai/kling-video/v3/standard/text-to-video",
+ "confidence": "high",
+ "notes": "usd = السعر لكل ثانية مع إيقاف الصوت. مع الصوت $0.126/ث (زيادة $0.042)، ومع التحكم الصوتي أثناء توليد الصوت $0.154/ث. تنبيه: المخطط افتراضيه generate_audio=true، فالسعر الافتراضي الفعلي $0.126/ث."
+}

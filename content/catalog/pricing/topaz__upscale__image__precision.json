@@ -1,0 +1,9 @@
+{
+ "endpoint": "topaz/upscale/image/precision",
+ "unit": "request",
+ "usd": 0.08,
+ "pricing_text": "Your request will cost **$0.08** per started 24 megapixels of output for every precision model. For example, an output up to 24 MP costs **$0.08**, over 24 MP and up to 48 MP costs **$0.16**, and over 48 MP and up to 72 MP costs **$0.24**.",
+ "source_url": "https://fal.ai/models/topaz/upscale/image/precision",
+ "confidence": "high",
+ "notes": "$0.08 لكل 24 ميغابكسل مبدوءة من المخرج لكل نماذج precision: حتى 24 MP = $0.08، 24–48 MP = $0.16، 48–72 MP = $0.24 (أي شرائح 24 MP وليس لكل ميغابكسل)."
+}

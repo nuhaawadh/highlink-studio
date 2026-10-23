@@ -5,8 +5,8 @@ import type { AssetRow } from '@/lib/assets'
 import { cn } from '@/lib/utils'
 
 /** نسبة العرض كقيمة CSS aspect-ratio من عمود aspect_ratio ("9:16" → "9 / 16") */
-function cssAspect(ratio: string | null): string {
-  if (!ratio || !/^\d+:\d+$/.test(ratio)) return '1 / 1'
+function cssAspect(ratio: string | null, type?: string): string {
+  if (!ratio || !/^\d+:\d+$/.test(ratio)) return type === 'video' ? '16 / 9' : '1 / 1'
   const [w, h] = ratio.split(':')
   return `${w} / ${h}`
 }
@@ -30,7 +30,7 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
       data-status={asset.status}
       className={cn('group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface', className)}
     >
-      <div className="relative w-full overflow-hidden bg-bg" style={{ aspectRatio: cssAspect(asset.aspect_ratio) }}>
+      <div className="relative w-full overflow-hidden bg-bg" style={{ aspectRatio: cssAspect(asset.aspect_ratio, asset.type) }}>
         {pending && (
           <>
             <Skeleton className="absolute inset-0 rounded-none" />
@@ -43,7 +43,11 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
 
         {asset.status === 'completed' && asset.url && (
           <>
-            <img src={asset.url} alt={asset.prompt ?? ''} loading="lazy" className="size-full object-cover" />
+            {asset.type === 'video' ? (
+              <video src={asset.url} controls playsInline preload="metadata" className="size-full bg-black object-contain" aria-label={asset.prompt ?? ''} />
+            ) : (
+              <img src={asset.url} alt={asset.prompt ?? ''} loading="lazy" className="size-full object-cover" />
+            )}
             <div className="absolute inset-x-0 bottom-0 flex justify-end gap-1 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
               <a
                 href={asset.url}
