@@ -719,6 +719,17 @@ export type Database = {
           webhook_url: string
         }[]
       }
+      claim_and_hold: {
+        Args: {
+          p_amount: number
+          p_asset: string
+          p_model: string
+          p_provider: string
+          p_type: string
+          p_user: string
+        }
+        Returns: number
+      }
       confirm_hold: { Args: { p_hold_id: number }; Returns: undefined }
       create_api_key: {
         Args: { p_mode: string; p_name: string; p_webhook_url?: string }
@@ -747,12 +758,16 @@ export type Database = {
         Returns: number
       }
       reconcile_holds: {
-        Args: { p_older_than?: string }
+        Args: { p_image_older_than?: string; p_video_older_than?: string }
         Returns: {
           action: string
+          age: string
           asset: string
           asset_status: string
+          asset_type: string
           hold_id: number
+          provider: string
+          provider_job_id: string
         }[]
       }
       release_hold: {
