@@ -1,0 +1,215 @@
+{
+ "endpoint": "fal-ai/recraft/v4.1/text-to-image",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "colors": {
+   "items": {
+    "type": "object",
+    "properties": {
+     "b": {
+      "maximum": 255,
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "title": "B",
+      "description": "Blue color value"
+     },
+     "r": {
+      "maximum": 255,
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "title": "R",
+      "description": "Red color value"
+     },
+     "g": {
+      "maximum": 255,
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "title": "G",
+      "description": "Green color value"
+     }
+    },
+    "title": "RGBColor"
+   },
+   "default": [],
+   "title": "Colors",
+   "type": "array",
+   "description": "An array of preferable colors"
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "If set to true, the safety checker will be enabled. Disabling it requires account authorization; unauthorized requests are always checked."
+  },
+  "background_color": {
+   "anyOf": [
+    {
+     "type": "object",
+     "properties": {
+      "b": {
+       "maximum": 255,
+       "type": "integer",
+       "default": 0,
+       "minimum": 0,
+       "title": "B",
+       "description": "Blue color value"
+      },
+      "r": {
+       "maximum": 255,
+       "type": "integer",
+       "default": 0,
+       "minimum": 0,
+       "title": "R",
+       "description": "Red color value"
+      },
+      "g": {
+       "maximum": 255,
+       "type": "integer",
+       "default": 0,
+       "minimum": 0,
+       "title": "G",
+       "description": "Green color value"
+      }
+     },
+     "title": "RGBColor"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The preferable background color of the generated images."
+  },
+  "prompt": {
+   "type": "string",
+   "maxLength": 10000,
+   "title": "Prompt"
+  },
+  "image_size": {
+   "default": "square_hd",
+   "title": "Image Size",
+   "anyOf": [
+    {
+     "type": "object",
+     "properties": {
+      "width": {
+       "maximum": 14142,
+       "type": "integer",
+       "default": 512,
+       "title": "Width",
+       "exclusiveMinimum": 0,
+       "description": "The width of the generated image."
+      },
+      "height": {
+       "maximum": 14142,
+       "type": "integer",
+       "default": 512,
+       "title": "Height",
+       "exclusiveMinimum": 0,
+       "description": "The height of the generated image."
+      }
+     },
+     "title": "ImageSize"
+    },
+    {
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ],
+     "type": "string"
+    }
+   ]
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "images": {
+    "items": {
+     "type": "object",
+     "properties": {
+      "file_name": {
+       "title": "File Name",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "file_size": {
+       "title": "File Size",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      },
+      "url": {
+       "type": "string",
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from."
+      },
+      "content_type": {
+       "title": "Content Type",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      }
+     },
+     "title": "File",
+     "required": [
+      "url"
+     ]
+    },
+    "type": "array",
+    "title": "Images",
+    "examples": [
+     [
+      {
+       "file_name": "image.webp",
+       "file_size": 272628,
+       "url": "https://storage.googleapis.com/falserverless/example_outputs/recraft-v4/standard-output.webp",
+       "content_type": "image/webp"
+      }
+     ]
+    ]
+   }
+  },
+  "title": "RecraftV4TextToImageOutput",
+  "required": [
+   "images"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:27:43+00:00"
+}

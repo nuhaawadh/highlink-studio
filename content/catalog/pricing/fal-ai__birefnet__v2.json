@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/birefnet/v2",
+ "unit": "unknown",
+ "usd": 0,
+ "pricing_text": "Your request will cost $0 per compute second.",
+ "source_url": "https://fal.ai/models/fal-ai/birefnet/v2",
+ "confidence": "low",
+ "notes": "النموذج مسعّر بزمن الحوسبة (per compute second) وليس بالصورة، والصفحة تعرض \"$0 per compute second\" — على الأرجح لا يُعرض السعر الفعلي لزمن GPU دون تسجيل دخول. صفحة /api لا تذكر أي سعر. لا يوجد في النص سعر قابل للاستخدام، فـunit=unknown وusd=0. يحتاج طلبًا تجريبيًا لمعرفة التكلفة الفعلية (أو اعتماد نموذج إزالة خلفية بسعر ثابت بدلًا منه)."
+}

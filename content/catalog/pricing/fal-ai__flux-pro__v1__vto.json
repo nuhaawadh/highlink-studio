@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-pro/v1/vto",
+ "unit": "megapixel",
+ "usd": 0.0375,
+ "pricing_text": "Billing is calculated at **$0.0375 for the first input megapixel**, plus **$0.005 per additional input megapixel** and **$0.005 per output megapixel**. Each input image and the output are rounded up to whole megapixels separately. For example, **two 1024 × 1024 inputs and one 1024 × 1024 output cost $0.0475**.",
+ "source_url": "https://fal.ai/models/fal-ai/flux-pro/v1/vto",
+ "confidence": "high",
+ "notes": "usd = أول ميغابكسل إدخال $0.0375. كل ميغابكسل إدخال إضافي $0.005، وكل ميغابكسل مخرج $0.005. كل صورة إدخال والمخرج تُقرَّب لأعلى لعدد صحيح من الميغابكسلات منفصلة. الحالة النموذجية (صورة شخص + صورة ملابس + مخرج، كلها 1MP) = $0.0475."
+}

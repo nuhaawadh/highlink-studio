@@ -244,4 +244,21 @@ describe('buildProviderInput — مخططات fal (ADR 0005)', () => {
     // مدة خارج الحدود الرقمية تُرفض
     expect(buildProviderInput(h3, 'p', undefined, { duration: 20 }).invalid[0]?.key).toBe('duration')
   })
+
+  it('لا يملأ حقل مرجع مطلوبًا بصورة المثال الافتراضية من fal', () => {
+    const bria: ModelRow = {
+      ...fluxT2i,
+      input_schema: {
+        required: ['image_url', 'mode'],
+        properties: {
+          image_url: { type: 'string', default: 'https://storage.googleapis.com/falserverless/example.png' },
+          mode: { type: 'string', default: 'high_control' },
+        },
+      },
+    }
+    const { input } = buildProviderInput(bria, 'p', undefined, undefined)
+    expect(input).not.toHaveProperty('image_url')
+    expect(input.mode).toBe('high_control')
+    expect(input).not.toHaveProperty('prompt')
+  })
 })

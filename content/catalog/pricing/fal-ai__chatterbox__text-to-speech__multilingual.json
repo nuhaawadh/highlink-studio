@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/chatterbox/text-to-speech/multilingual",
+ "unit": "1k_chars",
+ "usd": 0.025,
+ "pricing_text": "Your request will cost $0.025 per 1000 character.",
+ "source_url": "https://fal.ai/models/fal-ai/chatterbox/text-to-speech/multilingual",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23). $0.025 لكل 1000 حرف. النص حتى 300 حرف فقط لكل طلب (أقصى ≈ $0.0075). يدعم العربية (voice=arabic). المخرج WAV."
+}

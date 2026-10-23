@@ -1,0 +1,10 @@
+{
+ "endpoint": "alibaba/qwen-image-3/edit",
+ "unit": "image",
+ "usd": 0.04,
+ "by_resolution": {"1K": 0.04, "2K": 0.075},
+ "pricing_text": "Your request will cost **$0.04** per generated image at 1K resolution, and **$0.075** per generated image at 2K resolution.",
+ "source_url": "https://fal.ai/models/alibaba/qwen-image-3/edit",
+ "confidence": "high",
+ "notes": "usd لـ1K. الدقة تتحدد عبر image_size (512²–2048²) أو تلقائيًا من المدخلات إن لم تُحدَّد — فالسعر الفعلي قد يكون 2K إن كانت الصور المدخلة كبيرة. num_images حتى 6 (السعر لكل صورة)."
+}

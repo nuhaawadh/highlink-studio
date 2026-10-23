@@ -1,0 +1,131 @@
+{
+ "endpoint": "google/virtual-try-on",
+ "required": [
+  "person_image_url",
+  "product_image_url"
+ ],
+ "properties": {
+  "person_image_url": {
+   "description": "The URL of the image of the person trying on the product.",
+   "type": "string",
+   "title": "Person Image Url"
+  },
+  "product_image_url": {
+   "description": "The URL of the product image to try on.",
+   "type": "string",
+   "title": "Product Image Url"
+  },
+  "num_images": {
+   "description": "The number of virtual try-on images to generate.",
+   "type": "integer",
+   "title": "Num Images",
+   "maximum": 4,
+   "default": 1,
+   "minimum": 1
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  }
+ },
+ "output": {
+  "type": "object",
+  "required": [
+   "images"
+  ],
+  "properties": {
+   "images": {
+    "description": "The generated virtual try-on images.",
+    "type": "array",
+    "title": "Images",
+    "items": {
+     "type": "object",
+     "required": [
+      "url"
+     ],
+     "properties": {
+      "height": {
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Height"
+      },
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string",
+       "title": "Url"
+      },
+      "file_size": {
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        4404019
+       ],
+       "title": "File Size"
+      },
+      "content_type": {
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type"
+      },
+      "width": {
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Width"
+      },
+      "file_name": {
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name"
+      }
+     },
+     "title": "ImageFile"
+    }
+   }
+  },
+  "title": "VirtualTryOnOutput"
+ },
+ "fetched_at": "2026-10-23T14:27:38+00:00"
+}

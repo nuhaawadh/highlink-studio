@@ -1,0 +1,9 @@
+{
+ "endpoint": "elevenlabs/tts/eleven-v4-turbo",
+ "unit": "1k_chars",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost $0.04 per 1000 character.",
+ "source_url": "https://fal.ai/models/elevenlabs/tts/eleven-v4-turbo",
+ "confidence": "high",
+ "notes": "$0.04 لكل 1,000 حرف من النص المدخل (حتى 5,000 حرف لكل طلب → حد أقصى ≈ $0.20)."
+}

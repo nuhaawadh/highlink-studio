@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-pro/v1/erase",
+ "unit": "megapixel",
+ "usd": 0.03,
+ "pricing_text": "Your request will cost **$0.03** for the first megapixel generated, then **$0.004** for each subsequent megapixel. Each reference megapixel also costs **$0.004** set at **3 MP** minimum.",
+ "source_url": "https://fal.ai/models/fal-ai/flux-pro/v1/erase",
+ "confidence": "high",
+ "notes": "usd = الميغابكسل الأول المولَّد ($0.03)؛ كل ميغابكسل مولَّد إضافي $0.004. ميغابكسلات المرجع (الصورة + القناع) $0.004 لكل MP بحد أدنى 3MP (أي ≥ $0.012). صورة 1MP ≈ 0.03 + 0.012 = $0.042."
+}

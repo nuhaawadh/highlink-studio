@@ -1,0 +1,9 @@
+{
+ "endpoint": "veed/video-background-removal",
+ "unit": "second",
+ "usd": 0.0225,
+ "pricing_text": "Your request will cost **$0.0225** per 30 frames (Refine Foreground Edges: ON) / **$0.015** (Refine: OFF).",
+ "source_url": "https://fal.ai/models/veed/video-background-removal",
+ "confidence": "medium",
+ "notes": "الفوترة الرسمية لكل 30 إطارًا وليس لكل ثانية: $0.0225 مع refine_foreground_edges=true (الافتراضي في المخطط) و$0.015 بدونه. الوحدة 'second' هنا افتراض يساوي 30 إطارًا = ثانية عند 30fps؛ فيديو 24fps أرخص فعليًا (≈ $0.018/ث) وفيديو 60fps ضعف السعر ($0.045/ث). لذلك الثقة متوسطة — الأدق الحساب بعدد الإطارات."
+}

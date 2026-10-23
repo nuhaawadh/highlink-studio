@@ -1,0 +1,9 @@
+{
+ "endpoint": "luma/agent/uni-1/v1/max/edit",
+ "unit": "image",
+ "usd": 0.105,
+ "pricing_text": "Each edit costs **$0.102**, plus **$0.003 per reference or source image**. For example, an edit using **1 source image costs $0.105**.",
+ "source_url": "https://fal.ai/models/luma/agent/uni-1/v1/max/edit",
+ "confidence": "high",
+ "notes": "usd = تعديل واحد بصورة مصدر واحدة (الحد الأدنى لأن image_url مطلوب) = $0.102 + $0.003 = $0.105. كل صورة مرجعية إضافية (reference_image_urls حتى 8) +$0.003. المخرج صورة واحدة لكل طلب."
+}

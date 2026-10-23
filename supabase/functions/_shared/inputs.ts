@@ -155,7 +155,8 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
   // ---- حقول يطلبها المخطط ولا نعرفها (مثل prompt_expansion_mode عند MiniMax): نرسل افتراض المزوّد إن وُجد بدل 422
   const required = ((model.input_schema as { required?: unknown } | null)?.required ?? []) as unknown[]
   for (const key of required) {
-    if (typeof key !== 'string' || key in input) continue
+    // حقول المراجع لا تُملأ بافتراض المزوّد أبدًا — افتراضها صورة مثال من fal (نولّد من صورة غيرنا ونخصم)
+    if (typeof key !== 'string' || key in input || /(^|_)(image|video|audio|mask)(_url|_urls|_input)?$|_url$|_urls$/.test(key)) continue
     const prop = schema[key]
     if (prop && prop.default !== undefined && prop.default !== null) input[key] = prop.default
   }

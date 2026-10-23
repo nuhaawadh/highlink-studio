@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/elevenlabs/tts/eleven-v3",
+ "unit": "1k_chars",
+ "usd": 0.1,
+ "pricing_text": "Your request will cost $0.1 per 1000 character. — Pricing on fal is based on the length of the input text: $0.10 per 1,000 characters. A 500-character paragraph costs $0.05. A 10,000-character short story costs $1.00. No seat licenses, no subscriptions, no minimums.",
+ "source_url": "https://fal.ai/models/fal-ai/elevenlabs/tts/eleven-v3",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (2026-10-23). $0.10 لكل 1000 حرف من النص المُدخل، خطيًا (500 حرف = $0.05) بلا حد أدنى. النص حتى 5000 حرف (أقصى $0.50 للطلب). يدعم العربية."
+}

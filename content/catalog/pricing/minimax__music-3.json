@@ -1,0 +1,9 @@
+{
+ "endpoint": "minimax/music-3",
+ "unit": "second",
+ "usd": 0.002,
+ "pricing_text": "Your request will cost $0.002 per second.",
+ "source_url": "https://fal.ai/models/minimax/music-3",
+ "confidence": "medium",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground): $0.002 لكل ثانية. الثقة متوسطة: لا يوضح النص إن كانت الثانية من الصوت المُولَّد (الأرجح؛ أغنية 60 ثانية افتراضية ≈ $0.12) أم من زمن الحوسبة. duration في المخطط حد أعلى (1–300 ثانية، الافتراضي 60) وقد يتوقف النموذج مبكرًا — المدة الفعلية تُرجَع في المخرج."
+}

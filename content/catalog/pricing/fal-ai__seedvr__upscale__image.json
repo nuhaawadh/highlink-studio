@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/seedvr/upscale/image",
+ "unit": "megapixel",
+ "usd": 0.001,
+ "pricing_text": "Your request will cost $0.001 per megapixel.",
+ "source_url": "https://fal.ai/models/fal-ai/seedvr/upscale/image",
+ "confidence": "medium",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23؛ نسخة مخبّأة من 2026-10-21). $0.001 لكل ميغابكسل — منخفض جدًا، ولا توضح الصفحة هل يُحسب على المخرج أم المُدخل؛ نفترض المخرج (upscale_factor افتراضيًا 2 وحتى 10). الثقة medium لغموض أساس الحساب. أي تكلفة دنيا (1 رصيد) ستغطيه عمليًا."
+}

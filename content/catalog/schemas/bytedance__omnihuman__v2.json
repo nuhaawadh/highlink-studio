@@ -1,0 +1,112 @@
+{
+ "endpoint": "bytedance/omnihuman/v2",
+ "required": [
+  "image_url",
+  "audio_url"
+ ],
+ "properties": {
+  "prompt": {
+   "description": "Optional text prompt for precise control of the scene, movements and camera. Supported languages: Chinese, English, Japanese, Korean, Spanish (Mexican) and Indonesian.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Prompt"
+  },
+  "audio_url": {
+   "description": "The URL of the audio file to generate the video. Format: wav or mp3. Max size: 15 MB. Duration between 4 and 300 seconds.",
+   "title": "Audio Url",
+   "type": "string"
+  },
+  "image_url": {
+   "description": "The URL of the image used to generate the video. Format: jpeg, png, webp, bmp, tiff, gif, heic or heif. Max size: 30 MB. Aspect ratio (width/height) between 0.4 and 2.5; width and height between 300 and 6000 pixels.",
+   "title": "Image Url",
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "OmniHumanV2Output",
+  "properties": {
+   "video": {
+    "description": "Generated video file",
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/omnihuman_v15_output.mp4"
+     }
+    ],
+    "title": "File",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   },
+   "duration": {
+    "description": "Duration of audio input/video output as used for billing.",
+    "title": "Duration",
+    "type": "number"
+   }
+  },
+  "required": [
+   "video",
+   "duration"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:31:54+00:00"
+}

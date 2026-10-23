@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/elevenlabs/speech-to-text/scribe-v2",
+ "unit": "minute",
+ "usd": 0.008,
+ "pricing_text": "Your request will cost **$0.008** per minute of input audio. If keyterm is used, your request will cost 30% more.",
+ "source_url": "https://fal.ai/models/fal-ai/elevenlabs/speech-to-text/scribe-v2",
+ "confidence": "high",
+ "notes": "$0.008 لكل دقيقة من الصوت المدخل. مع استخدام keyterms تزيد التكلفة 30% (≈ $0.0104/دقيقة)."
+}

@@ -1,0 +1,14 @@
+{
+ "endpoint": "bytedance/seedance-2.5/reference-to-video",
+ "unit": "second",
+ "usd": 0.2205,
+ "by_resolution": {
+  "480p": 0.2205,
+  "720p": 0.473,
+  "1080p": 1.164
+ },
+ "pricing_text": "For 480p, your request will cost roughly **$0.2205** per second of generated video, for 720p, you will be charged roughly **$0.4730** per second of generated video, and for 1080p, roughly **$1.164** per second of generated video. Your request will cost **$0.0214** per 1,000 tokens for 480p and 720p video and roughly **$0.0234** per 1,000 tokens for 1080p video. The number of tokens is roughly given by (height of output video \\* width of output video \\* (input video duration + output video duration) \\* 24) / 1024. If video inputs are provided the price is multiplied by 0.6. With video inputs and 720p resolution, the price is roughly **$0.2838** per second of generated video. With video references, you will be charged for both input and output videos.",
+ "source_url": "https://fal.ai/models/bytedance/seedance-2.5/reference-to-video",
+ "confidence": "high",
+ "notes": "تسعير بالتوكنات؛ الأرقام لكل ثانية تقريبية لنسبة 16:9 (المعادلة هي المرجع). الافتراضي في المخطط 720p ≈ $0.4730/ث. مع فيديوهات مرجعية: السعر ×0.6 لكن تُحتسب ثواني فيديو المدخل + المخرج (720p ≈ $0.2838/ث لكليهما، 480p ≈ $0.1323/ث). صور وصوت المرجع غير مفوترة. الصوت لا يغيّر السعر."
+}

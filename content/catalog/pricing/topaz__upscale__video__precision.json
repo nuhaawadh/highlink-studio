@@ -1,0 +1,10 @@
+{
+ "endpoint": "topaz/upscale/video/precision",
+ "unit": "second",
+ "usd": 0.00667,
+ "by_resolution": {"720p": 0.00667, "1080p": 0.01333, "4k": 0.05167},
+ "pricing_text": "Your request will cost **$0.10** per 10 seconds of output at 720p, **$0.20** at 1080p, and **$0.60** at 4K with the precision models (Proteus, Artemis, Iris, Dione, Theia, Gaia HQ/CG, and Rhea). Proteus Natural (2x only) costs **$0.10** per 10 seconds at 720p, **$0.20** at 1080p, and **$0.50** at 4K. Gaia 2 (2x, animation) costs **$0.10** at 720p or 1080p and **$0.30** at 4K. Longer clips scale with duration, with credits rounded once per job: a 1-minute upscale with the standard precision models costs **$0.40** at 720p, **$0.80** at 1080p, and **$3.10** at 4K. The per-10-second amounts are rounded examples. These examples assume 30 fps. The final cost depends on output resolution, duration, and frame rate.",
+ "source_url": "https://fal.ai/models/topaz/upscale/video/precision",
+ "confidence": "medium",
+ "notes": "الوحدة = ثانية من فيديو المخرجات، والدقة = دقة المخرج بعد التكبير. أرقام لكل ثانية محسوبة من مثال الدقيقة الواحدة (النص يقول إن أرقام الـ10 ثوانٍ مقرّبة): 720p $0.40/60 ≈ $0.00667، 1080p $0.80/60 ≈ $0.01333، 4K $3.10/60 ≈ $0.05167. بأرقام الـ10 ثوانٍ المقرّبة: $0.01 / $0.02 / $0.06 لكل ثانية (أعلى — أحوط للتسعير). الأمثلة تفترض 30fps والسعر يتغير مع معدل الإطارات وتُقرَّب الأرصدة مرة لكل مهمة. Gaia 2 بنصف السعر تقريبًا. الحد الأقصى 5 دقائق. pricing_parsed في fal-launch.json كان unit=unknown."
+}

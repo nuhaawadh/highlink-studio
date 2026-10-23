@@ -1,0 +1,142 @@
+{
+ "endpoint": "luma/agent/uni-1/v1/max/edit",
+ "required": [
+  "prompt",
+  "image_url"
+ ],
+ "properties": {
+  "prompt": {
+   "type": "string",
+   "description": "Text prompt describing the edit to apply.",
+   "maxLength": 6000,
+   "title": "Prompt"
+  },
+  "style": {
+   "description": "Visual style of the edited image.",
+   "type": "string",
+   "enum": [
+    "auto",
+    "manga"
+   ],
+   "title": "Style",
+   "default": "auto"
+  },
+  "reference_image_urls": {
+   "description": "Optional list of reference image URLs used to guide the edit.",
+   "anyOf": [
+    {
+     "type": "array",
+     "maxItems": 8,
+     "items": {
+      "type": "string"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Reference Image Urls"
+  },
+  "image_url": {
+   "type": "string",
+   "description": "URL of the source image to edit.",
+   "title": "Image Url"
+  },
+  "output_format": {
+   "description": "Encoding format of the edited image.",
+   "anyOf": [
+    {
+     "type": "string",
+     "enum": [
+      "png",
+      "jpeg"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Output Format"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "default": true
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "ImageOutput",
+  "properties": {
+   "images": {
+    "description": "The generated image(s).",
+    "type": "array",
+    "title": "Images",
+    "items": {
+     "type": "object",
+     "title": "File",
+     "properties": {
+      "file_name": {
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "title": "File Name"
+      },
+      "file_size": {
+       "examples": [
+        4404019
+       ],
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "title": "File Size"
+      },
+      "content_type": {
+       "examples": [
+        "image/png"
+       ],
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "title": "Content Type"
+      },
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string",
+       "title": "Url"
+      }
+     },
+     "required": [
+      "url"
+     ]
+    }
+   }
+  },
+  "required": [
+   "images"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:27:28+00:00"
+}

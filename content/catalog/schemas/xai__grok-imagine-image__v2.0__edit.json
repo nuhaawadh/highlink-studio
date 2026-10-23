@@ -1,0 +1,212 @@
+{
+ "endpoint": "xai/grok-imagine-image/v2.0/edit",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "image_urls": {
+   "items": {
+    "type": "string"
+   },
+   "type": "array",
+   "title": "Image URLs",
+   "description": "List of URLs of the images to edit. A maximum of 5 images are supported."
+  },
+  "prompt": {
+   "type": "string",
+   "maxLength": 8000,
+   "title": "Prompt",
+   "description": "Text description of the desired image."
+  },
+  "quality": {
+   "type": "string",
+   "default": "medium",
+   "title": "Quality",
+   "enum": [
+    "low",
+    "medium"
+   ],
+   "description": "Quality level of the edited image."
+  },
+  "output_format": {
+   "enum": [
+    "jpeg",
+    "png",
+    "webp"
+   ],
+   "type": "string",
+   "default": "jpeg",
+   "title": "Output Format",
+   "description": "The format of the generated image."
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening."
+  },
+  "sync_mode": {
+   "type": "boolean",
+   "default": false,
+   "title": "Sync Mode",
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history."
+  },
+  "aspect_ratio": {
+   "enum": [
+    "auto",
+    "2:1",
+    "20:9",
+    "19.5:9",
+    "16:9",
+    "4:3",
+    "3:2",
+    "1:1",
+    "2:3",
+    "3:4",
+    "9:16",
+    "9:19.5",
+    "9:20",
+    "1:2"
+   ],
+   "type": "string",
+   "default": "auto",
+   "title": "Aspect Ratio",
+   "description": "Aspect ratio of the edited image. When set to `auto` (the default), the output preserves the aspect ratio of the first input image."
+  },
+  "resolution": {
+   "type": "string",
+   "default": "1k",
+   "title": "Resolution",
+   "enum": [
+    "1k",
+    "2k"
+   ],
+   "description": "Resolution of the generated image. `1k` for standard resolution, `2k` for high resolution."
+  },
+  "num_images": {
+   "maximum": 4,
+   "type": "integer",
+   "default": 1,
+   "minimum": 1,
+   "title": "Number of Images",
+   "description": "Number of images to generate."
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "revised_prompt": {
+    "title": "Revised Prompt",
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "The enhanced prompt that was used to generate the image."
+   },
+   "images": {
+    "items": {
+     "type": "object",
+     "properties": {
+      "width": {
+       "title": "Width",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The width of the image"
+      },
+      "url": {
+       "type": "string",
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from."
+      },
+      "file_size": {
+       "title": "File Size",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      },
+      "file_name": {
+       "title": "File Name",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "content_type": {
+       "title": "Content Type",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "height": {
+       "title": "Height",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The height of the image"
+      }
+     },
+     "required": [
+      "url"
+     ],
+     "title": "ImageFile"
+    },
+    "type": "array",
+    "title": "Images",
+    "description": "The URL of the edited image.",
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/0a8b911d/XMqiVoO2ECXUZEUYmPl2l.jpg"
+      }
+     ]
+    ]
+   }
+  },
+  "required": [
+   "images"
+  ],
+  "title": "XAIImageEditOutput"
+ },
+ "fetched_at": "2026-10-23T14:27:28+00:00"
+}

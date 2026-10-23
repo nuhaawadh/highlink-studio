@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-lora-gallery/face-to-full-portrait",
+ "unit": "megapixel",
+ "usd": 0.021,
+ "pricing_text": "Your request will cost $0.021 per processed megapixel.",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-lora-gallery/face-to-full-portrait",
+ "confidence": "medium",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من سطر الفوترة في الـplayground: $0.021 لكل ميغابكسل معالَج (صورة 1MP ≈ $0.021). الثقة متوسطة لتعارض داخل الصفحة: قسم الوصف التسويقي يقول \"$0.021 per compute second\" بدل الميغابكسل. اعتمدنا سطر الفوترة. 'processed' قد يشمل ميغابكسلات صورة الوجه المدخلة. num_images حتى 4."
+}

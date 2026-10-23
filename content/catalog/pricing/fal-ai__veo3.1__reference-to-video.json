@@ -1,0 +1,15 @@
+{
+ "endpoint": "fal-ai/veo3.1/reference-to-video",
+ "unit": "second",
+ "usd": 0.2,
+ "by_resolution": {
+  "720p": 0.2,
+  "1080p": 0.2,
+  "4k": 0.4
+ },
+ "audio_surcharge_usd": 0.2,
+ "pricing_text": "For every second of video you generate you will be charged $0.20 without audio or $0.40 with audio for 720p or 1080p. At 4k, you will be charged $0.40 per second without audio, or $0.60 with audio. For example, 8 second video at 1080p with audio on will cost $3.20",
+ "source_url": "https://fal.ai/models/fal-ai/veo3.1/reference-to-video",
+ "confidence": "high",
+ "notes": "الأسعار بلا صوت؛ مع الصوت +$0.20/ث (720p/1080p = $0.40، 4k = $0.60). generate_audio افتراضيه true والمدة ثابتة 8s → الافتراضي الفعلي 8×$0.40 = $3.20. تنبيه: صفحة fal تقول إن هذه النقطة ستُلغى (deprecated) في 17 نوفمبر 2026."
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "topaz/upscale/image/generative",
+ "unit": "image",
+ "usd": 0.08,
+ "pricing_text": "Your request will cost **$0.08** per started 8 megapixels of output with Wonder 3 or Wonder 3.5, and **$0.08** per started 4 megapixels with Wonder, Wonder 2, Recover 3, Standard MAX, Redefine, Recovery, or Recovery V2. A 24 MP output therefore costs **$0.24** with Wonder 3/3.5 or **$0.48** with the other models.",
+ "source_url": "https://fal.ai/models/topaz/upscale/image/generative",
+ "confidence": "medium",
+ "notes": "التسعير الفعلي بكتل ميغابكسلات المخرج: $0.08 لكل 8MP مبدوءة مع Wonder 3/3.5 (Wonder 3 هو الافتراضي في المخطط)، و$0.08 لكل 4MP مبدوءة مع بقية النماذج. usd = $0.08 = الحد الأدنى لكل طلب، ويغطي الإعداد الافتراضي (Wonder 3، upscale_factor=2) لأي إدخال حتى 2MP (المخرج ≤ 8MP). إدخال أكبر أو factor أعلى (حتى 4) يضاعف الكتل: مثلًا 1MP×4 = 16MP ⇒ $0.16. لذا unit=image تقريب والثقة medium — يجب حساب الكتل من أبعاد الإدخال قبل الحجز أو تقييد upscale_factor وحجم الإدخال. تصحيح: pricing_parsed في fal-launch.json وضع unit=megapixel وusd=0.08 وهذا خطأ (0.08 لكل 8MP لا لكل MP)."
+}

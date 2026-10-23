@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/recraft/v4.1/pro/text-to-image",
+ "unit": "image",
+ "usd": 0.21,
+ "pricing_text": "Your request will cost $0.21 per image.",
+ "source_url": "https://fal.ai/models/fal-ai/recraft/v4.1/pro/text-to-image",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23). سعر ثابت لكل صورة. نسخة Pro عالية الدقة (حتى 2048×2048)؛ الحجم الافتراضي square_hd. ملفات المخرج كبيرة (مثال webp 4.6MB)."
+}

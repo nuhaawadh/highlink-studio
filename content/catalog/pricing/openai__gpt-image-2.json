@@ -1,0 +1,10 @@
+{
+ "endpoint": "openai/gpt-image-2",
+ "unit": "token",
+ "usd": 3e-05,
+ "per_image_estimate_usd": 0.211,
+ "pricing_text": "Text tokens (per 1M): **$5.00** input, **$1.25** cached, **$10.00** output.\nImage tokens (per 1M): **$8.00** input, **$2.00** cached, **$30.00** output. Changing the **quality** parameter significantly affects cost; by default we use **high**. Adjust it to your preference.\nSee the description at the bottom of this page for more details on how much canonical image sizes cost. Total cost is rounded up to the closest hundredth of a cent ($0.0001.) — Pricing table, Size: Low / Medium / High Quality — 1024 x 768: $0.005 / $0.037 / $0.145; 1024 x 1024: $0.006 / $0.053 / $0.211; 1024 x 1536: $0.005 / $0.042 / $0.165; 1920 x 1080: $0.005 / $0.040 / $0.158; 2560 x 1440: $0.007 / $0.056 / $0.222; 3840 x 2160: $0.012 / $0.101 / $0.401.",
+ "source_url": "https://fal.ai/models/openai/gpt-image-2",
+ "confidence": "high",
+ "notes": "تسعير بالتوكنات: usd = سعر توكن صورة مخرجة واحد ($30 لكل مليون). per_image_estimate_usd = جدول fal لصورة 1024×1024 بالجودة الافتراضية high ($0.211) — نفس منهج openai/gpt-image-2/edit. لكن image_size الافتراضي في المخطط landscape_4_3 (1024×768) → $0.145 بجودة high. بالجودة low $0.006 وmedium $0.053 لحجم 1024×1024 — إن ثُبّتت quality=medium فالتقدير $0.053. num_images يضاعف السعر."
+}

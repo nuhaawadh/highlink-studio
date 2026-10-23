@@ -1,0 +1,360 @@
+{
+ "endpoint": "bria/fibo-edit-1.5/expand",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "aspect_ratio": {
+   "anyOf": [
+    {
+     "type": "string",
+     "enum": [
+      "1:1",
+      "2:3",
+      "3:2",
+      "3:4",
+      "4:3",
+      "4:5",
+      "5:4",
+      "9:16",
+      "16:9"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The desired aspect ratio of the final image. Used over 'original_image_size' and 'original_image_location' if provided: the original is centred and the canvas grows around it.",
+   "title": "Aspect Ratio"
+  },
+  "preserve_alpha": {
+   "type": "boolean",
+   "description": "Keep the input's transparency. The model works in RGB, so the alpha channel is not generated -- the original's own is extended outwards by replicating its edges, which is what expanding a cutout means. Turn it off to get a flattened RGB result.",
+   "default": true,
+   "title": "Preserve Alpha"
+  },
+  "original_image_size": {
+   "anyOf": [
+    {
+     "maxItems": 2,
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 2
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The desired size of the original inside the canvas, as [width, height]; it is resized to this before being placed. Ignored if 'aspect_ratio' is provided.",
+   "title": "Original Image Size"
+  },
+  "prompt": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "What should appear in the expanded area. Omit it and the model is asked only to extend the image, which is usually what you want for a plain canvas change.",
+   "title": "Prompt"
+  },
+  "negative_prompt": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Not supported by this model, and refused rather than ignored -- see 'prompt'. Present only so a request written against the SDXL expansion endpoint fails loudly here instead of silently losing the field.",
+   "title": "Negative Prompt"
+  },
+  "image_url": {
+   "type": "string",
+   "description": "The image to expand (file or URL).",
+   "title": "Image Url"
+  },
+  "original_image_location": {
+   "anyOf": [
+    {
+     "maxItems": 2,
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 2
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Top-left corner of the original within the canvas, as [x, y]. May sit outside the canvas, in which case the original is cropped. Ignored if 'aspect_ratio' is provided.",
+   "title": "Original Image Location"
+  },
+  "canvas_size": {
+   "anyOf": [
+    {
+     "maxItems": 2,
+     "type": "array",
+     "items": {
+      "type": "integer"
+     },
+     "minItems": 2
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The desired size of the final image after the expansion, as [width, height]. Area must be under 25 megapixels. Pairs with 'original_image_location'.",
+   "title": "Canvas Size"
+  },
+  "return_model_output": {
+   "type": "boolean",
+   "description": "Also return the model's own frame, before the original was pasted back and the seam blended. Diagnostic only -- it does not change the returned image. Use it to tell a bad generation apart from a bad composite: a boundary already broken in that frame came from the model, not from post-processing.",
+   "default": false,
+   "title": "Return Model Output"
+  },
+  "retain_original_quality": {
+   "type": "boolean",
+   "description": "Keep the original's own pixels at full resolution. Generation happens near one megapixel, so a larger canvas is scaled up afterwards; leave this on and the region the mask protected is not resampled at all. Turn it off for a uniformly soft result, which can hide the seam on a textured background.",
+   "default": true,
+   "title": "Retain Original Quality"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "maximum": 2147483647,
+     "type": "integer",
+     "minimum": 0
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Reuse the seed from a previous response to recreate that result. Omit it for a random one, which is reported in the response either way.",
+   "title": "Seed"
+  },
+  "sync_mode": {
+   "type": "boolean",
+   "description": "If true, returns the image directly in the response (increases latency).",
+   "default": false,
+   "title": "Sync Mode"
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "ExpandOutputModel",
+  "required": [
+   "image",
+   "seed",
+   "structured_instruction"
+  ],
+  "properties": {
+   "model_output": {
+    "anyOf": [
+     {
+      "type": "object",
+      "description": "Represents an image file.",
+      "required": [
+       "url"
+      ],
+      "properties": {
+       "width": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The width of the image in pixels.",
+        "title": "Width",
+        "examples": [
+         1024
+        ]
+       },
+       "file_size": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The size of the file in bytes.",
+        "title": "File Size",
+        "examples": [
+         4404019
+        ]
+       },
+       "url": {
+        "type": "string",
+        "description": "The URL where the file can be downloaded from.",
+        "title": "Url"
+       },
+       "height": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The height of the image in pixels.",
+        "title": "Height",
+        "examples": [
+         1024
+        ]
+       },
+       "content_type": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The mime type of the file.",
+        "title": "Content Type",
+        "examples": [
+         "image/png"
+        ]
+       },
+       "file_name": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "title": "File Name",
+        "examples": [
+         "z9RV14K95DvU.png"
+        ]
+       }
+      },
+      "title": "Image"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "The model's own frame at the requested canvas size, with nothing pasted or blended into it. Only present when 'return_model_output' was set."
+   },
+   "image": {
+    "description": "Represents an image file.",
+    "type": "object",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "width": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The width of the image in pixels.",
+      "title": "Width",
+      "examples": [
+       1024
+      ]
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size",
+      "examples": [
+       4404019
+      ]
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "height": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The height of the image in pixels.",
+      "title": "Height",
+      "examples": [
+       1024
+      ]
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     }
+    },
+    "title": "Image"
+   },
+   "seed": {
+    "type": "integer",
+    "description": "The seed used, so the result can be reproduced.",
+    "title": "Seed"
+   },
+   "structured_instruction": {
+    "additionalProperties": true,
+    "type": "object",
+    "description": "The structured prompt the model conditioned on.",
+    "title": "Structured Instruction"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:30:49+00:00"
+}

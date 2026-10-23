@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/dia-tts/voice-clone",
+ "unit": "1k_chars",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost $0.04 per 1000 character.",
+ "source_url": "https://fal.ai/models/fal-ai/dia-tts/voice-clone",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground). $0.04 لكل 1,000 حرف. تنبيه على المخطط: OpenAPI الحالي لا يحوي إلا حقل text (لا حقل لعينة الصوت المرجعية رغم أن الوصف يقول استنساخ صوت من عينة) — قد تكون النقطة غير مكتملة/تغيّرت؛ يُنصح باختبارها قبل التفعيل."
+}

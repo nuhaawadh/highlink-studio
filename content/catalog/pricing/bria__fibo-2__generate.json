@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/fibo-2/generate",
+ "unit": "image",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost $0.04 per image",
+ "source_url": "https://fal.ai/models/bria/fibo-2/generate",
+ "confidence": "high",
+ "notes": "سعر ثابت لكل صورة (~1MP بكل النسب). صورة واحدة لكل طلب (لا num_images في المخطط)."
+}

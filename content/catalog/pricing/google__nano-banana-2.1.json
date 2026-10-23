@@ -1,0 +1,15 @@
+{
+ "endpoint": "google/nano-banana-2.1",
+ "unit": "token",
+ "usd": 3.5294e-05,
+ "by_resolution": {
+  "1K": 0.04,
+  "2K": 0.059,
+  "4K": 0.134
+ },
+ "per_image_estimate_usd": 0.04,
+ "pricing_text": "Text/thinking tokens (per 1M): **$1.764** input, **$8.823** output.\nImage tokens (per 1M): **$1.764** input, **$35.294** output. Changing the **resolution** parameter significantly affects cost. See the description at the bottom of this page for more details on how much canonical image sizes cost.\n\n[Pricing section] The following table shows representative costs for one output image from a short prompt (about 100 tokens), with `medium` thinking:\n\n| Output resolution | Text-to-image | Edit with two 1K input images |\n| --- | --- | --- |\n| 1K | $0.040 | $0.044 |\n| 2K | $0.059 | $0.063 |\n| 4K | $0.134 | $0.138 |",
+ "source_url": "https://fal.ai/models/google/nano-banana-2.1",
+ "confidence": "high",
+ "notes": "تسعير بالتوكنات: usd = سعر توكن صورة مخرجة واحد ($35.294 لكل مليون). per_image_estimate_usd و by_resolution = تقديرات fal الرسمية لصورة واحدة نص→صورة ببرومبت قصير وthinking_level=medium (الافتراضي): 1K $0.040، 2K $0.059، 4K $0.134. الصفحة: صورة المخرج ≈ 1,120 توكن عند 1K و1,680 عند 2K و3,780 عند 4K؛ لا رسوم منفصلة للبحث أو التفكير؛ كل 1,000 توكن برومبت ≈ $0.002؛ num_images يضاعف السعر خطيًا. الدقة الافتراضية 1K."
+}

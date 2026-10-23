@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/minimax/speech-2.8-hd",
+ "unit": "1k_chars",
+ "usd": 0.1,
+ "pricing_text": "Your request will cost $0.1 per 1000 character.",
+ "source_url": "https://fal.ai/models/fal-ai/minimax/speech-2.8-hd",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground). $0.10 لكل 1,000 حرف من النص المدخل (حتى 10,000 حرف للطلب)."
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/heygen/v2/translate/precision",
+ "unit": "second",
+ "usd": 0.1,
+ "pricing_text": "Your request will cost **$0.1** per output video second.",
+ "source_url": "https://fal.ai/models/fal-ai/heygen/v2/translate/precision",
+ "confidence": "high",
+ "notes": "$0.10 لكل ثانية من الفيديو المترجَم المخرج (≈ مدة فيديو المصدر). fal-launch.json صنّف الوحدة unknown؛ الصحيح لكل ثانية."
+}

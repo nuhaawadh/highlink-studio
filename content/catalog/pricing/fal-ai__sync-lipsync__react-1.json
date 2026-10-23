@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/sync-lipsync/react-1",
+ "unit": "minute",
+ "usd": 10,
+ "pricing_text": "Your requestwill cost$10per minute.",
+ "source_url": "https://fal.ai/models/fal-ai/sync-lipsync/react-1",
+ "confidence": "high",
+ "notes": "$10 لكل دقيقة (≈ $0.1667/ث). الفيديو والصوت ≤ 15 ث لكل طلب → حد أقصى ≈ $2.50 إن كانت الفوترة نسبية بالثانية؛ النص لا يذكر التقريب (لو قُرّب لأعلى إلى دقيقة كاملة لصار كل طلب $10 — يُتحقق بطلب تجريبي)."
+}

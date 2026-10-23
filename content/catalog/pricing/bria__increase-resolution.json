@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/increase-resolution",
+ "unit": "image",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost **$0.04** per image.",
+ "source_url": "https://fal.ai/models/bria/increase-resolution",
+ "confidence": "high",
+ "notes": "سعر ثابت $0.04 لكل صورة (رفع الدقة)."
+}

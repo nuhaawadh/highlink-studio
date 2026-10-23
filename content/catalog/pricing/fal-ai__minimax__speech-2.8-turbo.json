@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/minimax/speech-2.8-turbo",
+ "unit": "1k_chars",
+ "usd": 0.06,
+ "pricing_text": "Your request will cost $0.06 per 1000 character.",
+ "source_url": "https://fal.ai/models/fal-ai/minimax/speech-2.8-turbo",
+ "confidence": "high",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.06per 1000 character.\" (مسافات مفقودة في الاستخراج). السعر لكل 1000 حرف من prompt (حتى 10,000 حرف = $0.60 كحد أقصى). تنبيه: output_format افتراضيه hex — يلزم ضبطه على url للحصول على رابط ملف. pricing_text كان null في fal-launch.json."
+}

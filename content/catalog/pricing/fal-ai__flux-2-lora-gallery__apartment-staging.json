@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-lora-gallery/apartment-staging",
+ "unit": "megapixel",
+ "usd": 0.021,
+ "pricing_text": "Your request will cost $0.021 per processed megapixel. | Cost per Megapixel: $0.021 — Approximately 48 megapixel generations per $1.00 on fal.",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-lora-gallery/apartment-staging",
+ "confidence": "high",
+ "notes": "النص الحرفي في صندوق التشغيل: \"Your requestwill cost$0.021per processed megapixel.\" ويؤكده جدول الأداء ($0.021 لكل ميغابكسل). لا يُوضَّح هل يشمل ميغابكسلات المدخل مع المخرج (\"processed\"). num_images حتى 4. pricing_text كان null في fal-launch.json."
+}

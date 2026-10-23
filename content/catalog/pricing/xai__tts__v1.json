@@ -1,0 +1,9 @@
+{
+ "endpoint": "xai/tts/v1",
+ "unit": "1k_chars",
+ "usd": 0.015,
+ "pricing_text": "Your request will cost **$0.015** per **1000 characters**.",
+ "source_url": "https://fal.ai/models/xai/tts/v1",
+ "confidence": "high",
+ "notes": "$0.015 لكل 1,000 حرف من النص المدخل."
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/elevenlabs/voice-changer",
+ "unit": "minute",
+ "usd": 0.3,
+ "pricing_text": "Your request will cost $0.3 per minute.",
+ "source_url": "https://fal.ai/models/fal-ai/elevenlabs/voice-changer",
+ "confidence": "high",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.3per minute.\" (مسافات مفقودة في الاستخراج). السعر لكل دقيقة من الصوت المدخل (audio_url)؛ لا توضح الصفحة طريقة التقريب أو حدًا أدنى. pricing_text كان null في fal-launch.json."
+}

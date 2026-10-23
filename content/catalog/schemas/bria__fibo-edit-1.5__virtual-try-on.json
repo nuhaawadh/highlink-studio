@@ -1,0 +1,281 @@
+{
+ "endpoint": "bria/fibo-edit-1.5/virtual-try-on",
+ "required": [
+  "person_image_url",
+  "garment_image_urls"
+ ],
+ "properties": {
+  "aspect_ratio": {
+   "anyOf": [
+    {
+     "type": "string",
+     "enum": [
+      "1:1",
+      "2:3",
+      "3:2",
+      "3:4",
+      "4:3",
+      "4:5",
+      "5:4",
+      "9:16",
+      "16:9"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Output aspect ratio. Left unset, the output keeps the ratio of the person image.",
+   "title": "Aspect Ratio"
+  },
+  "instruction": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Optional. A complete try-on instruction already runs; this is appended to it. Use it to say what layers over what, or which items stay untouched.",
+   "title": "Instruction"
+  },
+  "garment_image_urls": {
+   "maxItems": 3,
+   "items": {
+    "type": "string"
+   },
+   "title": "Garment Image Urls",
+   "minItems": 1,
+   "type": "array",
+   "description": "One to three garment or accessory images. They are worn together and layered, each replacing the corresponding item the person currently wears. Fabric, color, texture, pattern and print placement, closures and proportions are reproduced as given."
+  },
+  "seed": {
+   "type": "integer",
+   "description": "Random seed. The same seed with the same inputs returns the same image.",
+   "default": 5555,
+   "title": "Seed"
+  },
+  "sync_mode": {
+   "type": "boolean",
+   "description": "Return the image inline in the response instead of as a hosted URL. Adds latency.",
+   "default": false,
+   "title": "Sync Mode"
+  },
+  "person_image_url": {
+   "type": "string",
+   "description": "Photo of the person who will wear the garments. Their identity, face, hair, body shape, pose and the background are preserved.",
+   "title": "Person Image Url"
+  }
+ },
+ "output": {
+  "type": "object",
+  "title": "FiboEditOutputModel",
+  "required": [
+   "image",
+   "structured_instruction"
+  ],
+  "properties": {
+   "images": {
+    "items": {
+     "type": "object",
+     "description": "Represents an image file.",
+     "required": [
+      "url"
+     ],
+     "properties": {
+      "width": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The width of the image in pixels.",
+       "title": "Width",
+       "examples": [
+        1024
+       ]
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "title": "File Size",
+       "examples": [
+        4404019
+       ]
+      },
+      "url": {
+       "type": "string",
+       "description": "The URL where the file can be downloaded from.",
+       "title": "Url"
+      },
+      "height": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The height of the image in pixels.",
+       "title": "Height",
+       "examples": [
+        1024
+       ]
+      },
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "title": "Content Type",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "title": "File Name",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      }
+     },
+     "title": "Image"
+    },
+    "type": "array",
+    "description": "Single-element list holding the same image, kept for callers of the earlier Fibo Edit endpoint.",
+    "default": [],
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/0aa6910f/ie5dAn55wDh7Y1adCFGyE_85a45d82c6d141c2a28d92367596dfac.png"
+      }
+     ]
+    ],
+    "title": "Images"
+   },
+   "image": {
+    "description": "Represents an image file.",
+    "type": "object",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "width": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The width of the image in pixels.",
+      "title": "Width",
+      "examples": [
+       1024
+      ]
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size",
+      "examples": [
+       4404019
+      ]
+     },
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "height": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The height of the image in pixels.",
+      "title": "Height",
+      "examples": [
+       1024
+      ]
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     }
+    },
+    "title": "Image"
+   },
+   "structured_instruction": {
+    "additionalProperties": true,
+    "type": "object",
+    "description": "The structured instruction the model ran, expanded from the built-in instruction plus anything passed in `instruction`. Returned so you can see how the brief was interpreted.",
+    "title": "Structured Instruction"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:32:55+00:00"
+}

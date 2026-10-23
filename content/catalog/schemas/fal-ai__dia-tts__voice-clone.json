@@ -1,0 +1,88 @@
+{
+ "endpoint": "fal-ai/dia-tts/voice-clone",
+ "required": [
+  "text"
+ ],
+ "properties": {
+  "text": {
+   "title": "Text",
+   "description": "The text to be converted to speech.",
+   "type": "string"
+  }
+ },
+ "output": {
+  "required": [
+   "audio"
+  ],
+  "title": "DiaCloneOutput",
+  "type": "object",
+  "properties": {
+   "audio": {
+    "description": "The generated speech audio",
+    "examples": [
+     {
+      "url": "https://v3.fal.media/files/tiger/smL9a_mr1PRIvZxDSVppk_output.wav"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:34:38+00:00"
+}

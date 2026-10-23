@@ -1,0 +1,219 @@
+{
+ "endpoint": "ideogram/v4.5/edit",
+ "required": [
+  "prompt",
+  "image_url"
+ ],
+ "properties": {
+  "image_size": {
+   "default": "auto",
+   "anyOf": [
+    {
+     "properties": {
+      "width": {
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "description": "The width of the generated image.",
+       "maximum": 14142,
+       "type": "integer",
+       "title": "Width"
+      },
+      "height": {
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "description": "The height of the generated image.",
+       "maximum": 14142,
+       "type": "integer",
+       "title": "Height"
+      }
+     },
+     "title": "ImageSize",
+     "type": "object"
+    },
+    {
+     "enum": [
+      "auto",
+      "square",
+      "square_hd",
+      "portrait_4_3",
+      "landscape_4_3",
+      "portrait_16_9",
+      "landscape_16_9"
+     ],
+     "type": "string"
+    }
+   ],
+   "description": "auto preserves source geometry, downscaled by the provider if needed. Only unmasked regular edits accept named presets or custom sizes: dimensions >=256, multiples of 32, area <=4194304, ratio <=6:1. Named presets use standard fal dimensions.",
+   "title": "Image Size"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed",
+   "description": "Random seed. Omit to choose automatically."
+  },
+  "mask_url": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Mask URL",
+   "description": "Mask matching the source dimensions. Black edits, white preserves. Must contain both regions after rounding."
+  },
+  "reference_image_urls": {
+   "description": "Up to four references plus the primary source, or three references plus the primary source and mask.",
+   "title": "Reference Image URLs",
+   "maxItems": 4,
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "edit_precision": {
+   "enum": [
+    "regular",
+    "high"
+   ],
+   "default": "regular",
+   "description": "regular uses Generate; high uses Precise Edit with unchanged-pixel restoration. Both always prepare structured edit instructions.",
+   "title": "Edit Precision",
+   "type": "string"
+  },
+  "num_images": {
+   "minimum": 1,
+   "default": 1,
+   "description": "Number of images to generate.",
+   "maximum": 8,
+   "type": "integer",
+   "title": "Number of Images"
+  },
+  "image_url": {
+   "title": "Image URL",
+   "description": "Primary source image to edit.",
+   "type": "string"
+  },
+  "quality": {
+   "enum": [
+    "very_low",
+    "low",
+    "medium",
+    "high"
+   ],
+   "default": "medium",
+   "description": "Quality tier for either edit precision. Defaults to medium.",
+   "title": "Quality",
+   "type": "string"
+  },
+  "prompt": {
+   "type": "string",
+   "title": "Prompt",
+   "description": "The generation or editing prompt.",
+   "maxLength": 10000
+  },
+  "sync_mode": {
+   "default": false,
+   "description": "Return image data directly in the response.",
+   "title": "Sync Mode",
+   "type": "boolean"
+  }
+ },
+ "output": {
+  "properties": {
+   "seed": {
+    "title": "Seed",
+    "description": "Seed used for the random number generator",
+    "type": "integer",
+    "examples": [
+     123456
+    ]
+   },
+   "images": {
+    "title": "Images",
+    "examples": [
+     [
+      {
+       "url": "https://v3.fal.media/files/penguin/lHdRabS80guysb8Zw1kul_image.png"
+      }
+     ]
+    ],
+    "type": "array",
+    "items": {
+     "properties": {
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      }
+     },
+     "title": "File",
+     "type": "object",
+     "required": [
+      "url"
+     ]
+    }
+   }
+  },
+  "title": "OutputV3",
+  "type": "object",
+  "required": [
+   "images",
+   "seed"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:28:41+00:00"
+}

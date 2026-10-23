@@ -5,5 +5,5 @@
  "pricing_text": "Billed per megapixel at **$0.025**/MP, counting the output image plus each reference image as the model processes it (references larger than the output are counted at the output’s size). 1 MP = 1024×1024 pixels.",
  "source_url": "https://fal.ai/models/krea/v3/edit",
  "confidence": "high",
- "notes": "$0.025 لكل ميغابكسل، والميغابكسل الإضافي بنفس السعر. يُحسب المخرج + كل صورة مرجعية (المراجع الأكبر من المخرج تُحسب بحجم المخرج). مثال: مخرج 1MP مع مرجع 1MP = $0.05."
+ "notes": "$0.025 لكل ميغابكسل، والميغابكسل الإضافي بنفس السعر. يُحسب المخرج + كل صورة مرجعية (المراجع الأكبر من المخرج تُحسب بحجم المخرج). تنبيه من وصف حقل reasoning_level في المخطط: low/medium (الافتراضي medium) بهذا السعر؛ high يضيف $0.125 ثابتة للطلب؛ ultra سعر ثابت $0.27-$0.35 حسب عدد المراجع. image_size الافتراضي auto ≈ 2048×2048 (~4MP ⇒ ~$0.10 + المراجع) — اضبط حجمًا صريحًا (square_hd) للسعر الأساسي."
 }

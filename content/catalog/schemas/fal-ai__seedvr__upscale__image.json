@@ -1,0 +1,192 @@
+{
+ "endpoint": "fal-ai/seedvr/upscale/image",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "sync_mode": {
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "title": "Sync Mode",
+   "default": false,
+   "type": "boolean"
+  },
+  "enable_safety_checker": {
+   "description": "If set to true, the safety checker will be enabled.",
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "output_format": {
+   "description": "The format of the output image.",
+   "title": "Output Format",
+   "default": "jpg",
+   "enum": [
+    "png",
+    "jpg",
+    "webp"
+   ],
+   "type": "string"
+  },
+  "seed": {
+   "description": "The random seed used for the generation process.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed"
+  },
+  "image_url": {
+   "description": "The input image to be processed",
+   "title": "Image Url",
+   "type": "string"
+  },
+  "upscale_factor": {
+   "description": "Upscaling factor to be used. Will multiply the dimensions with this factor when `upscale_mode` is `factor`.",
+   "title": "Upscale Factor",
+   "default": 2,
+   "minimum": 1,
+   "maximum": 10,
+   "type": "number"
+  },
+  "target_resolution": {
+   "description": "The target resolution to upscale to when `upscale_mode` is `target`.",
+   "title": "Target Resolution",
+   "default": "1080p",
+   "enum": [
+    "720p",
+    "1080p",
+    "1440p",
+    "2160p"
+   ],
+   "type": "string"
+  },
+  "noise_scale": {
+   "description": "The noise scale to use for the generation process.",
+   "title": "Noise Scale",
+   "default": 0.1,
+   "minimum": 0,
+   "maximum": 1,
+   "type": "number"
+  },
+  "upscale_mode": {
+   "description": "The mode to use for the upscale. If 'target', the upscale factor will be calculated based on the target resolution. If 'factor', the upscale factor will be used directly.",
+   "title": "Upscale Mode",
+   "default": "factor",
+   "enum": [
+    "target",
+    "factor"
+   ],
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "SeedVRImageOutput",
+  "properties": {
+   "image": {
+    "description": "Upscaled image file after processing",
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/seedvr2/image_out.png",
+      "content_type": "image/png"
+     }
+    ],
+    "title": "ImageFile",
+    "properties": {
+     "height": {
+      "description": "The height of the image",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Height"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "width": {
+      "description": "The width of the image",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Width"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   },
+   "seed": {
+    "description": "The random seed used for the generation process.",
+    "title": "Seed",
+    "type": "integer"
+   }
+  },
+  "required": [
+   "image",
+   "seed"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:35:01+00:00"
+}

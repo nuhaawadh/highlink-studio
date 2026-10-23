@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/heygen/avatar5/digital-twin",
+ "unit": "second",
+ "usd": 0.1,
+ "pricing_text": "**$0.10** per second of generated output video. The charge is based on final output duration in seconds.",
+ "source_url": "https://fal.ai/models/fal-ai/heygen/avatar5/digital-twin",
+ "confidence": "high",
+ "notes": "سعر ثابت $0.10 لكل ثانية من مدة الفيديو النهائي (النص في fal-launch.json مكرر مرتين؛ حُفظ مرة واحدة)."
+}

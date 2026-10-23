@@ -44,6 +44,8 @@ OUR_RATIOS = ['1:1', '9:16', '16:9', '4:5', '3:4']
 PRESET_TO_RATIO = {'square_hd': '1:1', 'square': '1:1', 'landscape_16_9': '16:9', 'portrait_16_9': '9:16', 'portrait_4_3': '3:4', 'landscape_4_3': '4:3'}
 # أنواع العمليات التي تعمل بالمحرك الحالي (نص/صور كمراجع → صورة أو فيديو). الباقي يحتاج مدخلات فيديو/صوت (المرحلة 2)
 ENGINE_KINDS = {'t2v', 'i2v', 'ref2v', 'flf2v', 'transition', 't2i', 'edit', 'character', 'transparent', 'vector', 'vectorize', 'vto', 'product', 'expand', 'bg-replace', 'bg-remove', 'erase', 'fill', 'upscale'}
+# أنواع تعمل على صورة/مرجع من المستخدم دائمًا (requires_ref حتى لو لم يطلبه المخطط)
+REF_KINDS = {'i2v', 'ref2v', 'flf2v', 'transition', 'edit', 'character', 'vectorize', 'vto', 'product', 'expand', 'bg-replace', 'bg-remove', 'erase', 'fill', 'upscale'}
 # أنواع تعمل في الواجهة بلا رفع مراجع (الباقي عبر API v1 حتى يُبنى رفع المراجع)
 UI_KINDS = {'t2v', 't2i', 'vector', 'transparent'}
 # دقات نستبعدها حتى الانتقال إلى R2 (حد bucket 50MB — migration 0002)
@@ -157,7 +159,9 @@ def main() -> int:
         if 'image_url' in props or 'start_image_url' in props:
             ref_images = max(ref_images, 2 if 'end_image_url' in props else 1)
         supports['ref_images'] = ref_images
-        supports['requires_ref'] = any(k in ((schema or {}).get('required') or []) for k in ('image_url', 'image_urls', 'start_image_url', 'image_input'))
+        # يحتاج مرجعًا إن طلبه المخطط، أو إن كان نوع العملية يعمل على صورة المستخدم أصلًا — بعض مخططات fal بلا required
+        # وقيمة image_url الافتراضية فيها صورة مثال من fal، فلا نعتمد على required وحده (وإلا نولّد من صورة المثال ونخصم)
+        supports['requires_ref'] = kind in REF_KINDS or any(k in ((schema or {}).get('required') or []) for k in ('image_url', 'image_urls', 'start_image_url', 'image_input'))
         supports['i2v'] = kind in ('i2v', 'flf2v', 'transition', 'ref2v')
         supports['audio'] = any(k in props for k in ('generate_audio', 'enable_audio', 'with_audio', 'audio'))
         # النِّسب

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-lora-gallery/multiple-angles",
+ "unit": "megapixel",
+ "usd": 0.021,
+ "pricing_text": "Your requestwill cost$0.021per processed megapixel. | Cost per Megapixel | $0.021 | 48 generations per $1.00 on fal |",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-lora-gallery/multiple-angles",
+ "confidence": "high",
+ "notes": "$0.021 لكل ميغابكسل معالَج (لا يذكر النص سعرًا مختلفًا للميغابكسل الإضافي). الحجم يرث حجم صورة الإدخال افتراضيًا (image_size غير محدد) — صورة 1024×1024 ≈ $0.021. num_images (1–4) يضاعف السعر. \"48 generations per $1.00\" يوحي بأن الصورة النموذجية ≈ 1 MP."
+}

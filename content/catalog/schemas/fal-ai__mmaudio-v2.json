@@ -1,0 +1,147 @@
+{
+ "endpoint": "fal-ai/mmaudio-v2",
+ "required": [
+  "video_url",
+  "prompt"
+ ],
+ "properties": {
+  "duration": {
+   "default": 8,
+   "minimum": 1,
+   "maximum": 30,
+   "title": "Duration",
+   "description": "The duration of the audio to generate.",
+   "type": "number"
+  },
+  "num_steps": {
+   "default": 25,
+   "minimum": 4,
+   "maximum": 50,
+   "title": "Num Steps",
+   "description": "The number of steps to generate the audio for.",
+   "type": "integer"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "type": "string",
+   "description": "The prompt to generate the audio for."
+  },
+  "cfg_strength": {
+   "default": 4.5,
+   "minimum": 0,
+   "maximum": 20,
+   "title": "Cfg Strength",
+   "description": "The strength of Classifier Free Guidance.",
+   "type": "number"
+  },
+  "video_url": {
+   "title": "Video Url",
+   "type": "string",
+   "description": "The URL of the video to generate the audio for."
+  },
+  "negative_prompt": {
+   "default": "",
+   "title": "Negative Prompt",
+   "description": "The negative prompt to generate the audio for.",
+   "type": "string"
+  },
+  "mask_away_clip": {
+   "default": false,
+   "title": "Mask Away Clip",
+   "description": "Whether to mask away the clip.",
+   "type": "boolean"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "minimum": 0,
+     "maximum": 65535,
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed",
+   "description": "The seed for the random number generator"
+  }
+ },
+ "output": {
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/model_tests/video_models/mmaudio_output.mp4",
+      "content_type": "application/octet-stream",
+      "file_name": "mmaudio_input.mp4",
+      "file_size": 1001342
+     }
+    ],
+    "description": "The generated video with the lip sync.",
+    "properties": {
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file."
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided."
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes."
+     }
+    },
+    "title": "File",
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   }
+  },
+  "title": "Output",
+  "required": [
+   "video"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:30:50+00:00"
+}

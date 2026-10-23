@@ -1,0 +1,157 @@
+{
+ "endpoint": "bria/video/background-removal/v3",
+ "required": [
+  "video_url"
+ ],
+ "properties": {
+  "auto_zoom": {
+   "default": false,
+   "title": "Auto Zoom",
+   "type": "boolean",
+   "description": "If true, crop the output to the smallest rectangle the subject stays inside for the whole video."
+  },
+  "preserve_audio": {
+   "default": true,
+   "title": "Preserve Audio",
+   "type": "boolean",
+   "description": "If true, audio will be preserved in the output video."
+  },
+  "video_url": {
+   "title": "Video Url",
+   "type": "string",
+   "description": "Input video to remove background from."
+  },
+  "background_color": {
+   "default": "Black",
+   "title": "Background Color",
+   "type": "string",
+   "description": "Background color. Options: Transparent, Black, White, Gray, Red, Green, Blue, Yellow, Cyan, Magenta, Orange.",
+   "enum": [
+    "Transparent",
+    "Black",
+    "White",
+    "Gray",
+    "Red",
+    "Green",
+    "Blue",
+    "Yellow",
+    "Cyan",
+    "Magenta",
+    "Orange"
+   ]
+  },
+  "output_container_and_codec": {
+   "default": "webm_vp9",
+   "title": "Output Container And Codec",
+   "type": "string",
+   "description": "Output container and codec. Options: mp4_h265, mp4_h264, webm_vp9, mov_h265, mov_proresks, mkv_h265, mkv_h264, mkv_vp9, gif.",
+   "enum": [
+    "mp4_h265",
+    "mp4_h264",
+    "webm_vp9",
+    "mov_h265",
+    "mov_proresks",
+    "mkv_h265",
+    "mkv_h264",
+    "mkv_vp9",
+    "gif"
+   ]
+  }
+ },
+ "output": {
+  "properties": {
+   "request_id": {
+    "title": "Request Id",
+    "type": "string",
+    "description": "Bria request ID."
+   },
+   "warning": {
+    "title": "Warning",
+    "description": "Set when the request was served with an adjusted parameter, e.g. a transparent background falling back to black on a codec that cannot carry alpha.",
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "video": {
+    "examples": [
+     {
+      "url": "https://bria-datasets.s3.us-east-1.amazonaws.com/rmbg_tests/videos/video_output.webm",
+      "file_size": 1953161,
+      "file_name": "video_output.webm",
+      "content_type": "video/webm"
+     }
+    ],
+    "description": "Video with removed background and audio.",
+    "required": [
+     "url"
+    ],
+    "type": "object",
+    "title": "Video",
+    "properties": {
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "type": "string",
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from."
+     }
+    }
+   }
+  },
+  "title": "OutputRemoveBackgroundModel",
+  "type": "object",
+  "required": [
+   "video",
+   "request_id"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:35:01+00:00"
+}

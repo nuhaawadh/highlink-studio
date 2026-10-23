@@ -1,0 +1,9 @@
+{
+ "endpoint": "bytedance/omnihuman/v2",
+ "unit": "second",
+ "usd": 0.105,
+ "pricing_text": "Your requestwill cost$0.105per second.",
+ "source_url": "https://fal.ai/models/bytedance/omnihuman/v2",
+ "confidence": "high",
+ "notes": "$0.105 لكل ثانية؛ مدة المخرج = مدة الصوت المدخل (4–300 ث، الحقل duration في المخرج هو المدة المفوترة). مثال: 10 ث ≈ $1.05."
+}

@@ -1,0 +1,159 @@
+{
+ "endpoint": "bria/increase-resolution",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "output_type": {
+   "default": "png",
+   "enum": [
+    "png",
+    "jpeg"
+   ],
+   "description": "Image format. JPEG carries no alpha, so preserve_alpha does not apply.",
+   "type": "string",
+   "title": "Output Type"
+  },
+  "preserve_alpha": {
+   "default": true,
+   "description": "Reattach the source alpha channel to the result.",
+   "type": "boolean",
+   "title": "Preserve Alpha"
+  },
+  "preserve_color": {
+   "default": false,
+   "description": "Correct the upscaled result's color cast against the source image.",
+   "type": "boolean",
+   "title": "Preserve Color"
+  },
+  "sync_mode": {
+   "default": false,
+   "description": "Return the image inline instead of as a URL.",
+   "type": "boolean",
+   "title": "Sync Mode"
+  },
+  "image_url": {
+   "description": "URL of the image to upscale.",
+   "type": "string",
+   "title": "Image Url"
+  },
+  "desired_increase": {
+   "default": 2,
+   "enum": [
+    2,
+    4
+   ],
+   "description": "Upscale factor. Each factor is its own SwinIR checkpoint.",
+   "type": "integer",
+   "title": "Desired Increase"
+  }
+ },
+ "output": {
+  "required": [
+   "image"
+  ],
+  "properties": {
+   "image": {
+    "examples": [
+     {
+      "height": 2500,
+      "url": "https://bria-test-images.s3.amazonaws.com/increase_res/playground/sample_upscaled_2x_2000x2500.png",
+      "content_type": "image/png",
+      "width": 2000
+     }
+    ],
+    "description": "Represents an image file.",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "height": {
+      "examples": [
+       1024
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The height of the image in pixels.",
+      "title": "Height"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     },
+     "width": {
+      "examples": [
+       1024
+      ],
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The width of the image in pixels.",
+      "title": "Width"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     }
+    },
+    "type": "object",
+    "title": "Image"
+   }
+  },
+  "type": "object",
+  "title": "IncreaseResolutionOutput"
+ },
+ "fetched_at": "2026-10-23T14:31:44+00:00"
+}

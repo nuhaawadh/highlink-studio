@@ -1,0 +1,269 @@
+{
+ "endpoint": "google/gemini-3.8-flash-tts",
+ "required": [],
+ "properties": {
+  "prompt": {
+   "description": "Verbatim text for single-speaker speech. Put delivery directions in style_instructions; inline vocal events may use  or . For dialogue, omit prompt and provide speakers and turns instead. The provider limits the complete input to 8,192 tokens.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Prompt"
+  },
+  "voice": {
+   "description": "Prebuilt voice for single-speaker speech.",
+   "title": "Voice",
+   "default": "Kore",
+   "enum": [
+    "Achernar",
+    "Achird",
+    "Algenib",
+    "Algieba",
+    "Alnilam",
+    "Aoede",
+    "Autonoe",
+    "Callirrhoe",
+    "Charon",
+    "Despina",
+    "Enceladus",
+    "Erinome",
+    "Fenrir",
+    "Gacrux",
+    "Iapetus",
+    "Kore",
+    "Laomedeia",
+    "Leda",
+    "Orus",
+    "Pulcherrima",
+    "Puck",
+    "Rasalgethi",
+    "Sadachbia",
+    "Sadaltager",
+    "Schedar",
+    "Sulafat",
+    "Umbriel",
+    "Vindemiatrix",
+    "Zephyr",
+    "Zubenelgenubi"
+   ],
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "speakers": {
+   "description": "Exactly two distinct speaker aliases and their prebuilt voices for dialogue.",
+   "anyOf": [
+    {
+     "items": {
+      "title": "SpeakerConfig",
+      "additionalProperties": false,
+      "x-fal-order-properties": [
+       "speaker_id",
+       "voice"
+      ],
+      "properties": {
+       "voice": {
+        "description": "Prebuilt voice for this speaker.",
+        "title": "Voice",
+        "enum": [
+         "Achernar",
+         "Achird",
+         "Algenib",
+         "Algieba",
+         "Alnilam",
+         "Aoede",
+         "Autonoe",
+         "Callirrhoe",
+         "Charon",
+         "Despina",
+         "Enceladus",
+         "Erinome",
+         "Fenrir",
+         "Gacrux",
+         "Iapetus",
+         "Kore",
+         "Laomedeia",
+         "Leda",
+         "Orus",
+         "Pulcherrima",
+         "Puck",
+         "Rasalgethi",
+         "Sadachbia",
+         "Sadaltager",
+         "Schedar",
+         "Sulafat",
+         "Umbriel",
+         "Vindemiatrix",
+         "Zephyr",
+         "Zubenelgenubi"
+        ],
+        "type": "string"
+       },
+       "speaker_id": {
+        "description": "Speaker alias used in each turn.",
+        "title": "Speaker ID",
+        "type": "string",
+        "minLength": 1
+       }
+      },
+      "required": [
+       "speaker_id",
+       "voice"
+      ],
+      "type": "object"
+     },
+     "type": "array",
+     "maxItems": 2,
+     "minItems": 2
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Speakers"
+  },
+  "style_instructions": {
+   "description": "Delivery style, separate from the spoken transcript. Applies to all turns unless overridden.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Style Instructions"
+  },
+  "turns": {
+   "description": "Ordered dialogue turns, each identifying a configured speaker.",
+   "anyOf": [
+    {
+     "items": {
+      "title": "SpeechTurn",
+      "additionalProperties": false,
+      "x-fal-order-properties": [
+       "speaker_id",
+       "text",
+       "style_instructions"
+      ],
+      "properties": {
+       "text": {
+        "description": "Verbatim transcript for this turn.",
+        "title": "Text",
+        "type": "string",
+        "minLength": 1
+       },
+       "style_instructions": {
+        "description": "Optional delivery style for this turn.",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Style Instructions"
+       },
+       "speaker_id": {
+        "description": "Alias of a configured speaker.",
+        "title": "Speaker ID",
+        "type": "string",
+        "minLength": 1
+       }
+      },
+      "required": [
+       "speaker_id",
+       "text"
+      ],
+      "type": "object"
+     },
+     "type": "array",
+     "minItems": 1
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Turns"
+  }
+ },
+ "output": {
+  "title": "Gemini38TTSOutput",
+  "properties": {
+   "audio": {
+    "description": "Generated WAV audio.",
+    "title": "File",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   }
+  },
+  "required": [
+   "audio"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:36:00+00:00"
+}

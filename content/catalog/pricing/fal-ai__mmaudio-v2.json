@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/mmaudio-v2",
+ "unit": "second",
+ "usd": 0.001,
+ "pricing_text": "Your requestwill cost$0.001per second. | Cost per Second | $0.001 | 1,000 seconds of audio generation per $1.00 on fal |",
+ "source_url": "https://fal.ai/models/fal-ai/mmaudio-v2",
+ "confidence": "high",
+ "notes": "$0.001 لكل ثانية صوت مولّد (المدة 1–30 ث، الافتراضي 8 ث → $0.008). المخرج فيديو المدخل نفسه مع مسار صوتي."
+}

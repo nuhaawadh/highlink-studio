@@ -1,0 +1,221 @@
+{
+ "endpoint": "topaz/upscale/video/precision",
+ "required": [
+  "video_url"
+ ],
+ "properties": {
+  "video_url": {
+   "description": "URL of the video to upscale",
+   "type": "string",
+   "title": "Video Url"
+  },
+  "target_fps": {
+   "anyOf": [
+    {
+     "maximum": 60,
+     "minimum": 16,
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Target FPS for the output. Frame interpolation is enabled only when this differs from the source FPS.",
+   "title": "Target Fps"
+  },
+  "upscale_factor": {
+   "description": "Factor to upscale the video by (e.g. 2.0 doubles width and height)",
+   "maximum": 4,
+   "type": "number",
+   "default": 2,
+   "minimum": 1,
+   "title": "Upscale Factor"
+  },
+  "model": {
+   "enum": [
+    "Proteus",
+    "Proteus Natural",
+    "Iris",
+    "Iris Low Quality",
+    "Dione DV",
+    "Dione TV",
+    "Dione Robust",
+    "Dione Dehalo",
+    "Dione Robust Dehalo",
+    "Artemis High Quality",
+    "Artemis Medium Quality",
+    "Artemis Low Quality",
+    "Artemis Strong Halo",
+    "Artemis Medium Halo",
+    "Artemis Aliasing & Moire",
+    "Gaia HQ",
+    "Gaia CG",
+    "Gaia 2",
+    "Rhea",
+    "Theia Fine Tune Detail",
+    "Theia Fine Tune Fidelity"
+   ],
+   "description": "Precision (non-generative) enhancement model. Proteus fits most real-world footage; Proteus Natural is a softer variant; Iris recovers faces; Dione deinterlaces legacy/interlaced sources; Artemis denoises and sharpens degraded footage; Gaia refines high-quality footage and CG (Gaia 2 upscales animation at 2x); Rhea maximizes fine detail via an internal 4x pass; Theia gives manual detail/fidelity control.",
+   "type": "string",
+   "default": "Proteus",
+   "title": "Model"
+  },
+  "noise": {
+   "anyOf": [
+    {
+     "maximum": 1,
+     "minimum": 0,
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Noise reduction level (0.0-1.0). Default varies by model.",
+   "title": "Noise"
+  },
+  "grain": {
+   "anyOf": [
+    {
+     "maximum": 0.1,
+     "minimum": 0,
+     "type": "number",
+     "multipleOf": 0.01
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Film grain amount (0.0-0.1). Default varies by model.",
+   "title": "Grain"
+  },
+  "H264_output": {
+   "description": "Whether to use H264 codec for output video. Default is H265.",
+   "type": "boolean",
+   "default": false,
+   "title": "H264 Output"
+  },
+  "compression": {
+   "anyOf": [
+    {
+     "maximum": 1,
+     "minimum": 0,
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Compression artifact removal level (0.0-1.0). Default varies by model.",
+   "title": "Compression"
+  },
+  "recover_detail": {
+   "anyOf": [
+    {
+     "maximum": 1,
+     "minimum": 0,
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Recover original detail level (0.0-1.0). Higher values preserve more original detail.",
+   "title": "Recover Detail"
+  },
+  "halo": {
+   "anyOf": [
+    {
+     "maximum": 1,
+     "minimum": 0,
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Halo reduction level (0.0-1.0). Default varies by model.",
+   "title": "Halo"
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "url": "https://v3.fal.media/files/penguin/ztj_LB4gQlW6HIfVs8zX4_upscaled.mp4"
+     }
+    ],
+    "description": "The upscaled video file",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     }
+    },
+    "type": "object",
+    "title": "File"
+   }
+  },
+  "type": "object",
+  "title": "VideoUpscaleOutput"
+ },
+ "fetched_at": "2026-10-23T14:34:15+00:00"
+}

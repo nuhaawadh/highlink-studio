@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/genfill/v2",
+ "unit": "megapixel",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost $0.04 per megapixel.",
+ "source_url": "https://fal.ai/models/bria/genfill/v2",
+ "confidence": "medium",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.04per megapixel.\" (مسافات مفقودة في الاستخراج). لا توضّح الصفحة هل الميغابكسل يُحسب على الصورة المدخلة أو المخرجة ولا طريقة التقريب — المخرج بحجم المدخل عادةً (مثال الصفحة 1024×1024 ≈1MP = $0.04). الثقة متوسطة لهذا الغموض. pricing_text كان null في fal-launch.json."
+}

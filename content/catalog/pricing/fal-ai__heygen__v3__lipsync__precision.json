@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/heygen/v3/lipsync/precision",
+ "unit": "second",
+ "usd": 0.1,
+ "pricing_text": "Your requestwill cost$0.1per second. [OpenAPI about] Billed per second of output video ($0.1000/s).",
+ "source_url": "https://fal.ai/models/fal-ai/heygen/v3/lipsync/precision",
+ "confidence": "high",
+ "notes": "$0.10 لكل ثانية من فيديو المخرج (يؤكده وصف مخطط OpenAPI: \"Billed per second of output video ($0.1000/s)\"). enable_dynamic_duration افتراضيًا true قد يغيّر مدة المخرج لتطابق الصوت الجديد."
+}

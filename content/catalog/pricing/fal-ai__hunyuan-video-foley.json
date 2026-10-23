@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/hunyuan-video-foley",
+ "unit": "second",
+ "usd": 0.01,
+ "pricing_text": "Your request will cost $0.1 per 10 second.",
+ "source_url": "https://fal.ai/models/fal-ai/hunyuan-video-foley",
+ "confidence": "medium",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23). النص يقول $0.1 لكل 10 ثوانٍ من الفيديو ⇒ usd = 0.1 ÷ 10 = $0.01 لكل ثانية. الثقة medium لأن الصفحة لا توضح هل الحساب بكتل 10 ثوانٍ مبدوءة (فيديو 11 ث = $0.20) أم خطيًا — الأحوط الحجز بكتل 10 ث. الطول يتبع الفيديو المُدخل. يحتاج video_url وtext_prompt."
+}

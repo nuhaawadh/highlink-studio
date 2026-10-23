@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/replace-background",
+ "unit": "image",
+ "usd": 0.04,
+ "pricing_text": "Your requestwill cost$0.04per image.",
+ "source_url": "https://fal.ai/models/bria/replace-background",
+ "confidence": "high",
+ "notes": "$0.04 لكل صورة ناتجة. تنبيه للمخطط: لا حقول مطلوبة، وimage_url له قيمة افتراضية (صورة مثال من fal) — يجب أن يفرض المحرك image_url من المستخدم."
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/hunyuan-image/v3/instruct/edit",
+ "unit": "megapixel",
+ "usd": 0.09,
+ "pricing_text": "Your request will cost $0.09 per megapixel.",
+ "source_url": "https://fal.ai/models/fal-ai/hunyuan-image/v3/instruct/edit",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground). $0.09 لكل ميغابكسل (مخرج على الأرجح) — صورة 1024×1024 ≈ $0.094. image_size الافتراضي auto (يحدده النموذج). num_images حتى 4. لا تذكر الصفحة إن كانت صور الإدخال (حتى 3) تُحسب."
+}

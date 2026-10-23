@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/recraft/v4.1/text-to-image",
+ "unit": "image",
+ "usd": 0.035,
+ "pricing_text": "Your request will cost $0.035 per image.",
+ "source_url": "https://fal.ai/models/fal-ai/recraft/v4.1/text-to-image",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground). سعر ثابت $0.035 لكل صورة. المخطط لا يحوي num_images (صورة واحدة لكل طلب)."
+}

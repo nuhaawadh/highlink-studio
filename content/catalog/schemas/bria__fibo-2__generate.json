@@ -1,0 +1,496 @@
+{
+ "endpoint": "bria/fibo-2/generate",
+ "required": [],
+ "properties": {
+  "image_url": {
+   "title": "Image Url",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "A reference image (inspire mode). With 'prompt', VGL uses it as a visual reference for the prompt's scene and generates a new image of that scene, not the image. Alone, the VGL describes the image itself, so the result is a close variation of it. Not with 'vgl'."
+  },
+  "vgl": {
+   "title": "Vgl",
+   "anyOf": [
+    {
+     "title": "Vgl",
+     "type": "object",
+     "properties": {
+      "aesthetics": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/Aesthetics"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The aesthetics of the image to be generated."
+      },
+      "background_setting": {
+       "title": "Background Setting",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The background setting of the image to be generated."
+      },
+      "objects": {
+       "title": "Objects",
+       "default": [],
+       "anyOf": [
+        {
+         "items": {
+          "$ref": "#/components/schemas/PromptObject"
+         },
+         "type": "array"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "A list of objects in the image to be generated, along with their attributes and relationships to other objects in the image."
+      },
+      "text_render": {
+       "title": "Text Render",
+       "default": [],
+       "anyOf": [
+        {
+         "items": {
+          "$ref": "#/components/schemas/TextRender"
+         },
+         "type": "array"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "A list of text to be rendered in the image."
+      },
+      "photographic_characteristics": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/PhotographicCharacteristics"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The photographic characteristics of the image to be generated."
+      },
+      "context": {
+       "title": "Context",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The context of the image to be generated."
+      },
+      "artistic_style": {
+       "title": "Artistic Style",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The artistic style of the image to be generated."
+      },
+      "style_medium": {
+       "title": "Style Medium",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The style medium of the image to be generated."
+      },
+      "lighting": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/Lighting"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The lighting of the image to be generated."
+      },
+      "short_description": {
+       "title": "Short Description",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "A short description of the image to be generated."
+      }
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "A VGL (Visual Generation Language) document: the structured JSON description of the scene. Alone, the model renders it as-is. With 'prompt', VGL changes it by the prompt (refine) and the result is rendered. Accepts what a previous request returned. Not with 'image_url' or 'style'."
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "default": false,
+   "type": "boolean",
+   "description": "If true, returns the image directly in the response (increases latency)."
+  },
+  "seed": {
+   "maximum": 2147483647,
+   "title": "Seed",
+   "default": 5555,
+   "description": "Random seed for reproducibility, 0 to 2147483647.",
+   "type": "integer",
+   "minimum": 0
+  },
+  "aspect_ratio": {
+   "title": "Aspect Ratio",
+   "enum": [
+    "1:1",
+    "1:2",
+    "1:3",
+    "1:4",
+    "1:5",
+    "2:1",
+    "2:3",
+    "3:1",
+    "3:2",
+    "3:4",
+    "4:1",
+    "4:3",
+    "4:5",
+    "5:1",
+    "5:4",
+    "9:16",
+    "9:21",
+    "10:16",
+    "16:9",
+    "16:10",
+    "21:9"
+   ],
+   "default": "1:1",
+   "type": "string",
+   "description": "Aspect ratio of the image, at about one megapixel. Options: 1:1, 1:2, 1:3, 1:4, 1:5, 2:1, 2:3, 3:1, 3:2, 3:4, 4:1, 4:3, 4:5, 5:1, 5:4, 9:16, 9:21, 10:16, 16:9, 16:10, 21:9"
+  },
+  "prompt": {
+   "title": "Prompt",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "What to generate, in free-form text. It is expanded into a VGL, which is returned. With 'vgl', the change to make to it."
+  },
+  "style": {
+   "title": "Style",
+   "anyOf": [
+    {
+     "enum": [
+      "Kodak Film",
+      "Hard Flash",
+      "Hazy Dreamy",
+      "Rough Realism"
+     ],
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "A style for the generated image. Requires 'prompt'; not with 'image_url', 'vgl' or 'negative_prompt'."
+  }
+ },
+ "output": {
+  "title": "GenerateOutputModel",
+  "type": "object",
+  "required": [
+   "image",
+   "vgl"
+  ],
+  "properties": {
+   "image": {
+    "description": "Represents an image file.",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided."
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes."
+     },
+     "width": {
+      "examples": [
+       1024
+      ],
+      "title": "Width",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The width of the image in pixels."
+     },
+     "url": {
+      "title": "Url",
+      "type": "string",
+      "description": "The URL where the file can be downloaded from."
+     },
+     "height": {
+      "examples": [
+       1024
+      ],
+      "title": "Height",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The height of the image in pixels."
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file."
+     }
+    },
+    "title": "Image",
+    "type": "object",
+    "required": [
+     "url"
+    ]
+   },
+   "images": {
+    "title": "Images",
+    "items": {
+     "properties": {
+      "file_name": {
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided."
+      },
+      "file_size": {
+       "examples": [
+        4404019
+       ],
+       "title": "File Size",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes."
+      },
+      "width": {
+       "examples": [
+        1024
+       ],
+       "title": "Width",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The width of the image in pixels."
+      },
+      "url": {
+       "title": "Url",
+       "type": "string",
+       "description": "The URL where the file can be downloaded from."
+      },
+      "height": {
+       "examples": [
+        1024
+       ],
+       "title": "Height",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The height of the image in pixels."
+      },
+      "content_type": {
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file."
+      }
+     },
+     "title": "Image",
+     "type": "object",
+     "required": [
+      "url"
+     ],
+     "description": "Represents an image file."
+    },
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/0aaf2623/1zjIB_bIKvzMpu6fsECUP_fibo-2-generate-example-prod.png"
+      }
+     ]
+    ],
+    "type": "array",
+    "default": [],
+    "description": "Single-element list holding the same image, as the sibling FIBO apps return."
+   },
+   "vgl": {
+    "examples": [
+     {
+      "aesthetics": {
+       "composition": "low angle shot, medium-tight framing cropped mid-thigh at the bottom, dynamic off-center placement following the rule of thirds",
+       "mood_atmosphere": "Y2K action-editorial energy, dynamic, confident, edgy, and cinematic",
+       "color_scheme": "high contrast palette featuring saturated cobalt blues, warm golden-orange sunset tones, and neutral greys and whites"
+      },
+      "background_setting": "Flat scrubby desert featuring sparse dry bushes, subtle footprints in the sand, and low dark silhouetted mountains along the horizon. The sky is a deep cobalt-blue with streaks of grey-violet clouds and a glowing orange and gold sunset band stretching along the left horizon.",
+      "objects": [
+       {
+        "relative_size": "large within frame",
+        "pose": "twisting mid-motion, turning body away while looking back over shoulder",
+        "action": "twisting and looking back over her shoulder while swinging right arm",
+        "orientation": "tilted dynamically, facing slightly left while head turns back",
+        "relationship": "main subject of the photograph, commanding the frame",
+        "clothing": "fitted white ribbed tank top, loose light-grey cargo pants with large side pockets sitting low on hips, heavy silver chain necklace, wraparound mirrored silver sport sunglasses",
+        "appearance_details": "glossy highlights on skin, windswept hair flying across her face, right arm swinging out behind with fingers spread",
+        "texture": "mixed textures of soft skin, ribbed cotton, heavy metallic links, and smooth synthetic sunglasses",
+        "expression": "confident, intense gaze with lips slightly parted",
+        "shape_and_color": "dynamic human silhouette in white and grey with metallic accents",
+        "location": "center-right",
+        "gender": "female",
+        "skin_tone_and_texture": "warm skin tone with glossy highlights from the flash",
+        "description": "A young woman with shoulder-length dark brown hair, twisting mid-motion with her body turning away while looking back over her shoulder at the camera with slightly parted lips. She wears wraparound mirrored silver sport sunglasses, a heavy silver chain necklace, a fitted white ribbed tank top, and loose light-grey cargo pants with large side pockets."
+       },
+       {
+        "relative_size": "medium",
+        "number_of_objects": 1,
+        "orientation": "scattered horizontally and vertically",
+        "relationship": "interacts with the model's movement, emphasizing action",
+        "shape_and_color": "cloud-like amorphous cluster of sandy beige and golden-brown particles",
+        "appearance_details": "individual sand grains sparkling under the hard flash light",
+        "texture": "grainy, particulate, and sharp",
+        "location": "bottom-left foreground and surrounding legs",
+        "action": "billowing and suspended in the air",
+        "description": "A burst of kicked-up sand billowing around her legs and to the lower left, with individual grains sharply frozen in mid-air by the flash."
+       }
+      ],
+      "photographic_characteristics": {
+       "depth_of_field": "moderately shallow, keeping the subject in sharp focus while the distant background mountains have a soft falloff",
+       "camera_angle": "low angle",
+       "focus": "crisp, ultra-sharp focus on the ribbed fabric texture, chain links, sunglasses, and suspended sand grains",
+       "lens_focal_length": "wide-angle lens"
+      },
+      "context": "This is a concept for an early-2000s retro-futuristic fashion editorial photograph intended for a high-end style magazine spread.",
+      "artistic_style": "realistic",
+      "lighting": {
+       "direction": "front-lit from the front-left by the flash, contrasting with the backlit ambient sky",
+       "shadows": "a long, sharp shadow cast by the subject across the sand to the right",
+       "conditions": "strong off-camera flash combined with ambient dusk twilight"
+      },
+      "style_medium": "photograph",
+      "short_description": "An early-2000s fashion editorial photograph capturing a young woman dynamically twisting in a desert at dusk. Lit by a strong off-camera flash against a deep cobalt-blue and orange sunset sky, she wears Y2K-inspired streetwear including mirrored silver sunglasses, a white ribbed tank top, and loose cargo pants, surrounded by kicked-up sand."
+     }
+    ],
+    "title": "Vgl",
+    "type": "object",
+    "additionalProperties": true,
+    "description": "The VGL the image was generated from."
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:28:57+00:00"
+}

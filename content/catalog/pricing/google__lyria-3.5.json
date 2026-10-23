@@ -1,0 +1,9 @@
+{
+ "endpoint": "google/lyria-3.5",
+ "unit": "request",
+ "usd": 0.1,
+ "pricing_text": "Your request will cost $0.1 per generation.",
+ "source_url": "https://fal.ai/models/google/lyria-3.5",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23). سعر ثابت $0.10 لكل توليدة (أغنية كاملة حتى بضع دقائق، MP3) بغض النظر عن الطول. لا يدعم العربية رسميًا (EN/DE/ES/FR/HI/JA/KO/PT)."
+}

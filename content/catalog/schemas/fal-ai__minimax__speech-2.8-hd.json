@@ -1,0 +1,247 @@
+{
+ "endpoint": "fal-ai/minimax/speech-2.8-hd",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "type": "boolean",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "language_boost": {
+   "anyOf": [
+    {
+     "type": "string",
+     "enum": [
+      "Chinese",
+      "Chinese,Yue",
+      "English",
+      "Arabic",
+      "Russian",
+      "Spanish",
+      "French",
+      "Portuguese",
+      "German",
+      "Turkish",
+      "Dutch",
+      "Ukrainian",
+      "Vietnamese",
+      "Indonesian",
+      "Japanese",
+      "Italian",
+      "Korean",
+      "Thai",
+      "Polish",
+      "Romanian",
+      "Greek",
+      "Czech",
+      "Finnish",
+      "Hindi",
+      "Bulgarian",
+      "Danish",
+      "Hebrew",
+      "Malay",
+      "Slovak",
+      "Swedish",
+      "Croatian",
+      "Hungarian",
+      "Norwegian",
+      "Slovenian",
+      "Catalan",
+      "Nynorsk",
+      "Afrikaans",
+      "auto"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Enhance recognition of specified languages and dialects",
+   "title": "Language Boost"
+  },
+  "audio_setting": {
+   "description": "Audio configuration settings",
+   "title": "AudioSetting",
+   "type": "object"
+  },
+  "voice_modify": {
+   "anyOf": [
+    {
+     "title": "VoiceModify",
+     "type": "object",
+     "description": "Voice modification settings for Speech 2.8 models.",
+     "properties": {
+      "timbre": {
+       "title": "Timbre",
+       "type": "integer",
+       "minimum": -100,
+       "description": "Timbre adjustment. Range: -100 to 100. Affects the tonal quality of the voice.",
+       "default": 0,
+       "maximum": 100
+      },
+      "intensity": {
+       "title": "Intensity",
+       "type": "integer",
+       "minimum": -100,
+       "description": "Intensity/energy of the voice. Range: -100 to 100. Higher values create more energetic speech.",
+       "default": 0,
+       "maximum": 100
+      },
+      "pitch": {
+       "title": "Pitch",
+       "type": "integer",
+       "minimum": -100,
+       "description": "Pitch adjustment in semitones. Range: -100 to 100. Positive values raise pitch, negative values lower it.",
+       "default": 0,
+       "maximum": 100
+      }
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Voice modification settings to adjust pitch, intensity, and timbre."
+  },
+  "output_format": {
+   "enum": [
+    "url",
+    "hex"
+   ],
+   "type": "string",
+   "description": "Format of the output content (non-streaming only)",
+   "default": "hex",
+   "title": "Output Format"
+  },
+  "normalization_setting": {
+   "description": "Loudness normalization settings for the audio",
+   "title": "LoudnessNormalizationSetting",
+   "type": "object"
+  },
+  "voice_setting": {
+   "description": "Voice configuration settings",
+   "default": {
+    "voice_id": "Wise_Woman",
+    "vol": 1,
+    "english_normalization": false,
+    "speed": 1,
+    "pitch": 0
+   },
+   "title": "VoiceSetting",
+   "type": "object"
+  },
+  "prompt": {
+   "maxLength": 10000,
+   "type": "string",
+   "description": "Text to convert to speech. Use `<#x#>` for pauses (x = 0.01-99.99 seconds). Supports interjection tags: `(laughs)`, `(sighs)`, `(coughs)`, `(clears throat)`, `(gasps)`, `(sniffs)`, `(groans)`, `(yawns)`.",
+   "title": "Prompt"
+  },
+  "pronunciation_dict": {
+   "anyOf": [
+    {
+     "title": "PronunciationDict",
+     "type": "object",
+     "properties": {
+      "tone_list": {
+       "type": "array",
+       "description": "List of pronunciation replacements in format ['text/(pronunciation)', ...]. For Chinese, tones are 1-5. Example: ['燕少飞/(yan4)(shao3)(fei1)']",
+       "items": {
+        "type": "string"
+       },
+       "title": "Tone List"
+      }
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Custom pronunciation dictionary for text replacement"
+  }
+ },
+ "output": {
+  "required": [
+   "audio",
+   "duration_ms"
+  ],
+  "title": "TextToSpeechHD28Output",
+  "type": "object",
+  "description": "Output model for Speech 2.8 HD.",
+  "properties": {
+   "audio": {
+    "description": "The generated audio file",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a8d0bda/pF8woD8Iafl8vL6BMk4k4_speech.mp3"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     }
+    }
+   },
+   "duration_ms": {
+    "type": "integer",
+    "description": "Duration of the audio in milliseconds",
+    "title": "Duration Ms"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:34:08+00:00"
+}

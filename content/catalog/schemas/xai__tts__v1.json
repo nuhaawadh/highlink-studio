@@ -1,0 +1,166 @@
+{
+ "endpoint": "xai/tts/v1",
+ "required": [
+  "text"
+ ],
+ "properties": {
+  "text": {
+   "title": "Text",
+   "maxLength": 15000,
+   "type": "string",
+   "description": "The text to convert to speech. Maximum 15,000 characters. Supports speech tags for expressive delivery: inline tags like [laugh], [pause], [sigh] and wrapping tags like text, text."
+  },
+  "output_format": {
+   "description": "Output format configuration for the TTS API.",
+   "title": "OutputFormat",
+   "type": "object"
+  },
+  "enable_safety_checker": {
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean"
+  },
+  "language": {
+   "default": "auto",
+   "enum": [
+    "auto",
+    "en",
+    "ar-EG",
+    "ar-SA",
+    "ar-AE",
+    "bn",
+    "zh",
+    "fr",
+    "de",
+    "hi",
+    "id",
+    "it",
+    "ja",
+    "ko",
+    "pt-BR",
+    "pt-PT",
+    "ru",
+    "es-MX",
+    "es-ES",
+    "tr",
+    "vi"
+   ],
+   "title": "Language",
+   "description": "BCP-47 language code or 'auto' for automatic detection. Supported: en, zh, fr, de, hi, id, it, ja, ko, pt-BR, pt-PT, ru, es-MX, es-ES, tr, vi, bn, ar-EG, ar-SA, ar-AE.",
+   "type": "string"
+  },
+  "voice": {
+   "default": "eve",
+   "enum": [
+    "carina",
+    "zagan",
+    "helix",
+    "orion",
+    "luna",
+    "iris",
+    "altair",
+    "zenith",
+    "perseus",
+    "helios",
+    "lux",
+    "kepler",
+    "rigel",
+    "cosmo",
+    "celeste",
+    "ursa",
+    "sirius",
+    "lumen",
+    "castor",
+    "naksh",
+    "atlas",
+    "aurora",
+    "liora",
+    "ara",
+    "eve",
+    "leo",
+    "rex",
+    "sal"
+   ],
+   "title": "Voice",
+   "description": "Built-in xAI voice to use for synthesis.",
+   "type": "string"
+  }
+ },
+ "output": {
+  "properties": {
+   "audio": {
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a92750b/exZJCm6TDejS5xIulJs2r_xai_tts_output.mp3"
+     }
+    ],
+    "description": "The generated audio file.",
+    "properties": {
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file."
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided."
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes."
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object"
+   }
+  },
+  "required": [
+   "audio"
+  ],
+  "description": "Output for xAI text-to-speech generation.",
+  "type": "object",
+  "title": "XAITTSOutput"
+ },
+ "fetched_at": "2026-10-23T14:34:08+00:00"
+}

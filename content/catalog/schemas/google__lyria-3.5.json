@@ -1,0 +1,126 @@
+{
+ "endpoint": "google/lyria-3.5",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "prompt": {
+   "description": "The text prompt describing the music you want to generate. Include genre, mood, instrumentation, tempo, vocals, and structure for best results. Lyria 3.5 supports full-length songs up to a few minutes — use timestamps or duration hints in your prompt to control song length, e.g. 'a 2-minute track' or section markers like '[0:00-0:30] Intro: ...' / '[0:30-1:00] Verse: ...'. Supports English, German, Spanish, French, Hindi, Japanese, Korean, and Portuguese.",
+   "maxLength": 5000,
+   "title": "Prompt",
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "image_url": {
+   "description": "Optional image URL to use as visual inspiration for music generation. The model will create music that matches the mood and theme of the image.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Image Url"
+  },
+  "negative_prompt": {
+   "description": "Negative prompting is not supported by Lyria 3.5.",
+   "title": "Negative Prompt",
+   "default": "",
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "TextToMusicOutput",
+  "properties": {
+   "audio": {
+    "description": "The generated music as an MP3 file.",
+    "examples": [
+     "https://v3b.fal.media/files/b/0a93b550/klduxmeWsmi304M3zsAlr_output.mp3"
+    ],
+    "title": "File",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   },
+   "lyrics": {
+    "description": "The generated or provided lyrics for the track, if applicable.",
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "examples": [
+     "[[A0]]\n[[B1]]\n[12.0:] Dust motes dancing in the light,\n[:] Morning breaks so soft and white."
+    ],
+    "title": "Lyrics"
+   }
+  },
+  "required": [
+   "audio"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:37:44+00:00"
+}

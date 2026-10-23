@@ -1,0 +1,101 @@
+{
+ "endpoint": "fal-ai/recraft/vectorize",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening."
+  },
+  "image_url": {
+   "type": "string",
+   "title": "Image Url",
+   "description": "The URL of the image to be vectorized. Must be in PNG, JPG or WEBP format, less than 5 MB in size, have resolution less than 16 MP and max dimension less than 4096 pixels, min dimension more than 256 pixels."
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "image": {
+    "allOf": [
+     {
+      "type": "object",
+      "properties": {
+       "file_name": {
+        "title": "File Name",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "examples": [
+         "z9RV14K95DvU.png"
+        ]
+       },
+       "file_size": {
+        "title": "File Size",
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The size of the file in bytes.",
+        "examples": [
+         4404019
+        ]
+       },
+       "url": {
+        "type": "string",
+        "title": "Url",
+        "description": "The URL where the file can be downloaded from."
+       },
+       "content_type": {
+        "title": "Content Type",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "description": "The mime type of the file.",
+        "examples": [
+         "image/png"
+        ]
+       }
+      },
+      "title": "File",
+      "required": [
+       "url"
+      ]
+     }
+    ],
+    "description": "The vectorized image.",
+    "examples": [
+     {
+      "file_name": "image.svg",
+      "file_size": 85336,
+      "url": "https://v3.fal.media/files/koala/pUQbC18DsP4KxcIBA53y2_image.svg",
+      "content_type": "image/svg+xml"
+     }
+    ]
+   }
+  },
+  "title": "VectorizeOutput",
+  "required": [
+   "image"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:30:38+00:00"
+}

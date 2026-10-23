@@ -5,5 +5,5 @@
  "pricing_text": "Your request will cost **$0.03** per image with Low, **$0.06** with Medium, and **$0.22** with High quality. The image size does not change the price.",
  "source_url": "https://fal.ai/models/ideogram/v4.5",
  "confidence": "high",
- "notes": "$0.03 للصورة بجودة Low، $0.06 Medium، $0.22 High. حجم الصورة لا يغيّر السعر. راجع افتراضي rendering_speed/quality في المخطط لتحديد السعر الافتراضي."
+ "notes": "$0.03 للصورة بجودة Low، $0.06 Medium، $0.22 High. حجم الصورة لا يغيّر السعر. usd للأرخص (low)؛ لكن الافتراضي في المخطط quality=medium → $0.06 للصورة. num_images حتى 8 يضاعف السعر."
 }

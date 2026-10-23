@@ -1,0 +1,9 @@
+{
+ "endpoint": "argil/avatars/audio-to-video",
+ "unit": "second",
+ "usd": 0.02,
+ "pricing_text": "Your requestwill cost$0.02per input second. [OpenAPI schema] Enabling the remove background feature will result in a 50% increase in the price.",
+ "source_url": "https://fal.ai/models/argil/avatars/audio-to-video",
+ "confidence": "high",
+ "notes": "$0.02 لكل ثانية من الصوت المدخل. remove_background=true يرفع السعر 50% (→ $0.03/ث) بحسب وصف الحقل في مخطط OpenAPI. الأفاتار من قائمة ثابتة (28 أفاتار)."
+}

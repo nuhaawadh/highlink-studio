@@ -1,0 +1,145 @@
+{
+ "endpoint": "fal-ai/elevenlabs/tts/eleven-v3",
+ "required": [
+  "text"
+ ],
+ "properties": {
+  "timestamps": {
+   "title": "Timestamps",
+   "description": "Whether to return timestamps for each word in the generated speech",
+   "default": false,
+   "type": "boolean"
+  },
+  "language_code": {
+   "title": "Language Code",
+   "description": "Language code (ISO 639-1) used to enforce a language for the model.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "text": {
+   "title": "Text",
+   "description": "The text to convert to speech",
+   "type": "string",
+   "maxLength": 5000
+  },
+  "stability": {
+   "maximum": 1,
+   "title": "Stability",
+   "description": "Voice stability (0-1)",
+   "default": 0.5,
+   "minimum": 0,
+   "type": "number"
+  },
+  "apply_text_normalization": {
+   "title": "Apply Text Normalization",
+   "description": "This parameter controls text normalization with three modes: 'auto', 'on', and 'off'. When set to 'auto', the system will automatically decide whether to apply text normalization (e.g., spelling out numbers). With 'on', text normalization will always be applied, while with 'off', it will be skipped.",
+   "default": "auto",
+   "type": "string",
+   "enum": [
+    "auto",
+    "on",
+    "off"
+   ]
+  },
+  "voice": {
+   "title": "Voice",
+   "description": "The voice to use for speech generation",
+   "default": "Rachel",
+   "type": "string"
+  }
+ },
+ "output": {
+  "required": [
+   "audio"
+  ],
+  "title": "TTSOutput",
+  "type": "object",
+  "properties": {
+   "audio": {
+    "description": "The generated audio file",
+    "examples": [
+     {
+      "url": "https://v3.fal.media/files/zebra/zJL_oRY8h5RWwjoK1w7tx_output.mp3"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    }
+   },
+   "timestamps": {
+    "title": "Timestamps",
+    "description": "Timestamps for each word in the generated speech. Only returned if `timestamps` is set to True in the request.",
+    "anyOf": [
+     {
+      "items": {},
+      "type": "array"
+     },
+     {
+      "type": "null"
+     }
+    ]
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:35:59+00:00"
+}

@@ -1,0 +1,200 @@
+{
+ "endpoint": "fal-ai/wan/v2.7/pro/edit",
+ "required": [
+  "prompt",
+  "image_urls"
+ ],
+ "properties": {
+  "output_format": {
+   "type": "string",
+   "title": "Output Format",
+   "enum": [
+    "jpeg",
+    "png",
+    "webp"
+   ],
+   "description": "The format of the generated images.",
+   "default": "jpeg"
+  },
+  "image_size": {
+   "title": "Image Size",
+   "description": "Output image size. Uses fal image size presets or explicit dimensions and is converted to DashScope size format.",
+   "anyOf": [
+    {
+     "title": "ImageSize",
+     "type": "object",
+     "properties": {
+      "width": {
+       "maximum": 14142,
+       "title": "Width",
+       "exclusiveMinimum": 0,
+       "description": "The width of the generated image.",
+       "type": "integer",
+       "default": 512
+      },
+      "height": {
+       "maximum": 14142,
+       "title": "Height",
+       "exclusiveMinimum": 0,
+       "description": "The height of the generated image.",
+       "type": "integer",
+       "default": 512
+      }
+     }
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ]
+    }
+   ],
+   "default": "square_hd"
+  },
+  "num_images": {
+   "type": "integer",
+   "minimum": 1,
+   "title": "Num Images",
+   "description": "Number of images to generate (1-4).",
+   "maximum": 4,
+   "default": 1
+  },
+  "enable_prompt_expansion": {
+   "type": "boolean",
+   "title": "Enable Prompt Expansion",
+   "description": "Enable DashScope prompt expansion. Supported only for image edit mode.",
+   "default": true
+  },
+  "prompt": {
+   "type": "string",
+   "maxLength": 2000,
+   "description": "Text prompt describing the desired image edit. Supports Chinese and English.",
+   "title": "Prompt"
+  },
+  "negative_prompt": {
+   "title": "Negative Prompt",
+   "description": "Content to avoid in the generated image. Max 500 characters.",
+   "anyOf": [
+    {
+     "type": "string",
+     "maxLength": 500
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": ""
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "description": "Enable content moderation for input and output. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "default": true
+  },
+  "seed": {
+   "title": "Seed",
+   "description": "Random seed for reproducibility (0-2147483647).",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "image_urls": {
+   "type": "array",
+   "title": "Image Urls",
+   "description": "Reference images for editing (1-4 images required). Order matters: reference them as image 1, image 2, image 3, image 4 in the prompt.",
+   "items": {
+    "type": "string"
+   }
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "seed": {
+    "type": "integer",
+    "title": "Seed",
+    "description": "The seed used for generation."
+   },
+   "images": {
+    "title": "Images",
+    "type": "array",
+    "description": "Generated images.",
+    "items": {
+     "required": [
+      "url"
+     ],
+     "title": "File",
+     "type": "object",
+     "properties": {
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      }
+     }
+    }
+   }
+  },
+  "title": "Wan27ImageEditOutput",
+  "required": [
+   "images",
+   "seed"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:30:38+00:00"
+}

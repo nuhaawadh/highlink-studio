@@ -135,7 +135,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     }
     // نماذج تحتاج مرجعًا (صورة→فيديو، تعديل بالمراجع…) ترفض الطلب بلا مراجع بسبب مفهوم بدل 422 من المزوّد
     const required = ((model.input_schema as { required?: unknown } | null)?.required ?? []) as unknown[]
-    const needsRefs = ['image_url', 'image_urls', 'start_image_url', 'image_input'].some((k) => required.includes(k))
+    const needsRefs = model.supports.requires_ref === true || ['image_url', 'image_urls', 'start_image_url', 'image_input'].some((k) => required.includes(k))
     if (needsRefs && !(body.images && body.images.length)) {
       throw new AppError('INVALID_INPUT', 'هذا النموذج يحتاج صورة مرجعية واحدة على الأقل')
     }

@@ -1,0 +1,136 @@
+{
+ "endpoint": "bria/guided-remove-background",
+ "required": [],
+ "properties": {
+  "sync_mode": {
+   "title": "Sync Mode",
+   "default": false,
+   "type": "boolean",
+   "description": "\n            If true, the function waits for the image to be generated and uploaded\n            before returning, so the image is returned directly (base64) instead of\n            via the CDN. Increases latency.\n        "
+  },
+  "autocrop": {
+   "title": "Autocrop",
+   "default": false,
+   "type": "boolean",
+   "description": "Tighten the output canvas to the kept content."
+  },
+  "image_url": {
+   "title": "Image Url",
+   "default": "https://labs-assets.bria.ai/api-examples/guided-remove-background/yoga_studio_input.jpg",
+   "type": "string",
+   "description": "Source image as a public URL, a base64 data URI (data:image/png;base64,...) or raw base64-encoded image bytes."
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "Optional. Plain words for how to change the default cutout of the photo's obvious subject: add something ('the person with the mat and the plant'), drop something ('the woman at her desk without the lamp') or narrow it ('only the chair'). Everything kept is the original pixels with a new alpha channel. Leave it empty for the plain cutout of the obvious subject.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ },
+ "output": {
+  "required": [
+   "image"
+  ],
+  "title": "GuidedRemoveBackgroundOutput",
+  "properties": {
+   "image": {
+    "description": "Represents an image file.",
+    "required": [
+     "url"
+    ],
+    "title": "Image",
+    "properties": {
+     "file_size": {
+      "title": "File Size",
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "title": "File Name",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "title": "Content Type",
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "height": {
+      "title": "Height",
+      "examples": [
+       1024
+      ],
+      "description": "The height of the image in pixels.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "width": {
+      "title": "Width",
+      "examples": [
+       1024
+      ],
+      "description": "The width of the image in pixels.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     }
+    },
+    "type": "object"
+   }
+  },
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:32:55+00:00"
+}

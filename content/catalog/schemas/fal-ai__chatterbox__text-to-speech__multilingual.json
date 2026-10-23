@@ -1,0 +1,168 @@
+{
+ "endpoint": "fal-ai/chatterbox/text-to-speech/multilingual",
+ "required": [
+  "text"
+ ],
+ "properties": {
+  "text": {
+   "maxLength": 300,
+   "description": "The text to be converted to speech (maximum 300 characters). Supports 23 languages including English, French, German, Spanish, Italian, Portuguese, Hindi, Arabic, Chinese, Japanese, Korean, and more.",
+   "type": "string",
+   "title": "Text"
+  },
+  "temperature": {
+   "default": 0.8,
+   "maximum": 2,
+   "minimum": 0.05,
+   "title": "Temperature",
+   "description": "Controls randomness and variation in generation (0.05-2.0). Higher values create more varied speech patterns.",
+   "type": "number"
+  },
+  "cfg_scale": {
+   "default": 0.5,
+   "maximum": 1,
+   "minimum": 0,
+   "title": "CFG Scale",
+   "description": "Configuration/pace weight controlling generation guidance (0.0-1.0). Use 0.0 for language transfer to mitigate accent inheritance.",
+   "type": "number"
+  },
+  "custom_audio_language": {
+   "anyOf": [
+    {
+     "enum": [
+      "english",
+      "arabic",
+      "danish",
+      "german",
+      "greek",
+      "spanish",
+      "finnish",
+      "french",
+      "hebrew",
+      "hindi",
+      "italian",
+      "japanese",
+      "korean",
+      "malay",
+      "dutch",
+      "norwegian",
+      "polish",
+      "portuguese",
+      "russian",
+      "swedish",
+      "swahili",
+      "turkish",
+      "chinese"
+     ],
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Custom Audio Language",
+   "description": "If using a custom audio URL, specify the language of the audio here. Ignored if voice is not a custom url."
+  },
+  "exaggeration": {
+   "default": 0.5,
+   "maximum": 2,
+   "minimum": 0.25,
+   "title": "Exaggeration",
+   "description": "Controls speech expressiveness and emotional intensity (0.25-2.0). 0.5 is neutral, higher values increase expressiveness. Extreme values may be unstable.",
+   "type": "number"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed",
+   "description": "Random seed for reproducible results. Set to 0 for random generation, or provide a specific number for consistent outputs."
+  },
+  "voice": {
+   "default": "english",
+   "title": "Voice",
+   "description": "Language code for synthesis. In case using custom please provide audio url and select custom_audio_language. ",
+   "type": "string"
+  }
+ },
+ "output": {
+  "properties": {
+   "audio": {
+    "description": "The generated multilingual speech audio file",
+    "examples": [
+     {
+      "url": "https://v3.fal.media/files/example/multilingual_speech_output.wav"
+     }
+    ],
+    "properties": {
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "examples": [
+       "image/png"
+      ]
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "examples": [
+       4404019
+      ]
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object"
+   }
+  },
+  "required": [
+   "audio"
+  ],
+  "title": "ChatterboxMultilingualOutput",
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:36:41+00:00"
+}

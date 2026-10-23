@@ -1,0 +1,222 @@
+{
+ "endpoint": "fal-ai/sync-lipsync/v3",
+ "required": [
+  "video_url",
+  "audio_url"
+ ],
+ "properties": {
+  "sync_mode": {
+   "description": "Lipsync mode when audio and video durations are out of sync.",
+   "title": "Sync Mode",
+   "default": "cut_off",
+   "enum": [
+    "cut_off",
+    "loop",
+    "bounce",
+    "silence",
+    "remap"
+   ],
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "audio_url": {
+   "description": "URL of the input audio",
+   "title": "Audio Url",
+   "type": "string"
+  },
+  "video_url": {
+   "description": "URL of the input video",
+   "title": "Video Url",
+   "type": "string"
+  },
+  "options": {
+   "description": "Additional Sync.so generation options. If options.sync_mode is set, it overrides the top-level sync_mode field.",
+   "anyOf": [
+    {
+     "title": "Sync3GenerationOptions",
+     "properties": {
+      "sync_mode": {
+       "description": "Defines how to handle duration mismatches between video and audio inputs. Overrides the top-level sync_mode when provided.",
+       "anyOf": [
+        {
+         "enum": [
+          "cut_off",
+          "loop",
+          "bounce",
+          "silence",
+          "remap"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Sync Mode"
+      },
+      "temperature": {
+       "description": "Controls how expressive lipsync can be; 0 is least expressive, 1 is most expressive. Sync.so handles this natively for sync-3, so this option is ignored by sync-3.",
+       "anyOf": [
+        {
+         "minimum": 0,
+         "maximum": 1,
+         "type": "number"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Temperature"
+      },
+      "prompt": {
+       "description": "Emotion prompt for generation. This is a Sync.so option primarily used by react-1.",
+       "anyOf": [
+        {
+         "enum": [
+          "happy",
+          "sad",
+          "angry",
+          "disgusted",
+          "surprised",
+          "neutral"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Prompt"
+      },
+      "active_speaker_detection": {
+       "description": "Active speaker detection configuration for videos with multiple people.",
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/Sync3ActiveSpeakerDetection"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "model_mode": {
+       "description": "Edit region for the model. This is a Sync.so option primarily used by react-1.",
+       "anyOf": [
+        {
+         "enum": [
+          "lips",
+          "face",
+          "head",
+          "lipsync",
+          "emotion",
+          "talking_head"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Model Mode"
+      },
+      "occlusion_detection_enabled": {
+       "description": "Whether to detect occlusion during generation. Sync.so handles this automatically for sync-3, so this option is ignored by sync-3.",
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Occlusion Detection Enabled"
+      }
+     },
+     "type": "object"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ },
+ "output": {
+  "title": "Sync3Output",
+  "properties": {
+   "video": {
+    "description": "The generated video",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a93c312/TqKMiLtCcTKWSeAWXJRD0_output.mp4"
+     }
+    ],
+    "title": "File",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   }
+  },
+  "required": [
+   "video"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:38:23+00:00"
+}

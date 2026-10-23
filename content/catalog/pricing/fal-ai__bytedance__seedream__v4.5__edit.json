@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/bytedance/seedream/v4.5/edit",
+ "unit": "image",
+ "usd": 0.04,
+ "pricing_text": "Your requestwill cost$0.04per image. | Cost per Edit | $0.04 | 25 edits per $1.00 on fal |",
+ "source_url": "https://fal.ai/models/fal-ai/bytedance/seedream/v4.5/edit",
+ "confidence": "high",
+ "notes": "$0.04 لكل صورة مخرجة (25 تعديلًا لكل $1). num_images (1–6) وmax_images (حتى 6 لكل توليدة) قد يزيدان عدد الصور المفوترة — يُفترض الفوترة لكل صورة ناتجة."
+}

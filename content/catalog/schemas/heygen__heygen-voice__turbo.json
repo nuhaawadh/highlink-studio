@@ -1,0 +1,201 @@
+{
+ "endpoint": "heygen/heygen-voice/turbo",
+ "required": [
+  "text"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "default": true,
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "title": "Enable Safety Checker",
+   "type": "boolean"
+  },
+  "text": {
+   "title": "Text",
+   "description": "The text to speak.",
+   "maxLength": 5000,
+   "type": "string"
+  },
+  "reference_audio_url": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Recording of a single speaker to clone instead of using a public voice. Only the first 3 minutes are used.",
+   "title": "Reference Audio Url"
+  },
+  "expressiveness_boost": {
+   "default": 1,
+   "description": "How expressive the delivery is.",
+   "minimum": 0,
+   "title": "Expressiveness Boost",
+   "maximum": 1,
+   "type": "number"
+  },
+  "voice": {
+   "default": "Jonah",
+   "description": "HeyGen public voice. Ignored when reference_audio_url is set.",
+   "title": "Voice",
+   "enum": [
+    "Jonah",
+    "Nadine",
+    "Tabitha",
+    "Soren",
+    "Elowen",
+    "Vincent",
+    "Jocelyn",
+    "Marielle",
+    "Corinne",
+    "Lucian",
+    "Kieran",
+    "Hugh",
+    "Noelle",
+    "Bram",
+    "Ewan",
+    "Iona",
+    "Cecily",
+    "Simon",
+    "Weston",
+    "Felicity",
+    "Gareth",
+    "Rory",
+    "Meredith",
+    "Sabrina"
+   ],
+   "type": "string"
+  },
+  "language": {
+   "anyOf": [
+    {
+     "enum": [
+      "ar",
+      "be",
+      "bg",
+      "ca",
+      "cs",
+      "da",
+      "de",
+      "el",
+      "en",
+      "es",
+      "fa",
+      "fi",
+      "fr",
+      "he",
+      "hi",
+      "hr",
+      "hu",
+      "id",
+      "it",
+      "ja",
+      "ko",
+      "mk",
+      "ms",
+      "nl",
+      "pl",
+      "pt",
+      "ro",
+      "ru",
+      "sk",
+      "sl",
+      "sr",
+      "sv",
+      "ta",
+      "th",
+      "tl",
+      "tr",
+      "uk",
+      "vi",
+      "zh"
+     ],
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Language of the text. Detected from the text when omitted.",
+   "title": "Language"
+  }
+ },
+ "output": {
+  "title": "HeyGenVoiceOutput",
+  "required": [
+   "audio",
+   "duration"
+  ],
+  "properties": {
+   "audio": {
+    "description": "Generated speech as a 44.1 kHz WAV file.",
+    "title": "File",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "file_size": {
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ]
+     },
+     "file_name": {
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "content_type": {
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     }
+    },
+    "type": "object"
+   },
+   "duration": {
+    "title": "Duration",
+    "description": "Duration of the audio in seconds.",
+    "type": "number"
+   }
+  },
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:29:09+00:00"
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/seedvr/upscale/video",
+ "unit": "megapixel",
+ "usd": 0.001,
+ "pricing_text": "Your request will cost **$0.001** per megapixel of video data (width × height × frames).\n For example, if your upscaled video is 1920×1080 with 121 frames, the total cost will be **$0.25**.",
+ "source_url": "https://fal.ai/models/fal-ai/seedvr/upscale/video",
+ "confidence": "high",
+ "notes": "الميغابكسل هنا = عرض × ارتفاع × عدد الإطارات للفيديو المكبَّر (المخرج). مثال الصفحة: 1920×1080×121 إطار ≈ 251MP = $0.25. أي ≈ $0.05 لكل ثانية 1080p عند 24fps (محسوب)."
+}

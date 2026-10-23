@@ -5,5 +5,5 @@
  "pricing_text": "Each image costs **$0.03** with TURBO, **$0.06** with BALANCED, and **$0.09** with QUALITY.",
  "source_url": "https://fal.ai/models/fal-ai/ideogram/v3/generate-transparent",
  "confidence": "high",
- "notes": "$0.03 للصورة بـTURBO، $0.06 BALANCED، $0.09 QUALITY (حسب rendering_speed)."
+ "notes": "$0.03 للصورة بـTURBO، $0.06 BALANCED، $0.09 QUALITY (حسب rendering_speed). usd للأرخص (TURBO)؛ الافتراضي في المخطط rendering_speed=BALANCED → $0.06 للصورة. num_images حتى 8 يضاعف السعر."
 }

@@ -1,0 +1,129 @@
+{
+ "endpoint": "fal-ai/hunyuan-video-foley",
+ "required": [
+  "video_url",
+  "text_prompt"
+ ],
+ "properties": {
+  "negative_prompt": {
+   "title": "Negative Prompt",
+   "default": "noisy, harsh",
+   "description": "Negative prompt to avoid certain audio characteristics.",
+   "type": "string"
+  },
+  "seed": {
+   "title": "Seed",
+   "description": "Random seed for reproducible generation.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "video_url": {
+   "title": "Video Url",
+   "description": "The URL of the video to generate audio for.",
+   "type": "string"
+  },
+  "guidance_scale": {
+   "maximum": 10,
+   "title": "Guidance Scale",
+   "default": 4.5,
+   "description": "Guidance scale for audio generation.",
+   "type": "number",
+   "minimum": 1
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "default": true,
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean"
+  },
+  "num_inference_steps": {
+   "maximum": 100,
+   "title": "Num Inference Steps",
+   "default": 50,
+   "description": "Number of inference steps for generation.",
+   "type": "integer",
+   "minimum": 10
+  },
+  "text_prompt": {
+   "title": "Text Prompt",
+   "description": "Text description of the desired audio (optional).",
+   "type": "string"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "title": "HunyuanFoleyResponse",
+  "type": "object",
+  "properties": {
+   "video": {
+    "description": "List of generated video files with audio.",
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:37:44+00:00"
+}

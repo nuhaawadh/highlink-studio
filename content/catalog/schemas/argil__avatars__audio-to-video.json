@@ -1,0 +1,158 @@
+{
+ "endpoint": "argil/avatars/audio-to-video",
+ "required": [
+  "avatar",
+  "audio_url"
+ ],
+ "properties": {
+  "avatar": {
+   "enum": [
+    "Mia outdoor (UGC)",
+    "Lara (Masterclass)",
+    "Ines (UGC)",
+    "Maria (Masterclass)",
+    "Emma (UGC)",
+    "Sienna (Masterclass)",
+    "Elena (UGC)",
+    "Jasmine (Masterclass)",
+    "Amara (Masterclass)",
+    "Ryan podcast (UGC)",
+    "Tyler (Masterclass)",
+    "Jayse (Masterclass)",
+    "Paul (Masterclass)",
+    "Matteo (UGC)",
+    "Daniel car (UGC)",
+    "Dario (Masterclass)",
+    "Viva (Masterclass)",
+    "Chen (Masterclass)",
+    "Alex (Masterclass)",
+    "Vanessa (UGC)",
+    "Laurent (UGC)",
+    "Noemie car (UGC)",
+    "Brandon (UGC)",
+    "Byron (Masterclass)",
+    "Calista (Masterclass)",
+    "Milo (Masterclass)",
+    "Fabien (Masterclass)",
+    "Rose (UGC)"
+   ],
+   "title": "Avatar",
+   "type": "string"
+  },
+  "remove_background": {
+   "title": "Remove Background",
+   "type": "boolean",
+   "description": "Enabling the remove background feature will result in a 50% increase in the price.",
+   "default": false
+  },
+  "audio_url": {
+   "title": "Audio Url",
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "InferenceResult",
+  "type": "object",
+  "properties": {
+   "moderation_transcription": {
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "title": "Moderation Transcription"
+   },
+   "moderation_error": {
+    "anyOf": [
+     {
+      "type": "string"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "title": "Moderation Error"
+   },
+   "moderation_flagged": {
+    "title": "Moderation Flagged",
+    "type": "boolean",
+    "default": false
+   },
+   "video": {
+    "anyOf": [
+     {
+      "title": "Video",
+      "type": "object",
+      "properties": {
+       "file_size": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "File Size",
+        "examples": [
+         4404019
+        ],
+        "description": "The size of the file in bytes."
+       },
+       "file_name": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "File Name",
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided."
+       },
+       "content_type": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Content Type",
+        "examples": [
+         "image/png"
+        ],
+        "description": "The mime type of the file."
+       },
+       "url": {
+        "title": "Url",
+        "type": "string",
+        "description": "The URL where the file can be downloaded from."
+       }
+      },
+      "required": [
+       "url"
+      ]
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "examples": [
+     {
+      "url": "https://argildotai.s3.us-east-1.amazonaws.com/fal-resource/example_fal.mp4"
+     }
+    ]
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:31:54+00:00"
+}

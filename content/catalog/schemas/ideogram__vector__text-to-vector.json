@@ -1,0 +1,175 @@
+{
+ "endpoint": "ideogram/vector/text-to-vector",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "aspect_ratio": {
+   "enum": [
+    "auto",
+    "1:1",
+    "1:4",
+    "1:3",
+    "1:2",
+    "9:16",
+    "10:16",
+    "2:3",
+    "3:4",
+    "4:5",
+    "5:4",
+    "4:3",
+    "3:2",
+    "16:10",
+    "16:9",
+    "2:1",
+    "3:1",
+    "4:1"
+   ],
+   "description": "The aspect ratio of the generated SVG.",
+   "type": "string",
+   "default": "auto",
+   "title": "Aspect Ratio"
+  },
+  "prompt": {
+   "type": "string",
+   "description": "A text description of the SVG to generate.",
+   "maxLength": 9500,
+   "title": "Prompt"
+  },
+  "image_urls": {
+   "anyOf": [
+    {
+     "items": {
+      "type": "string"
+     },
+     "type": "array",
+     "maxItems": 5
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Optional reference images (up to 5, max 10MB each). The first image is the primary source; the others are additional references.",
+   "title": "Image Urls"
+  },
+  "quality": {
+   "enum": [
+    "low",
+    "medium",
+    "high"
+   ],
+   "description": "Generation quality. `low` is fastest, `high` is highest quality.",
+   "type": "string",
+   "default": "medium",
+   "title": "Quality"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "maximum": 2147483647,
+     "minimum": 0,
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Seed for reproducible generation.",
+   "title": "Seed"
+  },
+  "num_images": {
+   "type": "integer",
+   "maximum": 8,
+   "minimum": 1,
+   "default": 1,
+   "description": "Number of SVGs to generate.",
+   "title": "Num Images"
+  }
+ },
+ "output": {
+  "required": [
+   "images"
+  ],
+  "properties": {
+   "images": {
+    "items": {
+     "required": [
+      "url"
+     ],
+     "properties": {
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string",
+       "title": "Url"
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name"
+      },
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type"
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ],
+       "title": "File Size"
+      }
+     },
+     "type": "object",
+     "title": "File"
+    },
+    "type": "array",
+    "description": "The generated SVG files.",
+    "title": "Images"
+   },
+   "seed": {
+    "anyOf": [
+     {
+      "type": "integer"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "Seed used for generation, if provided.",
+    "title": "Seed"
+   }
+  },
+  "type": "object",
+  "title": "IdeogramVectorOutput"
+ },
+ "fetched_at": "2026-10-23T14:29:37+00:00"
+}

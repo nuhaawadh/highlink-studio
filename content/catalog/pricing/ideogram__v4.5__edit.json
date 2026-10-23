@@ -1,0 +1,9 @@
+{
+ "endpoint": "ideogram/v4.5/edit",
+ "unit": "image",
+ "usd": 0.06,
+ "pricing_text": "Your request will cost **$0.008** per image with Very Low, **$0.03** with Low, **$0.06** with Medium, and **$0.22** with High quality. The image size does not change the price.",
+ "source_url": "https://fal.ai/models/ideogram/v4.5/edit",
+ "confidence": "high",
+ "notes": "usd = $0.06 لجودة medium وهي الافتراضية في المخطط (quality default=medium) — اختير الافتراضي لا الأرخص لأن المحرك لا يضبط quality. لو ثُبّتت quality=very_low في default_params يصبح $0.008، low $0.03، high $0.22. الحجم لا يغيّر السعر. تصحيح: pricing_parsed في fal-launch.json أخذ $0.008 (أرخص جودة)."
+}

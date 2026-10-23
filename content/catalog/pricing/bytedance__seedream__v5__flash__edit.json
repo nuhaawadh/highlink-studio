@@ -1,0 +1,9 @@
+{
+ "endpoint": "bytedance/seedream/v5/flash/edit",
+ "unit": "image",
+ "usd": 0.027,
+ "pricing_text": "Your requestwill cost$0.027per image.",
+ "source_url": "https://fal.ai/models/bytedance/seedream/v5/flash/edit",
+ "confidence": "high",
+ "notes": "$0.027 لكل صورة مخرجة. num_images (1–6) يضاعف السعر. image_size افتراضيًا auto_2K."
+}

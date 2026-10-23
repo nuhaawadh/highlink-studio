@@ -1,0 +1,9 @@
+{
+ "endpoint": "clarityai/crystal-upscaler",
+ "unit": "megapixel",
+ "usd": 0.016,
+ "pricing_text": "Your request will cost $0.016 per megapixel. | Cost per Megapixel: $0.016 — Variable pricing based on output resolution: 4MP output = $0.064, 16MP = $0.256.",
+ "source_url": "https://fal.ai/models/clarityai/crystal-upscaler",
+ "confidence": "high",
+ "notes": "النص الحرفي في صندوق التشغيل: \"Your requestwill cost$0.016per megapixel.\" السعر لكل ميغابكسل من المخرج (بعد التكبير) — الجدول يعطي أمثلة 4MP = $0.064 و16MP = $0.256. scale_factor افتراضيه 2 (حتى 200) فالتكلفة = (MP المدخل × scale²) × $0.016. لا ذكر لزيادة على الميغابكسل الإضافي. pricing_text كان null في fal-launch.json."
+}

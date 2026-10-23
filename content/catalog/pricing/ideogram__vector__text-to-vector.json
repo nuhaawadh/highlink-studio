@@ -1,0 +1,9 @@
+{
+ "endpoint": "ideogram/vector/text-to-vector",
+ "unit": "image",
+ "usd": 0.16,
+ "pricing_text": "Billing is per generated SVG: **$0.13** for **low**, **$0.16** for **medium**, and **$0.20** for **high** quality. With reference images, **high** quality costs **$0.32** per SVG; low and medium prices are unchanged. For example, 2 medium-quality SVGs cost **$0.32**.",
+ "source_url": "https://fal.ai/models/ideogram/vector/text-to-vector",
+ "confidence": "high",
+ "notes": "الوحدة = ملف SVG مولَّد. usd = $0.16 لجودة medium وهي الافتراضية في المخطط (اختير الافتراضي لا الأرخص لأن المحرك لا يضبط quality). low $0.13، high $0.20، وhigh مع صور مرجعية $0.32. num_images حتى 8. تصحيح: pricing_parsed في fal-launch.json كان unit=unknown وusd=0.13."
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/recraft/vectorize",
+ "unit": "image",
+ "usd": 0.01,
+ "pricing_text": "Your request will cost $0.01 per image.",
+ "source_url": "https://fal.ai/models/fal-ai/recraft/vectorize",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23). سعر ثابت لكل صورة تُحوَّل إلى SVG. المُدخل: PNG/JPG/WEBP أقل من 5MB و16MP."
+}

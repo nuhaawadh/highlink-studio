@@ -1,0 +1,223 @@
+{
+ "endpoint": "alibaba/qwen-audio-3-tts",
+ "required": [
+  "text"
+ ],
+ "properties": {
+  "voice": {
+   "description": "The voice used for speech synthesis. See the [Qwen-TTS voice list](https://www.alibabacloud.com/help/en/model-studio/qwen-tts-voice-list) for each voice's language and dialect coverage.",
+   "title": "Voice",
+   "default": "Cherry",
+   "enum": [
+    "Cherry",
+    "Serena",
+    "Ethan",
+    "Chelsie",
+    "Momo",
+    "Vivian",
+    "Moon",
+    "Maia",
+    "Kai",
+    "Nofish",
+    "Bella",
+    "Jennifer",
+    "Ryan",
+    "Katerina",
+    "Aiden",
+    "Mia",
+    "Mochi",
+    "Bellona",
+    "Vincent",
+    "Bunny",
+    "Neil",
+    "Elias",
+    "Arthur",
+    "Nini",
+    "Seren",
+    "Pip",
+    "Stella",
+    "Bodega",
+    "Sonrisa",
+    "Alek",
+    "Dolce",
+    "Sohee",
+    "Lenn",
+    "Emilien",
+    "Andre",
+    "Jada",
+    "Dylan",
+    "Li",
+    "Marcus",
+    "Roy",
+    "Peter",
+    "Sunny",
+    "Eric",
+    "Rocky",
+    "Kiki"
+   ],
+   "type": "string"
+  },
+  "language": {
+   "description": "Language of the input text. `Auto` lets the model detect it; setting it explicitly improves pronunciation and intonation.",
+   "title": "Language",
+   "default": "Auto",
+   "enum": [
+    "Auto",
+    "Chinese",
+    "English",
+    "Spanish",
+    "Russian",
+    "Italian",
+    "French",
+    "Korean",
+    "Japanese",
+    "German",
+    "Portuguese"
+   ],
+   "type": "string"
+  },
+  "text": {
+   "description": "The text to convert to speech.",
+   "maxLength": 2000,
+   "type": "string",
+   "title": "Text"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  }
+ },
+ "output": {
+  "type": "object",
+  "properties": {
+   "audio": {
+    "description": "The generated speech audio file.",
+    "examples": [
+     {
+      "channels": 1,
+      "url": "https://v3b.fal.media/files/b/0aa31e93/W1mDF9_5NWnOPVZzccqP2_njpi6QRK.wav",
+      "content_type": "audio/wav",
+      "file_name": "W1mDF9_5NWnOPVZzccqP2_njpi6QRK.wav",
+      "duration": 3.44,
+      "sample_rate": 24000
+     }
+    ],
+    "type": "object",
+    "properties": {
+     "channels": {
+      "description": "The number of channels in the audio",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Channels"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "bitrate": {
+      "description": "The bitrate of the audio (e.g., '192k' or 192000)",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Bitrate"
+     },
+     "sample_rate": {
+      "description": "The sample rate of the audio",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sample Rate"
+     },
+     "duration": {
+      "description": "The duration of the audio",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duration"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "AudioFile"
+   }
+  },
+  "required": [
+   "audio"
+  ],
+  "title": "QwenAudio3TTSOutput"
+ },
+ "fetched_at": "2026-10-23T14:29:09+00:00"
+}

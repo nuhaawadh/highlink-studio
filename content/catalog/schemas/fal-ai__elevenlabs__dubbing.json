@@ -1,0 +1,231 @@
+{
+ "endpoint": "fal-ai/elevenlabs/dubbing",
+ "required": [
+  "target_lang"
+ ],
+ "properties": {
+  "highest_resolution": {
+   "title": "Highest Resolution",
+   "description": "Whether to use the highest resolution for dubbing.",
+   "default": true,
+   "type": "boolean"
+  },
+  "video_url": {
+   "title": "Video Url",
+   "description": "URL of the video file to dub. Either audio_url or video_url must be provided. If both are provided, video_url takes priority.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "num_speakers": {
+   "title": "Num Speakers",
+   "description": "Number of speakers in the audio. If not provided, will be auto-detected.",
+   "anyOf": [
+    {
+     "maximum": 50,
+     "minimum": 1,
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "target_lang": {
+   "title": "Target Lang",
+   "description": "Target language code for dubbing (ISO 639-1)",
+   "type": "string"
+  },
+  "audio_url": {
+   "title": "Audio Url",
+   "description": "URL of the audio file to dub. Either audio_url or video_url must be provided.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "source_lang": {
+   "title": "Source Lang",
+   "description": "Source language code. If not provided, will be auto-detected.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ },
+ "output": {
+  "required": [
+   "video",
+   "audio",
+   "target_lang"
+  ],
+  "title": "DubbingOutput",
+  "type": "object",
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "file_name": "e11_dubbing_out.mp4",
+      "content_type": "video/mp4",
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/elevenlabs/e11_dubbing_out.mp4",
+      "file_size": 1344041
+     }
+    ],
+    "description": "The dubbed video file. Will be populated if video_url was provided in the request.",
+    "anyOf": [
+     {
+      "required": [
+       "url"
+      ],
+      "title": "File",
+      "type": "object",
+      "properties": {
+       "file_name": {
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "title": "File Name",
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "content_type": {
+        "examples": [
+         "image/png"
+        ],
+        "title": "Content Type",
+        "description": "The mime type of the file.",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "url": {
+        "title": "Url",
+        "description": "The URL where the file can be downloaded from.",
+        "type": "string"
+       },
+       "file_size": {
+        "examples": [
+         4404019
+        ],
+        "title": "File Size",
+        "description": "The size of the file in bytes.",
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "audio": {
+    "description": "The dubbed audio file.",
+    "anyOf": [
+     {
+      "required": [
+       "url"
+      ],
+      "title": "File",
+      "type": "object",
+      "properties": {
+       "file_name": {
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "title": "File Name",
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "content_type": {
+        "examples": [
+         "image/png"
+        ],
+        "title": "Content Type",
+        "description": "The mime type of the file.",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "url": {
+        "title": "Url",
+        "description": "The URL where the file can be downloaded from.",
+        "type": "string"
+       },
+       "file_size": {
+        "examples": [
+         4404019
+        ],
+        "title": "File Size",
+        "description": "The size of the file in bytes.",
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "type": "null"
+     }
+    ]
+   },
+   "target_lang": {
+    "title": "Target Lang",
+    "description": "The target language of the dubbed content",
+    "type": "string",
+    "examples": [
+     "es"
+    ]
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:38:43+00:00"
+}

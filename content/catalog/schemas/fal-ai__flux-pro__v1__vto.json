@@ -1,0 +1,138 @@
+{
+ "endpoint": "fal-ai/flux-pro/v1/vto",
+ "required": [
+  "prompt",
+  "human_image_url",
+  "garment_image_url"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "type": "boolean",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "garment_image_url": {
+   "type": "string",
+   "description": "The URL of the garment reference image. Maximum 1 megapixel; recommended around 0.5 MP. Multiple garments must be merged into a single composite image before submission.",
+   "title": "Garment Image URL"
+  },
+  "human_image_url": {
+   "type": "string",
+   "description": "The URL of the person image that the garment will be applied onto. The output keeps this image's aspect ratio. Maximum 2 megapixels; recommended under 1 MP.",
+   "title": "Human Image URL"
+  },
+  "sync_mode": {
+   "type": "boolean",
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "default": false,
+   "title": "Sync Mode"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The same seed and the same input will output the same image every time. If not provided, a random seed is used.",
+   "title": "Seed"
+  },
+  "prompt": {
+   "type": "string",
+   "description": "Natural-language styling instructions describing how the garment should be worn on the person (e.g. tucked in, layered, sleeves rolled up).",
+   "title": "Prompt"
+  },
+  "output_format": {
+   "default": "jpeg",
+   "type": "string",
+   "description": "The format of the generated image.",
+   "enum": [
+    "jpeg",
+    "png"
+   ],
+   "title": "Output Format"
+  }
+ },
+ "output": {
+  "required": [
+   "images",
+   "timings",
+   "seed",
+   "has_nsfw_concepts",
+   "prompt"
+  ],
+  "title": "Output",
+  "type": "object",
+  "properties": {
+   "has_nsfw_concepts": {
+    "type": "array",
+    "description": "Whether the generated images contain NSFW concepts.",
+    "items": {
+     "type": "boolean"
+    },
+    "title": "Has Nsfw Concepts"
+   },
+   "images": {
+    "type": "array",
+    "description": "The generated image files info.",
+    "items": {
+     "required": [
+      "url",
+      "width",
+      "height"
+     ],
+     "title": "Image",
+     "type": "object",
+     "properties": {
+      "url": {
+       "type": "string",
+       "title": "Url"
+      },
+      "width": {
+       "type": "integer",
+       "title": "Width"
+      },
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": "image/jpeg",
+       "title": "Content Type"
+      },
+      "height": {
+       "type": "integer",
+       "title": "Height"
+      }
+     }
+    },
+    "title": "Images"
+   },
+   "timings": {
+    "additionalProperties": {
+     "type": "number"
+    },
+    "type": "object",
+    "title": "Timings"
+   },
+   "seed": {
+    "type": "integer",
+    "description": "\n            Seed of the generated Image. It will be the same value of the one passed in the\n            input or the randomly generated that was used in case none was passed.\n        ",
+    "title": "Seed"
+   },
+   "prompt": {
+    "type": "string",
+    "description": "The prompt used for generating the image.",
+    "title": "Prompt"
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:31:44+00:00"
+}

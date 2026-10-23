@@ -1,0 +1,263 @@
+{
+ "endpoint": "bria/genfill/v2",
+ "required": [
+  "image_url",
+  "mask_url",
+  "instruction"
+ ],
+ "properties": {
+  "image_url": {
+   "title": "Image Url",
+   "description": "The source image.",
+   "type": "string"
+  },
+  "seed": {
+   "title": "Seed",
+   "description": "Random seed for reproducibility.",
+   "default": 5555,
+   "type": "integer"
+  },
+  "mask_url": {
+   "title": "Mask Url",
+   "description": "The mask image.",
+   "type": "string"
+  },
+  "instruction": {
+   "title": "Instruction",
+   "description": "Instruct what elements you would like to fill in your image based on the mask.",
+   "type": "string"
+  },
+  "steps_num": {
+   "title": "Steps Num",
+   "description": "Number of inference steps.",
+   "maximum": 50,
+   "default": 30,
+   "minimum": 20,
+   "type": "integer"
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "description": "If true, returns the image directly in the response (increases latency).",
+   "default": false,
+   "type": "boolean"
+  }
+ },
+ "output": {
+  "title": "GenFillOutputModel",
+  "required": [
+   "image",
+   "vgl",
+   "structured_instruction"
+  ],
+  "properties": {
+   "images": {
+    "title": "Images",
+    "description": "Generated images.",
+    "default": [],
+    "examples": [
+     [
+      {
+       "url": "https://bria-datasets.s3.us-east-1.amazonaws.com/Fibo_edit/flower_with_butterfly.jpg"
+      }
+     ]
+    ],
+    "items": {
+     "title": "Image",
+     "description": "Represents an image file.",
+     "required": [
+      "url"
+     ],
+     "properties": {
+      "file_size": {
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        4404019
+       ]
+      },
+      "width": {
+       "title": "Width",
+       "description": "The width of the image in pixels.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        1024
+       ]
+      },
+      "height": {
+       "title": "Height",
+       "description": "The height of the image in pixels.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        1024
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "file_name": {
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "content_type": {
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "image/png"
+       ]
+      }
+     },
+     "type": "object"
+    },
+    "type": "array"
+   },
+   "structured_instruction": {
+    "title": "Structured Instruction",
+    "description": "Deprecated, use `vgl`. The same document under the old name.",
+    "additionalProperties": true,
+    "deprecated": true,
+    "type": "object"
+   },
+   "vgl": {
+    "title": "Vgl",
+    "description": "The VGL document the image was generated from.",
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "image": {
+    "description": "Represents an image file.",
+    "title": "Image",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "file_size": {
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ]
+     },
+     "width": {
+      "title": "Width",
+      "description": "The width of the image in pixels.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       1024
+      ]
+     },
+     "height": {
+      "title": "Height",
+      "description": "The height of the image in pixels.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       1024
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_name": {
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "content_type": {
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ]
+     }
+    },
+    "type": "object"
+   }
+  },
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:30:49+00:00"
+}

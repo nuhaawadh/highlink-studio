@@ -1,0 +1,224 @@
+{
+ "endpoint": "fal-ai/heygen/v3/lipsync/precision",
+ "required": [
+  "video_url",
+  "audio_url"
+ ],
+ "properties": {
+  "enable_dynamic_duration": {
+   "type": "boolean",
+   "description": "Allow duration adjustment to match the new audio.",
+   "default": true,
+   "title": "Enable Dynamic Duration"
+  },
+  "enable_speech_enhancement": {
+   "type": "boolean",
+   "description": "Enhance the replacement audio quality.",
+   "default": false,
+   "title": "Enable Speech Enhancement"
+  },
+  "video_url": {
+   "type": "string",
+   "description": "URL of the source video to lip-sync.",
+   "title": "Video Url"
+  },
+  "enable_caption": {
+   "type": "boolean",
+   "description": "Generate captions in the output video.",
+   "default": false,
+   "title": "Enable Caption"
+  },
+  "disable_music_track": {
+   "type": "boolean",
+   "description": "Remove background music from the source video.",
+   "default": false,
+   "title": "Disable Music Track"
+  },
+  "start_time": {
+   "anyOf": [
+    {
+     "type": "number",
+     "minimum": 0
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Start time in seconds for partial lipsync.",
+   "title": "Start Time"
+  },
+  "audio_url": {
+   "type": "string",
+   "description": "URL of the replacement audio file.",
+   "title": "Audio Url"
+  },
+  "end_time": {
+   "anyOf": [
+    {
+     "type": "number",
+     "minimum": 0
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "End time in seconds for partial lipsync.",
+   "title": "End Time"
+  },
+  "title": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Optional title for the lipsync job.",
+   "title": "Title"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "title": "V3LipsyncOutput",
+  "type": "object",
+  "description": "Output from the Lipsync API.",
+  "properties": {
+   "caption_file": {
+    "anyOf": [
+     {
+      "required": [
+       "url"
+      ],
+      "title": "File",
+      "type": "object",
+      "properties": {
+       "url": {
+        "type": "string",
+        "description": "The URL where the file can be downloaded from.",
+        "title": "Url"
+       },
+       "file_size": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "examples": [
+         4404019
+        ],
+        "description": "The size of the file in bytes.",
+        "title": "File Size"
+       },
+       "content_type": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "examples": [
+         "image/png"
+        ],
+        "description": "The mime type of the file.",
+        "title": "Content Type"
+       },
+       "file_name": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "title": "File Name"
+       }
+      }
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "Generated caption file when enable_caption is enabled and HeyGen returns one."
+   },
+   "video": {
+    "description": "The lip-synced video file with new audio synced.",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a8f61f5/SwAbhEQ0tNLthNkyTqCRn_overdubbed.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:31:54+00:00"
+}

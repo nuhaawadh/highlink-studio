@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/flux-2-lora-gallery/add-background",
+ "unit": "megapixel",
+ "usd": 0.021,
+ "pricing_text": "Your request will cost $0.021 per processed megapixel. — Black Forest Labs' FLUX.2 LoRA Gallery delivers specialized background addition for product photography at $0.021 per megapixel. Cost per Megapixel: $0.021 (48 generations per $1.00 on fal).",
+ "source_url": "https://fal.ai/models/fal-ai/flux-2-lora-gallery/add-background",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (صندوق التكلفة + جدول الأداء، 2026-10-23). $0.021 لكل ميغابكسل معالَج، والميغابكسل الإضافي بنفس السعر (لم يُذكر تقريب). حجم المخرج يتبع صورة الإدخال افتراضيًا. image_urls مطلوبة بخلفية بيضاء/نظيفة، والـprompt يجب أن يبدأ بـ'Add Background'."
+}

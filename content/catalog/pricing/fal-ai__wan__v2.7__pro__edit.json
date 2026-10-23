@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/wan/v2.7/pro/edit",
+ "unit": "image",
+ "usd": 0.075,
+ "pricing_text": "Your request will cost $0.075 per image.",
+ "source_url": "https://fal.ai/models/fal-ai/wan/v2.7/pro/edit",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23). سعر ثابت لكل صورة. image_urls مطلوبة (1-4)، num_images حتى 4، الحجم الافتراضي square_hd."
+}

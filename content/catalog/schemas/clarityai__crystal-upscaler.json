@@ -1,0 +1,149 @@
+{
+ "endpoint": "clarityai/crystal-upscaler",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "image_url": {
+   "title": "Image Url",
+   "description": "URL to the input image",
+   "type": "string"
+  },
+  "output_format": {
+   "title": "Output Format",
+   "description": "Output image format",
+   "enum": [
+    "png",
+    "jpg"
+   ],
+   "type": "string",
+   "default": "jpg"
+  },
+  "scale_factor": {
+   "minimum": 1,
+   "title": "Scale Factor",
+   "description": "Scale factor",
+   "maximum": 200,
+   "type": "number",
+   "default": 2
+  },
+  "creativity": {
+   "minimum": 0,
+   "title": "Creativity",
+   "description": "Creativity level for upscaling",
+   "maximum": 10,
+   "type": "number",
+   "default": 0
+  }
+ },
+ "output": {
+  "properties": {
+   "images": {
+    "title": "Images",
+    "description": "List of upscaled images",
+    "items": {
+     "properties": {
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "width": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Width",
+       "description": "The width of the image in pixels.",
+       "examples": [
+        1024
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "height": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Height",
+       "description": "The height of the image in pixels.",
+       "examples": [
+        1024
+       ]
+      },
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      }
+     },
+     "title": "Image",
+     "description": "Represents an image file.",
+     "type": "object",
+     "required": [
+      "url"
+     ]
+    },
+    "type": "array",
+    "examples": [
+     [
+      "https://v3b.fal.media/files/b/penguin/sVriwxLaU3fVTz5B-xBBC_upscaled.png"
+     ]
+    ]
+   }
+  },
+  "title": "CrystalUpscaleOutput",
+  "type": "object",
+  "required": [
+   "images"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:35:44+00:00"
+}

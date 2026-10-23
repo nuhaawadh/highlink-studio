@@ -1,0 +1,9 @@
+{
+ "endpoint": "google/gemini-3.8-flash-tts",
+ "unit": "1k_chars",
+ "usd": 0.045,
+ "pricing_text": "Your request will cost $0.045 per 1000 character. — Billing is based on spoken text; style instructions and speaker aliases are excluded.",
+ "source_url": "https://fal.ai/models/google/gemini-3.8-flash-tts",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج + وصف المخطط (2026-10-23). $0.045 لكل 1000 حرف من النص المنطوق فقط (تعليمات الأسلوب وأسماء المتحدثين لا تُحسب). المخرج WAV، والإدخال حتى 8192 توكن. لا حقل مطلوب في المخطط لكن يلزم prompt أو (speakers + turns)."
+}

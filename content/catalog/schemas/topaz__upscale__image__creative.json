@@ -1,0 +1,161 @@
+{
+ "endpoint": "topaz/upscale/image/creative",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "upscale_factor": {
+   "description": "Factor to upscale the image by (e.g. 2.0 doubles width and height)",
+   "maximum": 4,
+   "type": "number",
+   "default": 2,
+   "minimum": 1,
+   "title": "Upscale Factor"
+  },
+  "model": {
+   "enum": [
+    "Bloom 2",
+    "Bloom",
+    "Bloom Realism"
+   ],
+   "description": "Creative (Bloom) upscaling model. Bloom 2 is the latest and most capable; Bloom creatively upscales and transforms AI-generated images; Bloom Realism biases the added detail toward photorealism.",
+   "type": "string",
+   "default": "Bloom 2",
+   "title": "Model"
+  },
+  "color_preservation": {
+   "anyOf": [
+    {
+     "type": "boolean"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Preserve the source image's colors in the output. Applies to Bloom 2 only.",
+   "title": "Color Preservation"
+  },
+  "crop_to_fill": {
+   "type": "boolean",
+   "default": false,
+   "title": "Crop To Fill"
+  },
+  "creativity": {
+   "anyOf": [
+    {
+     "maximum": 9,
+     "minimum": 1,
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Creativity level (1-9). Higher values produce more creative/hallucinated details. Applies to Bloom 2 only.",
+   "title": "Creativity"
+  },
+  "output_format": {
+   "enum": [
+    "jpeg",
+    "png"
+   ],
+   "description": "Output format of the upscaled image.",
+   "type": "string",
+   "default": "jpeg",
+   "title": "Output Format"
+  },
+  "autoprompt": {
+   "anyOf": [
+    {
+     "type": "boolean"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Enable automatic prompt generation. Applies to Bloom 2 only; Topaz defaults it to true when omitted.",
+   "title": "Autoprompt"
+  },
+  "image_url": {
+   "type": "string",
+   "description": "Url of the image to be upscaled",
+   "title": "Image Url"
+  },
+  "enable_safety_checker": {
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  }
+ },
+ "output": {
+  "required": [
+   "image"
+  ],
+  "properties": {
+   "image": {
+    "description": "The upscaled image.",
+    "required": [
+     "url"
+    ],
+    "properties": {
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "File Name"
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Type"
+     },
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string",
+      "title": "Url"
+     }
+    },
+    "type": "object",
+    "title": "File"
+   }
+  },
+  "type": "object",
+  "title": "ImageUpscaleOutput"
+ },
+ "fetched_at": "2026-10-23T14:32:20+00:00"
+}

@@ -1,0 +1,212 @@
+{
+ "endpoint": "fal-ai/sync-lipsync/react-1",
+ "required": [
+  "video_url",
+  "audio_url",
+  "emotion"
+ ],
+ "properties": {
+  "video_url": {
+   "description": "URL to the input video. Must be **15 seconds or shorter**.",
+   "title": "Video Url",
+   "type": "string"
+  },
+  "emotion": {
+   "description": "Emotion prompt for the generation. Currently supports single-word emotions only.",
+   "title": "Emotion",
+   "enum": [
+    "happy",
+    "sad",
+    "angry",
+    "disgusted",
+    "surprised",
+    "neutral"
+   ],
+   "type": "string"
+  },
+  "audio_url": {
+   "description": "URL to the input audio. Must be **15 seconds or shorter**.",
+   "title": "Audio Url",
+   "type": "string"
+  },
+  "temperature": {
+   "description": "Controls the expresiveness of the lipsync.",
+   "title": "Temperature",
+   "minimum": 0,
+   "default": 0.5,
+   "maximum": 1,
+   "type": "number"
+  },
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "model_mode": {
+   "description": "Controls the edit region and movement scope for the model. Available options:\n- `lips`: Only lipsync using react-1 (minimal facial changes).\n- `face`: Lipsync + facial expressions without head movements.\n- `head`: Lipsync + facial expressions + natural talking head movements.",
+   "title": "Model Mode",
+   "default": "face",
+   "enum": [
+    "lips",
+    "face",
+    "head"
+   ],
+   "type": "string"
+  },
+  "lipsync_mode": {
+   "description": "Lipsync mode when audio and video durations are out of sync.",
+   "title": "Lipsync Mode",
+   "default": "bounce",
+   "enum": [
+    "cut_off",
+    "loop",
+    "bounce",
+    "silence",
+    "remap"
+   ],
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "React1Output",
+  "properties": {
+   "video": {
+    "description": "The generated video with synchronized lip and facial movements.",
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/react_1/output.mp4",
+      "width": 1920,
+      "file_name": "output.mp4",
+      "content_type": "video/mp4",
+      "height": 1088,
+      "num_frames": 169,
+      "fps": 24,
+      "duration": 7.041667
+     }
+    ],
+    "title": "VideoFile",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "width": {
+      "description": "The width of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Width"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "height": {
+      "description": "The height of the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Height"
+     },
+     "num_frames": {
+      "description": "The number of frames in the video",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Num Frames"
+     },
+     "fps": {
+      "description": "The FPS of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fps"
+     },
+     "duration": {
+      "description": "The duration of the video",
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Duration"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   }
+  },
+  "required": [
+   "video"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:30:50+00:00"
+}

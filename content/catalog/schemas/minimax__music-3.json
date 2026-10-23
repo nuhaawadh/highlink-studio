@@ -1,0 +1,149 @@
+{
+ "endpoint": "minimax/music-3",
+ "required": [
+  "prompt",
+  "lyrics"
+ ],
+ "properties": {
+  "num_inference_steps": {
+   "type": "integer",
+   "minimum": 1,
+   "description": "Number of flow-matching Euler steps per 8-second denoising chunk. More steps improve quality at the cost of speed.",
+   "title": "Num Inference Steps",
+   "maximum": 100,
+   "default": 30
+  },
+  "prompt": {
+   "type": "string",
+   "title": "Prompt",
+   "description": "Music description: style, mood, vocals, instrumentation and arrangement. For precise control use a Structured Caption with global metadata (genre, BPM, key, emotional progression), vocal details, and a section-by-section arrangement."
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "title": "Enable Safety Checker",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "default": true
+  },
+  "seed": {
+   "title": "Seed",
+   "description": "Random seed for reproducibility. If not provided, a random seed will be used.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "lyrics": {
+   "type": "string",
+   "title": "Lyrics",
+   "description": "The lyrics to sing. Structure tags such as [intro], [verse], [pre-chorus], [chorus], [post-chorus], [bridge], [instrumental], [solo] and [outro] must each be on their own line; text on the same line as a leading tag is dropped by the model's input contract."
+  },
+  "guidance_scale": {
+   "type": "number",
+   "minimum": 0,
+   "description": "Classifier-free guidance scale of the flow-matching stage.",
+   "title": "Guidance Scale",
+   "maximum": 20,
+   "default": 1.7
+  },
+  "duration": {
+   "type": "number",
+   "minimum": 1,
+   "title": "Duration",
+   "description": "Upper bound on the generated audio length in seconds. The model may stop earlier; the actual duration is returned in the output.",
+   "maximum": 300,
+   "default": 60
+  }
+ },
+ "output": {
+  "properties": {
+   "seed": {
+    "type": "integer",
+    "examples": [
+     42
+    ],
+    "title": "Seed",
+    "description": "The random seed used for the generation process."
+   },
+   "audio": {
+    "description": "The generated audio file (44.1 kHz 16-bit stereo WAV).",
+    "properties": {
+     "file_size": {
+      "title": "File Size",
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "title": "Content Type",
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "title": "File Name",
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "type": "string",
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from."
+     }
+    },
+    "type": "object",
+    "title": "File",
+    "required": [
+     "url"
+    ]
+   },
+   "duration": {
+    "type": "number",
+    "examples": [
+     60
+    ],
+    "title": "Duration",
+    "description": "The actual duration of the generated audio in seconds (may be shorter than the requested duration)."
+   }
+  },
+  "type": "object",
+  "title": "MiniMaxMusic3Output",
+  "required": [
+   "audio",
+   "seed",
+   "duration"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:35:15+00:00"
+}

@@ -1,0 +1,267 @@
+{
+ "endpoint": "fal-ai/birefnet/v2",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "output_format": {
+   "title": "Output Format",
+   "default": "png",
+   "description": "The format of the output image",
+   "type": "string",
+   "enum": [
+    "webp",
+    "png",
+    "gif"
+   ]
+  },
+  "image_url": {
+   "title": "Image Url",
+   "description": "URL of the image to remove background from",
+   "type": "string"
+  },
+  "output_mask": {
+   "title": "Output Mask",
+   "description": "Whether to output the mask used to remove the background",
+   "default": false,
+   "type": "boolean"
+  },
+  "mask_only": {
+   "title": "Mask Only",
+   "description": "Whether to return only the segmentation mask without applying it to the image. When set to `True`, only the mask will be returned and foreground refinement will be skipped. Useful for reducing computation and data transfer when only the mask is needed.",
+   "default": false,
+   "type": "boolean"
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "default": false,
+   "type": "boolean"
+  },
+  "model": {
+   "title": "Model",
+   "default": "General Use (Light)",
+   "description": "\n            Model to use for background removal.\n            The 'General Use (Light)' model is the original model used in the BiRefNet repository.\n            The 'General Use (Light 2K)' model is the original model used in the BiRefNet repository but trained with 2K images.\n            The 'General Use (Heavy)' model is a slower but more accurate model.\n            The 'Matting' model is a model trained specifically for matting images.\n            The 'Portrait' model is a model trained specifically for portrait images.\n            The 'General Use (Dynamic)' model supports dynamic resolutions from 256x256 to 2304x2304.\n            The 'General Use (Light)' model is recommended for most use cases.\n\n            The corresponding models are as follows:\n            - 'General Use (Light)': BiRefNet\n            - 'General Use (Light 2K)': BiRefNet_lite-2K\n            - 'General Use (Heavy)': BiRefNet_lite\n            - 'Matting': BiRefNet-matting\n            - 'Portrait': BiRefNet-portrait\n            - 'General Use (Dynamic)': BiRefNet_dynamic\n        ",
+   "type": "string",
+   "enum": [
+    "General Use (Light)",
+    "General Use (Light 2K)",
+    "General Use (Heavy)",
+    "Matting",
+    "Portrait",
+    "General Use (Dynamic)"
+   ]
+  },
+  "operating_resolution": {
+   "title": "Operating Resolution",
+   "default": "1024x1024",
+   "description": "The resolution to operate on. The higher the resolution, the more accurate the output will be for high res input images. The '2304x2304' option is only available for the 'General Use (Dynamic)' model.",
+   "type": "string",
+   "enum": [
+    "1024x1024",
+    "2048x2048",
+    "2304x2304"
+   ]
+  },
+  "refine_foreground": {
+   "title": "Refine Foreground",
+   "description": "Whether to refine the foreground using the estimated mask",
+   "default": true,
+   "type": "boolean"
+  }
+ },
+ "output": {
+  "title": "OutputV2",
+  "required": [
+   "image"
+  ],
+  "type": "object",
+  "properties": {
+   "image": {
+    "description": "Image with background removed. When `mask_only` is `True`, this contains the segmentation mask instead.",
+    "examples": [
+     {
+      "content_type": "image/png",
+      "width": 1024,
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/birefnet-output.png",
+      "height": 1024,
+      "file_name": "birefnet-output.png"
+     }
+    ],
+    "title": "ImageFile",
+    "required": [
+     "url"
+    ],
+    "type": "object",
+    "properties": {
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "width": {
+      "title": "Width",
+      "description": "The width of the image",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "height": {
+      "title": "Height",
+      "description": "The height of the image",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    }
+   },
+   "mask_image": {
+    "description": "Mask used to remove the background",
+    "anyOf": [
+     {
+      "title": "ImageFile",
+      "required": [
+       "url"
+      ],
+      "type": "object",
+      "properties": {
+       "content_type": {
+        "examples": [
+         "image/png"
+        ],
+        "title": "Content Type",
+        "description": "The mime type of the file.",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "width": {
+        "title": "Width",
+        "description": "The width of the image",
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "url": {
+        "title": "Url",
+        "description": "The URL where the file can be downloaded from.",
+        "type": "string"
+       },
+       "height": {
+        "title": "Height",
+        "description": "The height of the image",
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "file_name": {
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "title": "File Name",
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       },
+       "file_size": {
+        "examples": [
+         4404019
+        ],
+        "title": "File Size",
+        "description": "The size of the file in bytes.",
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ]
+       }
+      }
+     },
+     {
+      "type": "null"
+     }
+    ]
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:29:08+00:00"
+}

@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/sync-lipsync/v3",
+ "unit": "minute",
+ "usd": 8,
+ "pricing_text": "Your request will cost $8 per minute.",
+ "source_url": "https://fal.ai/models/fal-ai/sync-lipsync/v3",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صفحة النموذج (الـplayground). $8 لكل دقيقة (≈ $0.1333/ث) من فيديو المخرج — من أغلى النقاط في الدفعة؛ فيديو 10 ثوانٍ ≈ $1.33. المدة تتبع الفيديو/الصوت المدخل حسب sync_mode (الافتراضي cut_off)."
+}

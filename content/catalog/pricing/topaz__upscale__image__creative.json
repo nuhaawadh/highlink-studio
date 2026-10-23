@@ -1,0 +1,9 @@
+{
+ "endpoint": "topaz/upscale/image/creative",
+ "unit": "megapixel",
+ "usd": 0.04,
+ "pricing_text": "Your request will cost **$0.08** per started 2 megapixels of output with Bloom 2, Bloom, or Bloom Realism. For example, a 24 MP output costs **$0.96**.",
+ "source_url": "https://fal.ai/models/topaz/upscale/image/creative",
+ "confidence": "high",
+ "notes": "الفوترة $0.08 لكل كتلة 2 ميغابكسل مبدوءة من المخرج — أي ما يعادل usd = $0.04/MP مع تقريب المخرج لأعلى إلى أقرب مضاعف لـ2MP (مثال الصفحة: 24MP = 12 كتلة = $0.96؛ و5MP = 3 كتل = $0.24). يشمل نماذج Bloom 2 وBloom وBloom Realism. التكلفة تعتمد على حجم المخرج (الصورة المدخلة × معامل التكبير)."
+}

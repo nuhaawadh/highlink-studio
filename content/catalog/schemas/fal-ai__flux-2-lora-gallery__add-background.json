@@ -1,0 +1,265 @@
+{
+ "endpoint": "fal-ai/flux-2-lora-gallery/add-background",
+ "required": [
+  "image_urls"
+ ],
+ "properties": {
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Random seed for reproducibility. Same seed with same prompt will produce same result.",
+   "title": "Seed"
+  },
+  "lora_scale": {
+   "minimum": 0,
+   "maximum": 2,
+   "type": "number",
+   "default": 1,
+   "description": "The strength of the add background effect.",
+   "title": "Lora Scale"
+  },
+  "prompt": {
+   "description": "The prompt describing the background to add. Must start with 'Add Background' followed by your description.",
+   "type": "string",
+   "default": "Add Background forest",
+   "title": "Prompt"
+  },
+  "num_images": {
+   "minimum": 1,
+   "maximum": 4,
+   "type": "integer",
+   "default": 1,
+   "description": "Number of images to generate",
+   "title": "Num Images"
+  },
+  "guidance_scale": {
+   "minimum": 0,
+   "maximum": 20,
+   "type": "number",
+   "default": 2.5,
+   "description": "The CFG (Classifier Free Guidance) scale. Controls how closely the model follows the prompt.",
+   "title": "Guidance Scale"
+  },
+  "sync_mode": {
+   "description": "If `True`, the media will be returned as a data URI and won't be saved in history.",
+   "type": "boolean",
+   "default": false,
+   "title": "Sync Mode"
+  },
+  "output_format": {
+   "title": "Output Format",
+   "description": "The format of the output image",
+   "type": "string",
+   "default": "png",
+   "enum": [
+    "png",
+    "jpeg",
+    "webp"
+   ]
+  },
+  "image_urls": {
+   "items": {
+    "type": "string"
+   },
+   "type": "array",
+   "description": "The URLs of the images. Provide an image with a white or clean background.",
+   "title": "Image URLs"
+  },
+  "image_size": {
+   "anyOf": [
+    {
+     "properties": {
+      "height": {
+       "description": "The height of the generated image.",
+       "maximum": 14142,
+       "type": "integer",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "title": "Height"
+      },
+      "width": {
+       "description": "The width of the generated image.",
+       "maximum": 14142,
+       "type": "integer",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "title": "Width"
+      }
+     },
+     "type": "object",
+     "title": "ImageSize"
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ]
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The size of the generated image. If not provided, the size of the input image will be used.",
+   "title": "Image Size"
+  },
+  "num_inference_steps": {
+   "minimum": 4,
+   "maximum": 50,
+   "type": "integer",
+   "default": 40,
+   "description": "The number of inference steps to perform.",
+   "title": "Num Inference Steps"
+  },
+  "acceleration": {
+   "title": "Acceleration",
+   "description": "Acceleration level for image generation. 'regular' balances speed and quality.",
+   "type": "string",
+   "default": "regular",
+   "enum": [
+    "none",
+    "regular"
+   ]
+  },
+  "enable_safety_checker": {
+   "description": "Whether to enable the safety checker for the generated image. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  }
+ },
+ "output": {
+  "required": [
+   "images",
+   "seed",
+   "prompt"
+  ],
+  "properties": {
+   "images": {
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/lion/g0VrXhRU1YBK9B1MnGpyi.png"
+      }
+     ]
+    ],
+    "items": {
+     "required": [
+      "url"
+     ],
+     "description": "Represents an image file.",
+     "type": "object",
+     "properties": {
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ],
+       "title": "File Size"
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name"
+      },
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string",
+       "title": "Url"
+      },
+      "height": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The height of the image in pixels.",
+       "examples": [
+        1024
+       ],
+       "title": "Height"
+      },
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type"
+      },
+      "width": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The width of the image in pixels.",
+       "examples": [
+        1024
+       ],
+       "title": "Width"
+      }
+     },
+     "title": "Image"
+    },
+    "type": "array",
+    "description": "The generated images with added background",
+    "title": "Images"
+   },
+   "prompt": {
+    "description": "The prompt used for generation",
+    "type": "string",
+    "title": "Prompt"
+   },
+   "seed": {
+    "description": "The seed used for generation",
+    "type": "integer",
+    "title": "Seed"
+   }
+  },
+  "type": "object",
+  "title": "AddBackgroundOutput"
+ },
+ "fetched_at": "2026-10-23T14:34:11+00:00"
+}
