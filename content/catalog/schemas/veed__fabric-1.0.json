@@ -1,0 +1,106 @@
+{
+ "endpoint": "veed/fabric-1.0",
+ "required": [
+  "image_url",
+  "audio_url",
+  "resolution"
+ ],
+ "properties": {
+  "audio_url": {
+   "format": "uri",
+   "title": "Audio Url",
+   "maxLength": 2083,
+   "type": "string"
+  },
+  "image_url": {
+   "format": "uri",
+   "title": "Image Url",
+   "maxLength": 2083,
+   "type": "string"
+  },
+  "resolution": {
+   "enum": [
+    "720p",
+    "480p"
+   ],
+   "title": "Resolution",
+   "type": "string",
+   "description": "Resolution"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "title": "FabricOneOutput",
+  "type": "object",
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "content_type": "video/mp4",
+      "url": "https://v3.fal.media/files/lion/Yha3swLpHm35hoJCs8oJQ_tmp618_yf2f.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "title": "File Size",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ]
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "title": "Content Type",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ]
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "type": "string",
+      "description": "The URL where the file can be downloaded from."
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:39:21+00:00"
+}
