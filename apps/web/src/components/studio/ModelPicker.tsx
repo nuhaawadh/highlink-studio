@@ -47,7 +47,7 @@ export function ModelPicker({
         const head = f.models[0]
         const lab = modelSupports(head).lab
         return (
-          <div key={f.key} className={cn('rounded-[var(--radius-sm)] border transition-colors', isSelectedFamily ? 'border-brand bg-brand/10' : 'border-border bg-bg hover:bg-white/[0.04]')}>
+          <div key={f.key} className={cn('rounded-[var(--radius-sm)] border transition-colors', isSelectedFamily ? 'border-brand bg-brand/10' : 'border-border bg-bg hover:bg-text/[0.04]')}>
             <button
               type="button"
               role="radio"
@@ -55,7 +55,7 @@ export function ModelPicker({
               onClick={() => onChange(isSelectedFamily ? (selected?.id ?? head.id) : head.id)}
               className="flex w-full items-center gap-3 p-3 text-start"
             >
-              <span className={cn('flex size-5 shrink-0 items-center justify-center rounded-full border', isSelectedFamily ? 'border-brand bg-brand text-brand-ink' : 'border-border')}>
+              <span className={cn('flex size-5 shrink-0 items-center justify-center rounded-none border', isSelectedFamily ? 'border-brand bg-brand text-brand-ink' : 'border-border')}>
                 {isSelectedFamily && <Check className="size-3" aria-hidden />}
               </span>
               <span className="min-w-0 flex-1">
@@ -68,7 +68,7 @@ export function ModelPicker({
                   {lab && (
                     <>
                       {' · '}
-                      <span className="font-latin">{lab}</span>
+                      <span className="font-mono">{lab}</span>
                     </>
                   )}
                   {f.models.length > 1 && <> · {t('generate.variants', { n: f.models.length })}</>}
@@ -88,8 +88,8 @@ export function ModelPicker({
                       aria-checked={on}
                       onClick={() => onChange(m.id)}
                       className={cn(
-                        'rounded-full border px-2.5 py-1 text-xs transition-colors',
-                        on ? 'border-brand bg-brand text-brand-ink' : 'border-border text-muted hover:bg-white/[0.06]',
+                        'rounded-none border px-2.5 py-1 text-xs transition-colors',
+                        on ? 'border-brand bg-brand text-brand-ink' : 'border-border text-muted hover:bg-text/[0.06]',
                       )}
                       title={modelName(m, locale)}
                     >

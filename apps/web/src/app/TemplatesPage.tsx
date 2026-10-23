@@ -60,8 +60,8 @@ export function TemplatesPage() {
             aria-selected={filter === c.key}
             onClick={() => setFilter(c.key)}
             className={cn(
-              'shrink-0 rounded-full border px-3.5 py-1.5 text-sm transition-colors',
-              filter === c.key ? 'border-brand bg-brand text-brand-ink' : 'border-border text-muted hover:bg-white/[0.06]',
+              'shrink-0 rounded-none border px-3.5 py-1.5 text-sm transition-colors',
+              filter === c.key ? 'border-brand bg-brand text-brand-ink' : 'border-border text-muted hover:bg-text/[0.06]',
             )}
           >
             {c.label}

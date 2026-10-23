@@ -9,13 +9,13 @@ import { useI18n } from '@/i18n'
 import { cn } from '@/lib/utils'
 
 /**
- * الهيدر الثابت + درج الجوال (المخطط §8): شفاف على الرئيسية، داكن داخل التطبيق.
+ * الهيدر الثابت + درج الجوال (المخطط §8): أبيض بخط رفيع أسفله (دليل الهوية — بدون ظلال ولا ضبابية)، والشعار الأصلي كملف لا كنص.
  * الاتجاه كله بخصائص منطقية (ps/pe/ms/me/start/end) — لا ml/mr.
  */
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
     'flex h-8 items-center gap-1 rounded-[var(--radius-sm)] px-2 text-sm font-medium transition-colors',
-    isActive ? 'bg-white/[0.08] text-text' : 'text-muted hover:bg-white/[0.06] hover:text-text',
+    isActive ? 'bg-text/[0.08] text-text' : 'text-muted hover:bg-text/[0.06] hover:text-text',
   )
 
 export function Header() {
@@ -45,7 +45,7 @@ export function Header() {
         data-app-topbar
         className={cn(
           'fixed inset-x-0 top-0 z-[9999] flex h-12 items-center justify-between px-3 md:h-16 md:px-6',
-          transparent ? 'bg-transparent' : 'border-b border-border bg-bg/80 backdrop-blur-md',
+          transparent ? 'bg-bg' : 'border-b border-border bg-bg',
         )}
       >
         <div className="flex h-full items-center">
@@ -60,8 +60,10 @@ export function Header() {
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
 
-          <Link to="/" aria-label={t('app.name')} className="flex h-8 shrink-0 items-center font-bold text-text md:h-12">
-            {t('app.name')}
+          <Link to="/" aria-label={t('app.name')} className="flex h-8 shrink-0 items-center md:h-12">
+            {/* الشعار ملف جاهز (دليل الهوية 01–03): لا يُكتب بخط عادي ولا يُعدَّل. عرضه ≥ 120px على الشاشة، وإلا الرمز لوحده */}
+            <img src="/brand/highlink-logo.png" alt={t('app.name')} width={120} height={37} className="hidden h-[37px] w-[120px] sm:block" />
+            <img src="/brand/highlink-symbol.png" alt={t('app.name')} width={28} height={29} className="h-[29px] w-[28px] sm:hidden" />
           </Link>
 
           <nav className="hidden h-full items-center gap-0.5 xl:ms-5 xl:flex">
@@ -93,7 +95,7 @@ export function Header() {
         <div className="flex items-center gap-2 md:gap-3">
           <Link
             to="/pricing"
-            className="hidden h-8 items-center rounded-[var(--radius-sm)] border border-border bg-white/5 px-3 text-sm font-medium text-text hover:bg-white/10 md:flex"
+            className="hidden h-8 items-center rounded-[var(--radius-sm)] border border-border bg-text/5 px-3 text-sm font-medium text-text hover:bg-text/10 md:flex"
           >
             {t('nav.pricing')}
           </Link>
@@ -113,7 +115,7 @@ export function Header() {
                 to="/account"
                 title={t('nav.account')}
                 aria-label={t('nav.account')}
-                className="hidden size-9 items-center justify-center rounded-[var(--radius-sm)] border border-border bg-white/5 text-text hover:bg-white/10 md:inline-flex"
+                className="hidden size-9 items-center justify-center rounded-[var(--radius-sm)] border border-border bg-text/5 text-text hover:bg-text/10 md:inline-flex"
               >
                 <UserRound className="size-3.5" />
               </Link>
@@ -124,7 +126,7 @@ export function Header() {
           ) : (
             <Link
               to="/login"
-              className="inline-flex h-8 items-center gap-2 rounded-[var(--radius-sm)] bg-brand px-3 text-xs font-bold text-brand-ink transition-opacity hover:opacity-90"
+              className="inline-flex h-8 items-center gap-2 rounded-none bg-brand px-3 text-xs font-medium text-brand-ink transition-colors hover:bg-brand-hover"
             >
               <LogIn className="size-3" /> {t('nav.login')}
             </Link>
@@ -164,7 +166,7 @@ export function Header() {
                 <LogOut /> {t('nav.logout')}
               </Button>
             ) : (
-              <Link to="/login" className="flex h-9 items-center gap-2 rounded-[var(--radius-sm)] px-2 text-sm font-medium text-text hover:bg-white/5">
+              <Link to="/login" className="flex h-9 items-center gap-2 rounded-[var(--radius-sm)] px-2 text-sm font-medium text-text hover:bg-text/5">
                 <LogIn className="size-4" /> {t('nav.login')}
               </Link>
             )}
@@ -183,11 +185,11 @@ function DrawerLink({ to, icon, label }: { to: string; icon: React.ReactNode; la
       className={({ isActive }) =>
         cn(
           'flex h-8 w-full items-center gap-1.5 rounded-[var(--radius-sm)] px-1.5 text-[13px] font-medium transition-colors',
-          isActive ? 'bg-white/[0.06] text-text' : 'text-muted hover:bg-white/[0.04] hover:text-text',
+          isActive ? 'bg-text/[0.06] text-text' : 'text-muted hover:bg-text/[0.04] hover:text-text',
         )
       }
     >
-      <span className="flex size-5 items-center justify-center rounded-md bg-white/5">{icon}</span>
+      <span className="flex size-5 items-center justify-center rounded-none bg-text/5">{icon}</span>
       <span className="min-w-0 flex-1 truncate">{label}</span>
     </NavLink>
   )

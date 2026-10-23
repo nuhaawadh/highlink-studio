@@ -35,7 +35,7 @@ export function LoginPage() {
 
   return (
     <section className="flex flex-1 items-center justify-center px-4 py-12">
-      <div className="w-full max-w-sm rounded-[var(--radius-lg)] border border-border bg-surface p-6 shadow-xl">
+      <div className="w-full max-w-sm rounded-[var(--radius-lg)] border border-border bg-surface p-6">
         <h1 className="text-xl font-bold">{t('auth.title')}</h1>
         <p className="mt-1 text-sm text-muted">{t('auth.subtitle')}</p>
 
@@ -75,7 +75,7 @@ export function LoginPage() {
               className="h-10 w-full rounded-[var(--radius-sm)] border border-border bg-bg px-3 text-text outline-none focus:border-brand"
             />
           </label>
-          <Button type="submit" className="w-full" disabled={busy}>
+          <Button type="submit" variant="lime" className="w-full" disabled={busy}>
             {mode === 'signin' ? t('auth.signin') : t('auth.signup')}
           </Button>
         </form>

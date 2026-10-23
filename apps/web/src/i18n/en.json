@@ -52,10 +52,12 @@
     "error": "Sign-in failed — check your details and try again"
   },
   "home": {
-    "hero1": "Create",
-    "hero2": "without limits.",
+    "hero1": "Your store's photos and ads,",
+    "hero2": "ready in",
+    "hero3": "a minute",
     "cta": "Start free",
-    "phase0": "Phase 0 — foundation. Studios are enabled in the next phases."
+    "templates": "Browse templates",
+    "facts": "38 Saudi templates · 137 image & video models · pay in SAR"
   },
   "errors": {
     "generic": "Something went wrong, please try again",

@@ -20,7 +20,7 @@ export function CreditBadge({ className }: { className?: string }) {
       to="/pricing"
       title={t('credits.topup')}
       className={cn(
-        'flex h-8 items-center gap-1.5 rounded-[var(--radius-sm)] border border-border bg-white/5 ps-2 pe-3 text-sm font-semibold text-text transition-colors hover:bg-white/10',
+        'flex h-8 items-center gap-1.5 rounded-[var(--radius-sm)] border border-border bg-text/5 ps-2 pe-3 text-sm font-semibold text-text transition-colors hover:bg-text/10',
         low && 'border-danger/50 text-danger',
         className,
       )}

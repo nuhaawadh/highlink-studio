@@ -133,7 +133,7 @@ export function AccountPage() {
           <p className="mt-1 text-sm text-muted">{t('account.apiKeysHint')}</p>
           <p className="mt-2 text-xs text-muted">
             {t('account.baseUrl')}:{' '}
-            <code dir="ltr" className="select-all rounded bg-white/5 px-1.5 py-0.5 font-latin text-text">
+            <code dir="ltr" className="select-all rounded-none bg-text/5 px-1.5 py-0.5 font-mono text-text">
               {apiBaseUrl()}
             </code>
           </p>
@@ -174,7 +174,7 @@ export function AccountPage() {
                   key={m}
                   className={cn(
                     'flex flex-1 cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] border px-3 py-2 text-sm',
-                    mode === m ? 'border-brand bg-brand/10' : 'border-border hover:bg-white/5',
+                    mode === m ? 'border-brand bg-brand/10' : 'border-border hover:bg-text/5',
                   )}
                 >
                   <input type="radio" name="mode" value={m} checked={mode === m} onChange={() => setMode(m)} className="accent-[var(--color-brand)]" />
@@ -191,7 +191,7 @@ export function AccountPage() {
         </form>
 
         {loading ? (
-          <div className="h-24 animate-pulse rounded-[var(--radius-lg)] bg-white/[0.04]" />
+          <div className="h-24 animate-pulse rounded-[var(--radius-lg)] bg-text/[0.04]" />
         ) : keys.length === 0 ? (
           <p className="rounded-[var(--radius-lg)] border border-dashed border-border p-6 text-center text-sm text-muted">{t('account.empty')}</p>
         ) : (
@@ -207,7 +207,7 @@ export function AccountPage() {
                       <Badge tone={revoked ? 'neutral' : 'hot'}>{revoked ? t('account.revoked') : t('account.active')}</Badge>
                     </div>
                     <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted">
-                      <code dir="ltr" className="font-latin text-text">
+                      <code dir="ltr" className="font-mono text-text">
                         {k.key_hint}
                       </code>
                       <span>
@@ -241,7 +241,7 @@ function SecretRow({ label, value, onCopy, copyLabel }: { label: string; value: 
     <div className="text-sm">
       <span className="mb-1 block text-xs text-muted">{label}</span>
       <div className="flex items-center gap-2">
-        <code dir="ltr" className="min-w-0 flex-1 select-all overflow-x-auto rounded bg-bg px-2 py-1.5 font-latin text-xs text-text">
+        <code dir="ltr" className="min-w-0 flex-1 select-all overflow-x-auto rounded-none bg-bg px-2 py-1.5 font-mono text-xs text-text">
           {value}
         </code>
         <Button variant="secondary" size="sm" onClick={() => onCopy(value)} aria-label={copyLabel}>

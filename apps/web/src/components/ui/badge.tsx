@@ -6,8 +6,8 @@ type Tone = 'new' | 'hot' | 'beta' | 'neutral'
 const tones: Record<Tone, string> = {
   new: 'bg-brand text-brand-ink',
   hot: 'bg-brand/20 text-brand',
-  beta: 'bg-transparent text-text border border-white/30',
-  neutral: 'bg-white/10 text-text',
+  beta: 'bg-transparent text-text border border-text/30',
+  neutral: 'bg-text/10 text-text',
 }
 
 /** شارة صغيرة مائلة (نمط "جديد / رائج / Beta" في المخطط §8). */

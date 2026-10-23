@@ -28,7 +28,7 @@ export function ResolutionPicker({
             onClick={() => onChange(s)}
             className={cn(
               'flex flex-col items-center rounded-[var(--radius-sm)] border py-2 transition-colors',
-              selected ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-white/[0.04]',
+              selected ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-text/[0.04]',
             )}
           >
             <span className="font-latin text-sm font-semibold">{s}</span>

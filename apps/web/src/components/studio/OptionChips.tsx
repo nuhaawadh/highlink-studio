@@ -34,7 +34,7 @@ export function OptionChips<T extends string | number>({
             onClick={() => onChange(o)}
             className={cn(
               'flex min-w-12 flex-col items-center rounded-[var(--radius-sm)] border px-2.5 py-1.5 transition-colors',
-              selected ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-white/[0.04]',
+              selected ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-text/[0.04]',
             )}
           >
             <span className="font-latin text-sm font-semibold">{format ? format(o) : String(o)}</span>

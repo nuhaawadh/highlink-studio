@@ -1,29 +1,39 @@
 /*
   Design tokens — استوديو هاي لينك
   ---------------------------------
-  القيم من هوية موقع هاي لينك (highlink-site/assets/site.css) — انظر docs/brand/palette.md للمصدر والمطابقة.
-  غيّري المتغيرات فقط، لا تلمسي المكوّنات.
-  كل لون بصيغة RGB بلا alpha ليعمل مع Tailwind: bg-[rgb(var(--col-bg))] أو عبر @theme أدناه.
+  المصدر: دليل الهوية البصرية لهاي لينك V1 · 2026 (docs/brand/highlink-brand-guide.pdf) — المطابقة في docs/brand/palette.md.
+  القاعدة: الهوية أبيض وأسود في الأساس (أبيض 55%، أسود 38%)، الليموني مرة وحدة في كل شاشة (5%)، والتدرّج على كلمة وحدة في العنوان (2%).
+  الزوايا حادة دائمًا (radius 0)، بدون ظلال — الفصل بخط رفيع أو بفراغ. الليموني ما ينكتب عليه نص أبيض.
+  غيّري المتغيرات فقط، لا تلمسي المكوّنات. كل لون بصيغة RGB بلا alpha ليعمل مع Tailwind (bg-text/5 …).
 */
 :root {
-  --col-bg: 11 16 32;            /* --canvas #0B1020 — خلفية الصفحة (كحلي داكن) */
-  --col-surface: 15 22 40;       /* --panel-2 #0F1628 — الأسطح والبطاقات */
-  --col-surface-strong: 18 26 48; /* --panel #121A30 — الأسطح البارزة/التمرير */
-  --col-border: 36 42 60;        /* --line rgba(169,180,204,.16) مركّبًا فوق الخلفية ≈ #242A3C */
-  --col-border-strong: 94 106 140; /* --line-strong #5E6A8C */
-  --col-text: 238 242 250;       /* --text #EEF2FA */
-  --col-text-muted: 169 180 204; /* --text-2 #A9B4CC */
-  --col-brand: 127 184 255;      /* --accent #7FB8FF — الأزرق السماوي، لون الأزرار الأساسية */
-  --col-brand-hover: 156 203 255; /* --accent-hover #9CCBFF */
-  --col-brand-ink: 11 16 32;     /* نص فوق لون البراند = لون الخلفية (كما في .btn بالموقع) */
-  --col-success: 52 227 168;     /* #34E3A8 من الموقع */
-  --col-danger: 239 68 68;
+  --col-bg: 255 255 255;            /* Paper الورق #FFFFFF — الخلفية الأساسية */
+  --col-surface: 244 244 242;       /* الرمادي الفاتح من الدليل #F4F4F2 — الأسطح والبطاقات */
+  --col-surface-strong: 228 228 228; /* #E4E4E4 — سطح بارز/تمرير */
+  --col-border: 228 228 228;        /* الخط الرفيع #E4E4E4 */
+  --col-border-strong: 10 10 10;    /* Ink — حد التحديد */
+  --col-text: 10 10 10;             /* Ink الحبر #0A0A0A — النصوص */
+  --col-text-muted: 107 107 107;    /* #6B6B6B — نص ثانوي بتباين AA على الأبيض (الدليل يستخدم #9A9A9A للتسميات الصغيرة فقط) */
+  --col-brand: 10 10 10;            /* لون التحديد والأزرار العادية = Ink (الهوية أبيض وأسود) */
+  --col-brand-hover: 42 42 42;      /* #2A2A2A */
+  --col-brand-ink: 255 255 255;     /* النص فوق Ink */
+  --col-lime: 208 249 74;           /* Lime الليموني #D0F94A — زر الإجراء الرئيسي فقط، مرة وحدة في الشاشة */
+  --col-lime-ink: 10 10 10;         /* النص فوق الليموني أسود دائمًا */
+  --col-success: 110 218 142;       /* #6EDA8E — منتصف التدرّج */
+  --col-danger: 192 57 43;          /* #C0392B — لون "لا" في الدليل */
+  --col-inverse: 10 10 10;          /* الأسطح المعكوسة (أغلفة القوالب، شاشات الفيديو) */
+  --col-inverse-ink: 255 255 255;
 
-  --radius-sm: 12px;             /* الموقع: 12–16px للعناصر الصغيرة، 999px للأزرار الحبّية */
-  --radius-lg: 20px;             /* الموقع: 20–24px للبطاقات */
+  --grad-1: #4EA5A3;                /* التدرّج: كلمة وحدة في العنوان */
+  --grad-2: #6EDA8E;
+  --grad-3: #D8F869;
 
-  --font-ar: 'IBM Plex Sans Arabic', 'Alexandria', system-ui, sans-serif;      /* --font-body */
-  --font-latin: 'Alexandria', 'IBM Plex Sans Arabic', system-ui, sans-serif;   /* --font-display */
+  --radius-sm: 0px;                 /* الزوايا حادة دائمًا */
+  --radius-lg: 0px;
+
+  --font-ar: 'Tajawal', system-ui, sans-serif;      /* خط واحد للعربي والإنجليزي */
+  --font-latin: 'Tajawal', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace; /* لأسماء الأدوات فقط (n8n، Kling، fal) */
 }
 
 @theme inline {
@@ -37,10 +47,26 @@
   --color-brand: rgb(var(--col-brand));
   --color-brand-hover: rgb(var(--col-brand-hover));
   --color-brand-ink: rgb(var(--col-brand-ink));
+  --color-lime: rgb(var(--col-lime));
+  --color-lime-ink: rgb(var(--col-lime-ink));
   --color-success: rgb(var(--col-success));
   --color-danger: rgb(var(--col-danger));
+  --color-inverse: rgb(var(--col-inverse));
+  --color-inverse-ink: rgb(var(--col-inverse-ink));
   --radius-sm: var(--radius-sm);
   --radius-lg: var(--radius-lg);
+  --radius-xs: 0px;
+  --radius-md: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
   --font-sans: var(--font-ar);
   --font-latin: var(--font-latin);
+  --font-mono: var(--font-mono);
+  --shadow-sm: none;
+  --shadow: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-2xl: none;
 }

@@ -167,7 +167,7 @@ export function VideoGeneratePage() {
                   onClick={() => setAudio((a) => !a)}
                   className={cn(
                     'flex w-full items-center justify-between gap-3 rounded-[var(--radius-sm)] border px-3 py-2 text-sm transition-colors',
-                    audio ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-white/[0.04]',
+                    audio ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-text/[0.04]',
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -188,7 +188,7 @@ export function VideoGeneratePage() {
           {assetsLoading ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="aspect-video animate-pulse rounded-[var(--radius-lg)] bg-white/[0.04]" />
+                <div key={i} className="aspect-video animate-pulse rounded-[var(--radius-lg)] bg-text/[0.04]" />
               ))}
             </div>
           ) : assets.length === 0 ? (
@@ -210,7 +210,7 @@ export function VideoGeneratePage() {
             e.preventDefault()
             void onGenerate()
           }}
-          className="sticky bottom-3 flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface/95 p-3 shadow-xl backdrop-blur md:flex-row md:items-end"
+          className="sticky bottom-3 flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-bg p-3 md:flex-row md:items-end"
         >
           <label className="flex-1 text-sm">
             <span className="sr-only">{t('video.promptLabel')}</span>

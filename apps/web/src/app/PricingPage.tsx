@@ -31,18 +31,18 @@ export function PricingPage() {
         <h1 className="text-3xl font-bold md:text-4xl">{t('pricing.title')}</h1>
         <p className="mx-auto mt-3 max-w-2xl text-muted">{t('pricing.subtitle', { bonus: SIGNUP_BONUS_CREDITS })}</p>
 
-        <div className="mt-6 inline-flex items-center gap-1 rounded-full border border-border bg-surface p-1 text-sm">
+        <div className="mt-6 inline-flex items-center gap-1 rounded-none border border-border bg-surface p-1 text-sm">
           <button
             type="button"
             onClick={() => setYearly(false)}
-            className={cn('rounded-full px-4 py-1.5', !yearly && 'bg-text text-bg')}
+            className={cn('rounded-none px-4 py-1.5', !yearly && 'bg-text text-bg')}
           >
             {t('pricing.monthly')}
           </button>
           <button
             type="button"
             onClick={() => setYearly(true)}
-            className={cn('rounded-full px-4 py-1.5', yearly && 'bg-text text-bg')}
+            className={cn('rounded-none px-4 py-1.5', yearly && 'bg-text text-bg')}
           >
             {t('pricing.yearly')} <span className="text-xs opacity-80">{t('pricing.yearlySave')}</span>
           </button>
@@ -105,13 +105,13 @@ function PlanCard({
   return (
     <div
       className={cn(
-        'relative flex flex-col rounded-2xl border bg-surface p-6',
-        popular ? 'border-brand shadow-[0_0_0_1px_rgb(var(--col-brand))]' : 'border-border',
+        'relative flex flex-col border bg-bg p-6',
+        popular ? 'border-2 border-text' : 'border-border',
       )}
     >
       {popular && (
         <div className="absolute -top-3 start-6">
-          <Badge tone="hot">{t('pricing.popular')}</Badge>
+          <Badge tone="new">{t('pricing.popular')}</Badge>
         </div>
       )}
       <h2 className="text-lg font-semibold">{t(`plans.${plan.id}`)}</h2>
@@ -135,7 +135,7 @@ function PlanCard({
       {signedIn ? (
         <Button
           className="mt-6 w-full"
-          variant={popular ? 'primary' : 'secondary'}
+          variant={popular ? 'lime' : 'secondary'}
           onClick={() => toast.info(t('pricing.checkoutSoon'))}
         >
           {t('pricing.subscribe')}
@@ -144,8 +144,8 @@ function PlanCard({
         <Link
           to="/login"
           className={cn(
-            'mt-6 inline-flex h-10 w-full items-center justify-center rounded-lg text-sm font-semibold',
-            popular ? 'bg-brand text-brand-ink' : 'border border-border bg-bg',
+            'mt-6 inline-flex h-10 w-full items-center justify-center text-sm font-medium',
+            popular ? 'bg-lime text-lime-ink' : 'border border-text bg-bg text-text hover:bg-text hover:text-bg',
           )}
         >
           {t('pricing.startFree')}

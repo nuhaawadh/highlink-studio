@@ -128,7 +128,7 @@ export function ImageGeneratePage() {
           {assetsLoading ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="aspect-square animate-pulse rounded-[var(--radius-lg)] bg-white/[0.04]" />
+                <div key={i} className="aspect-square animate-pulse rounded-[var(--radius-lg)] bg-text/[0.04]" />
               ))}
             </div>
           ) : assets.length === 0 ? (
@@ -150,7 +150,7 @@ export function ImageGeneratePage() {
             e.preventDefault()
             void onGenerate()
           }}
-          className="sticky bottom-3 flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-surface/95 p-3 shadow-xl backdrop-blur md:flex-row md:items-end"
+          className="sticky bottom-3 flex flex-col gap-3 rounded-[var(--radius-lg)] border border-border bg-bg p-3 md:flex-row md:items-end"
         >
           <label className="flex-1 text-sm">
             <span className="sr-only">{t('generate.promptLabel')}</span>

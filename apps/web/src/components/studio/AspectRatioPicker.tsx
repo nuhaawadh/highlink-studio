@@ -28,7 +28,7 @@ export function AspectRatioPicker({ options, value, onChange }: { options: Aspec
             onClick={() => onChange(r)}
             className={cn(
               'flex flex-col items-center gap-1 rounded-[var(--radius-sm)] border py-2 text-[11px] transition-colors',
-              selected ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-white/[0.04]',
+              selected ? 'border-brand bg-brand/10 text-text' : 'border-border text-muted hover:bg-text/[0.04]',
             )}
           >
             <span className="flex size-5 items-center justify-center">

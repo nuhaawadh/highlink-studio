@@ -29,7 +29,7 @@ export function LibraryPage() {
           <h1 className="text-xl font-bold">{t('library.title')}</h1>
           <p className="mt-1 text-sm text-muted">{t('library.subtitle')}</p>
         </div>
-        <div role="tablist" className="inline-flex items-center gap-1 rounded-full border border-border bg-surface p-1 text-sm">
+        <div role="tablist" className="inline-flex items-center gap-1 rounded-none border border-border bg-surface p-1 text-sm">
           {filters.map((f) => (
             <button
               key={f}
@@ -37,7 +37,7 @@ export function LibraryPage() {
               role="tab"
               aria-selected={filter === f}
               onClick={() => setFilter(f)}
-              className={cn('rounded-full px-3 py-1', filter === f ? 'bg-text text-bg' : 'text-muted hover:text-text')}
+              className={cn('rounded-none px-3 py-1', filter === f ? 'bg-text text-bg' : 'text-muted hover:text-text')}
             >
               {t(`library.${f}`)}
             </button>
@@ -48,7 +48,7 @@ export function LibraryPage() {
       {loading ? (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="aspect-square animate-pulse rounded-[var(--radius-lg)] bg-white/[0.04]" />
+            <div key={i} className="aspect-square animate-pulse rounded-[var(--radius-lg)] bg-text/[0.04]" />
           ))}
         </div>
       ) : assets.length === 0 ? (

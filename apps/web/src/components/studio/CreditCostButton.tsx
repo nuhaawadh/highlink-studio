@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 
 /**
  * زر التوليد يعرض التكلفة الحقيقية بالرصيد قبل الضغط (المخطط §8، مقتبس من هلاي).
+ * هو الليموني الوحيد في الشاشة (دليل الهوية 04).
  * معطّل إن لم يكفِ الرصيد، مع رابط الشحن.
  */
 export function CreditCostButton({
@@ -28,12 +29,12 @@ export function CreditCostButton({
 
   return (
     <div className={cn('flex flex-col items-stretch gap-1', className)}>
-      <Button type="button" size="lg" onClick={onClick} disabled={disabled || busy || insufficient} className="justify-between gap-3 ps-5 pe-2">
+      <Button type="button" variant="lime" size="lg" onClick={onClick} disabled={disabled || busy || insufficient} className="justify-between gap-3 ps-5 pe-2">
         <span className="flex items-center gap-2">
           {busy ? <Loader2 className="animate-spin" aria-hidden /> : <Sparkles aria-hidden />}
           {busy ? t('generate.generating') : t('generate.generate')}
         </span>
-        <span className="flex h-8 items-center gap-1 rounded-[calc(var(--radius-sm)-2px)] bg-black/15 px-2.5 text-xs font-bold">
+        <span className="flex h-8 items-center gap-1 rounded-none bg-lime-ink/10 px-2.5 text-xs font-bold">
           <Coins className="size-3.5" aria-hidden />
           <span className="font-latin tabular-nums">{cost}</span> {t('credits.label')}
         </span>

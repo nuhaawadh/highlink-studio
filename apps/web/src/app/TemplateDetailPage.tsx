@@ -170,7 +170,7 @@ export function TemplateDetailPage() {
 
           <details className="rounded-[var(--radius-sm)] border border-border p-3 text-xs text-muted">
             <summary className="cursor-pointer select-none font-semibold">{t('templates.promptPreview')}</summary>
-            <p dir="ltr" className="mt-2 whitespace-pre-wrap break-words font-latin leading-relaxed">
+            <p dir="ltr" className="mt-2 whitespace-pre-wrap break-words font-mono leading-relaxed">
               {prompt}
             </p>
           </details>
