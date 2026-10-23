@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/ai-avatar/multi",
+ "unit": "second",
+ "usd": 0.2,
+ "by_resolution": {"480p": 0.2, "720p": 0.4},
+ "pricing_text": "Your request will cost $0.2 per second. For 720p price will be doubled. | Schema (num_frames): If the number of frames is greater than 81, the video will be generated with 1.25x more billing units.",
+ "source_url": "https://fal.ai/models/fal-ai/ai-avatar/multi",
+ "confidence": "medium",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.2per second.\" ثم \"For 720p price will be doubled.\" (fal-launch.json احتوى الجملة الثانية فقط). 720p = $0.40/ث (×2). وصف المخطط يقول إن num_frames > 81 يرفع وحدات الفوترة ×1.25، والافتراضي num_frames=181 (>81) — فالسعر الفعلي الافتراضي غالبًا ≈ $0.25/ث عند 480p؛ غير واضح هل \"الثانية\" تُحسب من num_frames أو من طول الصوت، لذا الثقة متوسطة."
+}

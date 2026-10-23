@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "unit": "second",
+ "usd": 0.002,
+ "pricing_text": "Your request will cost $0.002 per second.",
+ "source_url": "https://fal.ai/models/fal-ai/elevenlabs/sound-effects/v2",
+ "confidence": "high",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.002per second.\" (مسافات مفقودة في الاستخراج). السعر لكل ثانية من الصوت المولَّد (duration_seconds 0.5–22؛ تلقائية إن لم تُحدَّد) — أي حتى ≈$0.044 للطلب. الوحدة \"second\" هنا ثانية صوت لا فيديو. pricing_text كان null في fal-launch.json."
+}

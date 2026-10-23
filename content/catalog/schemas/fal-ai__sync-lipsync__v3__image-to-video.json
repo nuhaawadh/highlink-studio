@@ -1,0 +1,99 @@
+{
+ "endpoint": "fal-ai/sync-lipsync/v3/image-to-video",
+ "required": [
+  "image_url",
+  "audio_url"
+ ],
+ "properties": {
+  "enable_safety_checker": {
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "audio_url": {
+   "description": "URL of the input audio. The output video matches its duration.",
+   "title": "Audio Url",
+   "type": "string"
+  },
+  "image_url": {
+   "description": "URL of the input image. sync-3 animates the face in the image so it lip-syncs to the provided audio (image-to-video). Supported image formats: JPEG, PNG and WebP.",
+   "title": "Image Url",
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "Sync3Output",
+  "properties": {
+   "video": {
+    "description": "The generated video",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a93c312/TqKMiLtCcTKWSeAWXJRD0_output.mp4"
+     }
+    ],
+    "title": "File",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   }
+  },
+  "required": [
+   "video"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:42:59+00:00"
+}

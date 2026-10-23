@@ -1,0 +1,10 @@
+{
+ "endpoint": "veed/fabric-1.0/text",
+ "unit": "second",
+ "usd": 0.08,
+ "by_resolution": {"480p": 0.08, "720p": 0.15},
+ "pricing_text": "480p - **$0.08** per second, 720p - **$0.15** per second",
+ "source_url": "https://fal.ai/models/veed/fabric-1.0/text",
+ "confidence": "high",
+ "notes": "السعر لكل ثانية من الفيديو المخرج (مدته تتحدد من طول النص المنطوق، حتى 2000 حرف). resolution مطلوب بلا افتراضي؛ usd للأرخص (480p). تنبيه: by_resolution في pricing_parsed بملف fal-launch.json أعطى 720p = 0.08 خطأً؛ الصحيح $0.15."
+}

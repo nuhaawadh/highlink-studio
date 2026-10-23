@@ -1,0 +1,117 @@
+{
+ "endpoint": "veed/fabric-1.0/text",
+ "required": [
+  "image_url",
+  "text",
+  "resolution"
+ ],
+ "properties": {
+  "resolution": {
+   "enum": [
+    "720p",
+    "480p"
+   ],
+   "title": "Resolution",
+   "type": "string",
+   "description": "Resolution"
+  },
+  "text": {
+   "title": "Text",
+   "maxLength": 2000,
+   "type": "string"
+  },
+  "image_url": {
+   "format": "uri",
+   "title": "Image Url",
+   "maxLength": 2083,
+   "type": "string"
+  },
+  "voice_description": {
+   "title": "Voice Description",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Optional additional voice description. The primary voice description is auto-generated from the image. You can use simple descriptors like 'British accent' or 'Confident' or provide a detailed description like 'Confident male voice, mid-20s, with notes of...'"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "title": "FabricOneTextOutput",
+  "type": "object",
+  "properties": {
+   "video": {
+    "examples": [
+     {
+      "content_type": "audio/mp4",
+      "url": "https://v3b.fal.media/files/b/0a8604be/zVkoAB4hTa8g6Fyl6V733_tmpy1fslwp2.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "title": "File Size",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ]
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "title": "Content Type",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ]
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "type": "string",
+      "description": "The URL where the file can be downloaded from."
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:42:59+00:00"
+}

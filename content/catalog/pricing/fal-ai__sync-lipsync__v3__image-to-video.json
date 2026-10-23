@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/sync-lipsync/v3/image-to-video",
+ "unit": "second",
+ "usd": 0.1333,
+ "pricing_text": "Your request will cost **$0.1333** per output second.",
+ "source_url": "https://fal.ai/models/fal-ai/sync-lipsync/v3/image-to-video",
+ "confidence": "high",
+ "notes": "السعر لكل ثانية من الفيديو المخرج، ومدة المخرج = مدة الصوت المدخل (audio_url)."
+}

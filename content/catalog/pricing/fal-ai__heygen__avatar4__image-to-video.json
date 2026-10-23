@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/heygen/avatar4/image-to-video",
+ "unit": "second",
+ "usd": 0.1,
+ "pricing_text": "Your request will cost **$0.1** per output video second. | Schema: Billed per second of output video ($0.1000/s).",
+ "source_url": "https://fal.ai/models/fal-ai/heygen/avatar4/image-to-video",
+ "confidence": "high",
+ "notes": "السعر لكل ثانية من الفيديو المخرج ($0.10/ث)، مؤكَّد أيضًا في وصف مخطط OpenAPI. ثابت عبر كل الدقات (360p–1080p) — لا فرق مذكور. المدة تتحدد من طول النص/الصوت. pricing_parsed في fal-launch.json كان unit=unknown."
+}

@@ -1,0 +1,298 @@
+{
+ "endpoint": "fal-ai/heygen/avatar4/image-to-video",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "background": {
+   "description": "Background configuration",
+   "title": "AvatarIVBackground",
+   "type": "object"
+  },
+  "voice": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Name of the voice to use for the avatar",
+   "enum": [
+    "Warm Pro Narrator",
+    "Chill Brian",
+    "Ivy",
+    "John Doe",
+    "Monika Sogam",
+    "Hope ",
+    "Archer ",
+    "Brittney",
+    "Patrick",
+    "David Castlemore",
+    "Michael C",
+    "Adam Stone ",
+    "Juniper",
+    "Cassidy ",
+    "Jessica Anne Bogart",
+    "Arabella",
+    "Andrew",
+    "Spuds Oxley ",
+    "Grace Elder",
+    "Helen",
+    "Canyon Rivers",
+    "Derya - Lifelike - Excited 🤩",
+    "Mellow Marcus",
+    "Jack Sterling - Broadcaster 🎙️",
+    "Brenda - UGC - 1.mp4",
+    "Reid",
+    "Reagan",
+    "Terry",
+    "Jenny",
+    "Radio Rick",
+    "Denise",
+    "Tim in car - Excited 🤩",
+    "Iskander",
+    "Thompson",
+    "Delicate Daisy - Excited 🤩",
+    "Kingston",
+    "George UGC 1",
+    "Bold Blake",
+    "Jane",
+    "Expressive Evan",
+    "Marianne - IA",
+    "Aaron",
+    "Modern Recipe Host - Voice 1",
+    "Willow",
+    "Cute Chloe - Friendly 😊",
+    "Rafael",
+    "June - Lifelike",
+    "Crisp Chloe",
+    "Slick Simon",
+    "Nassim - Informative",
+    "Baritone Ben",
+    "Maxwell",
+    "Ellie Faye - Excited 🤩",
+    "Milani",
+    "Feisty Fiona - Excited 🤩",
+    "Professor Dean",
+    "Rose - UGC - 1.mp4",
+    "Shona",
+    "Hudson Wilder",
+    "Ann - IA",
+    "Alastair Kensington",
+    "Oxley",
+    "Christina",
+    "Andrew Rizz ",
+    "Peyton",
+    "Gerardo - Outdoor",
+    "Chloe - Lifelike",
+    "Stephanie",
+    "Anthony - IA",
+    "Signal - Voice 1",
+    "Luca",
+    "Lisa - Voice 1",
+    "T.W.Tucker",
+    "Jack Sullivan - Serious 😐",
+    "Winter",
+    "Mireia - Lifelike",
+    "Georgia",
+    "Stella",
+    "Masha - Lifelike",
+    "Charming Charles - Friendly 😊",
+    "Serenity",
+    "Annie - Excited",
+    "Ralph",
+    "Bethany",
+    "Dominic",
+    "Mason Finn",
+    "Leena",
+    "Veteran Victor",
+    "Tamara",
+    "Nik Public",
+    "Calm Chloe",
+    "Sevik",
+    "Reilly",
+    "Raul",
+    "Imposing Ian",
+    "Relaxed Ray",
+    "Dexter - Professional",
+    "Relaxed Rick",
+    "Edwin",
+    "Rupert Blackwood",
+    "Ginny",
+    "Hope"
+   ],
+   "title": "Voice"
+  },
+  "prompt": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The text the avatar will speak",
+   "title": "Prompt"
+  },
+  "caption": {
+   "type": "boolean",
+   "description": "Whether to add captions to the video",
+   "default": false,
+   "title": "Caption"
+  },
+  "image_url": {
+   "type": "string",
+   "description": "URL of the image to animate. The image should contain a clear face.",
+   "title": "Image Url"
+  },
+  "aspect_ratio": {
+   "enum": [
+    "16:9",
+    "9:16",
+    "4:5",
+    "5:4",
+    "1:1",
+    "auto"
+   ],
+   "type": "string",
+   "description": "Aspect ratio of the output video. Supported values: '16:9', '9:16', '4:5', '5:4', '1:1', and 'auto'. 'auto' preserves the source aspect ratio when HeyGen can read it, falling back to '16:9' otherwise.",
+   "default": "16:9",
+   "title": "Aspect Ratio"
+  },
+  "audio_url": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "URL of an audio file for the avatar to lip-sync to. When provided, overrides prompt and voice.",
+   "title": "Audio Url"
+  },
+  "resolution": {
+   "enum": [
+    "360p",
+    "480p",
+    "540p",
+    "720p",
+    "1080p"
+   ],
+   "type": "string",
+   "description": "Video resolution preset. Options: 360p, 480p, 540p, 720p, 1080p",
+   "default": "720p",
+   "title": "Resolution"
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "expression": {
+   "anyOf": [
+    {
+     "const": "happy",
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Facial expression",
+   "title": "Expression"
+  },
+  "talking_style": {
+   "enum": [
+    "stable",
+    "expressive"
+   ],
+   "type": "string",
+   "description": "Talking style - 'stable' for minimal movement, 'expressive' for more animation",
+   "default": "stable",
+   "title": "Talking Style"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "title": "AvatarIVOutput",
+  "type": "object",
+  "properties": {
+   "video": {
+    "description": "The generated video file",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a900636/DUES0_z4i7FWnife02ieH_output.mp4",
+      "file_size": 2466524,
+      "content_type": "video/mp4",
+      "file_name": "output.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:45:05+00:00"
+}
