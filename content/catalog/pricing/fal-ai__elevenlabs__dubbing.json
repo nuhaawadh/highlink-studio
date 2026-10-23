@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/elevenlabs/dubbing",
+ "unit": "minute",
+ "usd": 0.6,
+ "pricing_text": "Your request will cost **$0.6** per minute. The calculation will be based on the **closest minute after rounding upwards**.",
+ "source_url": "https://fal.ai/models/fal-ai/elevenlabs/dubbing",
+ "confidence": "high",
+ "notes": "$0.60 لكل دقيقة من المادة المدبلجة مع تقريب لأعلى لأقرب دقيقة (مقطع 61 ث = دقيقتان = $1.20)."
+}

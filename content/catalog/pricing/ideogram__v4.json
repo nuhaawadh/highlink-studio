@@ -1,0 +1,9 @@
+{
+ "endpoint": "ideogram/v4",
+ "unit": "megapixel",
+ "usd": 0.015,
+ "pricing_text": "Your request will cost **$0.0075** per megapixel in **TURBO** mode, **$0.015** per megapixel in **BALANCED** mode, or **$0.025** per megapixel in **QUALITY** mode. For example, a 2048 x 2048 image will cost **$0.03**, **$0.06** or **$0.10** based on the mode.",
+ "source_url": "https://fal.ai/models/ideogram/v4",
+ "confidence": "medium",
+ "notes": "usd = $0.015/ميغابكسل لوضع BALANCED (rendering_speed الافتراضي في المخطط). TURBO $0.0075/MP، QUALITY $0.025/MP. الحجم الافتراضي square_hd (1024×1024 ≈ 1.05MP) ≈ $0.016. الثقة متوسطة: وصف حقل expansion_model في المخطط يذكر أن 'None' يتخطى رسوم توسيع البرومبت (أي أن Medium الافتراضي وLarge لهما رسوم)، لكن صفحة النموذج لا تذكر قيمة هذه الرسوم — غير معروفة."
+}

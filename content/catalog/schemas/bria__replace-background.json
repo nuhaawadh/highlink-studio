@@ -1,0 +1,164 @@
+{
+ "endpoint": "bria/replace-background",
+ "required": [],
+ "properties": {
+  "prompt": {
+   "title": "Prompt",
+   "description": "Prompt for background replacement.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "sync_mode": {
+   "description": "If true, returns the image directly in the response (increases latency).",
+   "default": false,
+   "title": "Sync Mode",
+   "type": "boolean"
+  },
+  "seed": {
+   "description": "Random seed for reproducibility.",
+   "default": 4925634,
+   "title": "Seed",
+   "type": "integer"
+  },
+  "negative_prompt": {
+   "description": "Negative prompt for background replacement.",
+   "default": "",
+   "title": "Negative Prompt",
+   "type": "string"
+  },
+  "steps_num": {
+   "description": "Number of inference steps.",
+   "default": 30,
+   "title": "Steps Num",
+   "type": "integer"
+  },
+  "image_url": {
+   "default": "https://v3b.fal.media/files/b/0a8bea8c/Mztgx0NG3HPdby-4iPqwH_a_coffee_machine_standing_in_the_kitchen.png",
+   "title": "Image Url",
+   "description": "Reference image (file or URL).",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ },
+ "output": {
+  "properties": {
+   "images": {
+    "description": "Generated images.",
+    "title": "Images",
+    "items": {
+     "type": "object",
+     "additionalProperties": true
+    },
+    "type": "array"
+   },
+   "image": {
+    "description": "Represents an image file.",
+    "properties": {
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "width": {
+      "examples": [
+       1024
+      ],
+      "title": "Width",
+      "description": "The width of the image in pixels.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "type": "string",
+      "description": "The URL where the file can be downloaded from."
+     },
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "height": {
+      "examples": [
+       1024
+      ],
+      "title": "Height",
+      "description": "The height of the image in pixels.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "Image",
+    "type": "object"
+   }
+  },
+  "required": [
+   "image"
+  ],
+  "title": "ReplaceBackgroundOutputModel",
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:26:04+00:00"
+}

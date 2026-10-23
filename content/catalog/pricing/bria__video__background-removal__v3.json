@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/video/background-removal/v3",
+ "unit": "second",
+ "usd": 0.05,
+ "pricing_text": "Your request will cost **$0.05** per second.",
+ "source_url": "https://fal.ai/models/bria/video/background-removal/v3",
+ "confidence": "high",
+ "notes": "لكل ثانية من الفيديو (المُدخل = المخرج في إزالة الخلفية). لا تفريق بالدقة في النص."
+}

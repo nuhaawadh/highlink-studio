@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/guided-remove-background",
+ "unit": "image",
+ "usd": 0.03,
+ "pricing_text": "Your request will cost **$0.03** per image.",
+ "source_url": "https://fal.ai/models/bria/guided-remove-background",
+ "confidence": "high",
+ "notes": "سعر ثابت لكل صورة."
+}

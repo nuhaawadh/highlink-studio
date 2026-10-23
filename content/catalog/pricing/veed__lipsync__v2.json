@@ -1,0 +1,9 @@
+{
+ "endpoint": "veed/lipsync/v2",
+ "unit": "second",
+ "usd": 0.07,
+ "pricing_text": "Your request will cost **$0.07** for every second of output video.",
+ "source_url": "https://fal.ai/models/veed/lipsync/v2",
+ "confidence": "high",
+ "notes": "لكل ثانية من الفيديو الناتج. لا تفريق بالدقة في النص."
+}

@@ -1,0 +1,10 @@
+{
+ "endpoint": "xai/grok-imagine-image/v2.0/text-to-image",
+ "unit": "image",
+ "usd": 0.04,
+ "by_resolution": {"1K": 0.04, "2K": 0.06},
+ "pricing_text": "Your request will cost **$0.04** (low) or **$0.06** (medium) per image for 1K, and **$0.06** (low) or **$0.08** (medium) per image for 2K.",
+ "source_url": "https://fal.ai/models/xai/grok-imagine-image/v2.0/text-to-image",
+ "confidence": "high",
+ "notes": "usd = 1K بجودة low ($0.04). by_resolution بجودة low: 1K $0.04، 2K $0.06. بجودة medium: 1K $0.06، 2K $0.08. تنبيه: pricing_parsed في fal-launch.json وضع 2k = 0.08 (سعر medium). تحقق من القيمة الافتراضية للجودة والدقة في المخطط قبل اعتماد الافتراضي."
+}

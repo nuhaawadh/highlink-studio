@@ -1,0 +1,522 @@
+{
+ "endpoint": "bria/fibo-2/edit",
+ "required": [
+  "image_urls"
+ ],
+ "properties": {
+  "instruction": {
+   "title": "Instruction",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The edit, in free-form text. It is expanded into a VGL, which is returned. With 'vgl', the change to make to it. 'prompt' is accepted as an alias."
+  },
+  "vgl": {
+   "title": "Vgl",
+   "anyOf": [
+    {
+     "title": "VglEdit",
+     "type": "object",
+     "additionalProperties": true,
+     "properties": {
+      "aesthetics": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/Aesthetics"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The aesthetics of the image to be generated."
+      },
+      "background_setting": {
+       "title": "Background Setting",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The background setting of the image to be generated."
+      },
+      "objects": {
+       "title": "Objects",
+       "default": [],
+       "anyOf": [
+        {
+         "items": {
+          "$ref": "#/components/schemas/PromptObject"
+         },
+         "type": "array"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "A list of objects in the image to be generated, along with their attributes and relationships to other objects in the image."
+      },
+      "text_render": {
+       "title": "Text Render",
+       "default": [],
+       "anyOf": [
+        {
+         "items": {
+          "$ref": "#/components/schemas/TextRender"
+         },
+         "type": "array"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "A list of text to be rendered in the image."
+      },
+      "photographic_characteristics": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/PhotographicCharacteristics"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The photographic characteristics of the image to be generated."
+      },
+      "edit_instruction": {
+       "title": "Edit Instruction",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The edit instruction for the image."
+      },
+      "context": {
+       "title": "Context",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The context of the image to be generated."
+      },
+      "artistic_style": {
+       "title": "Artistic Style",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The artistic style of the image to be generated."
+      },
+      "style_medium": {
+       "title": "Style Medium",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The style medium of the image to be generated."
+      },
+      "lighting": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/Lighting"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The lighting of the image to be generated."
+      },
+      "short_description": {
+       "title": "Short Description",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "A short description of the image to be generated."
+      }
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "A VGL (Visual Generation Language) document. Alone, it is the edit as-is and must carry its 'edit_instruction'. With 'instruction', it is the first image's VGL, the baseline the edit is written from. Accepts what a previous request returned."
+  },
+  "sync_mode": {
+   "title": "Sync Mode",
+   "default": false,
+   "type": "boolean",
+   "description": "If true, returns the image directly in the response (increases latency)."
+  },
+  "seed": {
+   "maximum": 2147483647,
+   "title": "Seed",
+   "default": 5555,
+   "description": "Random seed for reproducibility, 0 to 2147483647.",
+   "type": "integer",
+   "minimum": 0
+  },
+  "aspect_ratio": {
+   "title": "Aspect Ratio",
+   "anyOf": [
+    {
+     "enum": [
+      "1:1",
+      "1:2",
+      "1:3",
+      "1:4",
+      "1:5",
+      "2:1",
+      "2:3",
+      "3:1",
+      "3:2",
+      "3:4",
+      "4:1",
+      "4:3",
+      "4:5",
+      "5:1",
+      "5:4",
+      "9:16",
+      "9:21",
+      "10:16",
+      "16:9",
+      "16:10",
+      "21:9"
+     ],
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Output aspect ratio, at about one megapixel. Left unset, the output keeps the ratio of the first image. A single image always keeps its own ratio."
+  },
+  "image_urls": {
+   "minItems": 1,
+   "title": "Image Urls",
+   "items": {
+    "type": "string"
+   },
+   "maxItems": 4,
+   "type": "array",
+   "description": "1-4 images to edit (files or URLs). The instruction refers to them as ,  and so on, in the order they are sent."
+  },
+  "mask_url": {
+   "title": "Mask Url",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Mask (file or URL) marking the region to regenerate: white where the model should edit, black elsewhere. Single-image requests only, at that image's size. A masked edit comes back at the image's own size, with its own pixels outside the mask."
+  }
+ },
+ "output": {
+  "title": "EditOutputModel",
+  "type": "object",
+  "required": [
+   "image",
+   "vgl"
+  ],
+  "properties": {
+   "image": {
+    "description": "Represents an image file.",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided."
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The size of the file in bytes."
+     },
+     "width": {
+      "examples": [
+       1024
+      ],
+      "title": "Width",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The width of the image in pixels."
+     },
+     "url": {
+      "title": "Url",
+      "type": "string",
+      "description": "The URL where the file can be downloaded from."
+     },
+     "height": {
+      "examples": [
+       1024
+      ],
+      "title": "Height",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The height of the image in pixels."
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "description": "The mime type of the file."
+     }
+    },
+    "title": "Image",
+    "type": "object",
+    "required": [
+     "url"
+    ]
+   },
+   "images": {
+    "title": "Images",
+    "items": {
+     "properties": {
+      "file_name": {
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided."
+      },
+      "file_size": {
+       "examples": [
+        4404019
+       ],
+       "title": "File Size",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes."
+      },
+      "width": {
+       "examples": [
+        1024
+       ],
+       "title": "Width",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The width of the image in pixels."
+      },
+      "url": {
+       "title": "Url",
+       "type": "string",
+       "description": "The URL where the file can be downloaded from."
+      },
+      "height": {
+       "examples": [
+        1024
+       ],
+       "title": "Height",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The height of the image in pixels."
+      },
+      "content_type": {
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file."
+      }
+     },
+     "title": "Image",
+     "type": "object",
+     "required": [
+      "url"
+     ],
+     "description": "Represents an image file."
+    },
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/0aaf5f35/c0ONFWAdK7WM5N9UZ_maQ_fibo-2-edit-example.png"
+      }
+     ]
+    ],
+    "type": "array",
+    "default": [],
+    "description": "Single-element list holding the same image, as the sibling FIBO apps return."
+   },
+   "vgl": {
+    "examples": [
+     {
+      "aesthetics": {
+       "composition": "Centered editorial composition with rule of thirds horizon",
+       "mood_atmosphere": "Serene, minimalist, luxurious, and tranquil",
+       "color_scheme": "Muted palette of fog grey, slate, blue-grey, and warm peach, accented by rose-gold"
+      },
+      "background_setting": "Perfectly calm, mirror-like water surface reflecting a dense, soft fog and low cloud sky with a warm peach-cream glow breaking through near the top.",
+      "objects": [
+       {
+        "relative_size": "Medium within frame",
+        "number_of_objects": 1,
+        "orientation": "Upright",
+        "relationship": "Resting upright on the flat top surface of the large grey boulder",
+        "shape_and_color": "Square prism, clear glass with rose-gold liquid and black cap",
+        "appearance_details": "Soft diffused fog light wrapping the glass, gentle edge highlights, and a subtle warm glow in the liquid",
+        "texture": "Smooth glass and matte metal",
+        "location": "Center, on top of the boulder",
+        "description": "A square clear glass perfume flacon with thick beveled walls, crisp edges, filled with rose-gold liquid, featuring a thin internal dip tube, a short dark metal collar, and a wide matte black cap."
+       },
+       {
+        "relative_size": "Large within frame",
+        "number_of_objects": 1,
+        "orientation": "Static",
+        "relationship": "Supporting the perfume bottle on its flat top surface and casting a complete reflection in the water below",
+        "shape_and_color": "Irregular block shape, grey stone",
+        "appearance_details": "Catches soft diffused light on its upper facets",
+        "texture": "Rough, weathered stone",
+        "location": "Lower half of the frame",
+        "description": "A single large grey boulder with a weathered, slightly rough stone surface sitting in calm water."
+       }
+      ],
+      "text_render": [
+       {
+        "location": "Upper sky, centered about 15-20% down from the top",
+        "appearance_details": "Thin elegant capitals with subtle flared strokes, flat and crisp with no shadow",
+        "color": "Muted warm charcoal grey",
+        "text": "STILL",
+        "size": "Medium",
+        "font": "Serif typeface with wide spacing"
+       },
+       {
+        "location": "Upper sky, directly beneath the word STILL",
+        "appearance_details": "Matching small capitals with wide spacing, flat and crisp with no shadow",
+        "color": "Muted warm charcoal grey",
+        "text": "EAU DE PARFUM",
+        "size": "Small",
+        "font": "Serif typeface with wide spacing"
+       }
+      ],
+      "photographic_characteristics": {
+       "depth_of_field": "Shallow atmospheric depth",
+       "camera_angle": "Eye-level straight-on shot",
+       "focus": "Sharp focus on the perfume bottle and boulder",
+       "lens_focal_length": "Standard portrait lens (e.g., 50mm-85mm)"
+      },
+      "edit_instruction": "Create a luxury fragrance poster by placing the perfume bottle from  upright on the grey boulder in the misty water from , and add the minimalist typography from  in the upper sky.",
+      "context": "This is a conceptual luxury fragrance advertising campaign designed for a high-end magazine spread or billboard.",
+      "artistic_style": "realistic",
+      "lighting": {
+       "direction": "Top-lit",
+       "shadows": "Soft contact shadows beneath the perfume bottle on the stone",
+       "conditions": "Soft diffused fog light with warm peach glow from above"
+      },
+      "style_medium": "photograph",
+      "short_description": "A high-end luxury fragrance poster featuring the perfume bottle from  centered atop the large grey boulder resting in calm water from , with the minimalist typography from  floating in the misty sky above."
+     }
+    ],
+    "title": "Vgl",
+    "type": "object",
+    "additionalProperties": true,
+    "description": "The VGL the edit ran, including its 'edit_instruction'."
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:26:04+00:00"
+}

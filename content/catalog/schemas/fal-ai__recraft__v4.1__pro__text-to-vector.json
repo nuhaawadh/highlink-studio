@@ -1,0 +1,215 @@
+{
+ "endpoint": "fal-ai/recraft/v4.1/pro/text-to-vector",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "background_color": {
+   "anyOf": [
+    {
+     "properties": {
+      "r": {
+       "maximum": 255,
+       "description": "Red color value",
+       "type": "integer",
+       "default": 0,
+       "minimum": 0,
+       "title": "R"
+      },
+      "b": {
+       "maximum": 255,
+       "description": "Blue color value",
+       "type": "integer",
+       "default": 0,
+       "minimum": 0,
+       "title": "B"
+      },
+      "g": {
+       "maximum": 255,
+       "description": "Green color value",
+       "type": "integer",
+       "default": 0,
+       "minimum": 0,
+       "title": "G"
+      }
+     },
+     "type": "object",
+     "title": "RGBColor"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The preferable background color of the generated images."
+  },
+  "colors": {
+   "items": {
+    "properties": {
+     "r": {
+      "maximum": 255,
+      "description": "Red color value",
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "title": "R"
+     },
+     "b": {
+      "maximum": 255,
+      "description": "Blue color value",
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "title": "B"
+     },
+     "g": {
+      "maximum": 255,
+      "description": "Green color value",
+      "type": "integer",
+      "default": 0,
+      "minimum": 0,
+      "title": "G"
+     }
+    },
+    "type": "object",
+    "title": "RGBColor"
+   },
+   "type": "array",
+   "default": [],
+   "description": "An array of preferable colors",
+   "title": "Colors"
+  },
+  "prompt": {
+   "type": "string",
+   "maxLength": 10000,
+   "title": "Prompt"
+  },
+  "image_size": {
+   "anyOf": [
+    {
+     "properties": {
+      "height": {
+       "maximum": 14142,
+       "description": "The height of the generated image.",
+       "type": "integer",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "title": "Height"
+      },
+      "width": {
+       "maximum": 14142,
+       "description": "The width of the generated image.",
+       "type": "integer",
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "title": "Width"
+      }
+     },
+     "type": "object",
+     "title": "ImageSize"
+    },
+    {
+     "type": "string",
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ]
+    }
+   ],
+   "default": "square_hd",
+   "title": "Image Size"
+  },
+  "enable_safety_checker": {
+   "description": "If set to true, the safety checker will be enabled. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "type": "boolean",
+   "default": true,
+   "title": "Enable Safety Checker"
+  }
+ },
+ "output": {
+  "required": [
+   "images"
+  ],
+  "properties": {
+   "images": {
+    "examples": [
+     [
+      {
+       "url": "https://v3b.fal.media/files/b/0a8ee4de/lmXuapOPV309mE533swE0_image.svg",
+       "file_name": "image.svg",
+       "content_type": "image/svg+xml",
+       "file_size": 1818794
+      }
+     ]
+    ],
+    "items": {
+     "required": [
+      "url"
+     ],
+     "properties": {
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string",
+       "title": "Url"
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name"
+      },
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type"
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ],
+       "title": "File Size"
+      }
+     },
+     "type": "object",
+     "title": "File"
+    },
+    "type": "array",
+    "title": "Images"
+   }
+  },
+  "type": "object",
+  "title": "RecraftV4VectorProTextToImageOutput"
+ },
+ "fetched_at": "2026-10-23T14:26:04+00:00"
+}

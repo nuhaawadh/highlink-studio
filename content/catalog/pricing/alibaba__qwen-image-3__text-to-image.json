@@ -1,0 +1,10 @@
+{
+ "endpoint": "alibaba/qwen-image-3/text-to-image",
+ "unit": "image",
+ "usd": 0.04,
+ "by_resolution": {"1K": 0.04, "2K": 0.075},
+ "pricing_text": "Your request will cost **$0.04** per generated image at 1K resolution, and **$0.075** per generated image at 2K resolution.",
+ "source_url": "https://fal.ai/models/alibaba/qwen-image-3/text-to-image",
+ "confidence": "high",
+ "notes": "usd = صورة 1K ($0.04). 2K = $0.075. السعر لكل صورة مُولَّدة."
+}

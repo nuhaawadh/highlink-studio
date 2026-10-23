@@ -1,0 +1,9 @@
+{
+ "endpoint": "bria/fibo-edit-1.5/product-holding",
+ "unit": "image",
+ "usd": 0.04,
+ "pricing_text": "Billing is calculated per generated image at **$0.04**, regardless of resolution. For example, **10 images cost $0.40**.",
+ "source_url": "https://fal.ai/models/bria/fibo-edit-1.5/product-holding",
+ "confidence": "high",
+ "notes": "سعر ثابت $0.04 لكل صورة مُولَّدة بغض النظر عن الدقة."
+}

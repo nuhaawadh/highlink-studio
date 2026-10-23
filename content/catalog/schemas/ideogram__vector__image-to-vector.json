@@ -1,0 +1,109 @@
+{
+ "endpoint": "ideogram/vector/image-to-vector",
+ "required": [
+  "image_url"
+ ],
+ "properties": {
+  "mode": {
+   "default": "default",
+   "enum": [
+    "default",
+    "simple"
+   ],
+   "title": "Mode",
+   "description": "`default` preserves finer details; `simple` uses fewer, simpler shapes.",
+   "type": "string"
+  },
+  "image_url": {
+   "title": "Image Url",
+   "description": "The image to convert to SVG. JPEG, PNG or WebP, max 50MB.",
+   "type": "string"
+  }
+ },
+ "output": {
+  "properties": {
+   "images": {
+    "title": "Images",
+    "description": "The generated SVG files.",
+    "type": "array",
+    "items": {
+     "properties": {
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      },
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      }
+     },
+     "required": [
+      "url"
+     ],
+     "title": "File",
+     "type": "object"
+    }
+   },
+   "seed": {
+    "anyOf": [
+     {
+      "type": "integer"
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "title": "Seed",
+    "description": "Seed used for generation, if provided."
+   }
+  },
+  "required": [
+   "images"
+  ],
+  "title": "IdeogramVectorOutput",
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:25:52+00:00"
+}

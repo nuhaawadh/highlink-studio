@@ -1,0 +1,303 @@
+{
+ "endpoint": "fal-ai/ideogram/character",
+ "required": [
+  "prompt",
+  "reference_image_urls"
+ ],
+ "properties": {
+  "style_codes": {
+   "anyOf": [
+    {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Style Codes",
+   "description": "A list of 8 character hexadecimal codes representing the style of the image. Cannot be used in conjunction with style_reference_images or style"
+  },
+  "sync_mode": {
+   "default": false,
+   "description": "If `True`, the media will be returned as a data URI and the output data won't be available in the request history.",
+   "title": "Sync Mode",
+   "type": "boolean"
+  },
+  "rendering_speed": {
+   "enum": [
+    "TURBO",
+    "BALANCED",
+    "QUALITY"
+   ],
+   "default": "BALANCED",
+   "description": "The rendering speed to use.",
+   "title": "Rendering Speed",
+   "type": "string"
+  },
+  "image_urls": {
+   "anyOf": [
+    {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Image Urls",
+   "description": "A set of images to use as style references (maximum total size 10MB across all style references). The images should be in JPEG, PNG or WebP format"
+  },
+  "expand_prompt": {
+   "default": true,
+   "description": "Determine if MagicPrompt should be used in generating the request or not.",
+   "title": "Expand Prompt",
+   "type": "boolean"
+  },
+  "seed": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed",
+   "description": "Seed for the random number generator"
+  },
+  "image_size": {
+   "default": "square_hd",
+   "anyOf": [
+    {
+     "properties": {
+      "width": {
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "description": "The width of the generated image.",
+       "maximum": 14142,
+       "type": "integer",
+       "title": "Width"
+      },
+      "height": {
+       "default": 512,
+       "exclusiveMinimum": 0,
+       "description": "The height of the generated image.",
+       "maximum": 14142,
+       "type": "integer",
+       "title": "Height"
+      }
+     },
+     "title": "ImageSize",
+     "type": "object"
+    },
+    {
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9"
+     ],
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "The resolution of the generated image",
+   "title": "Image Size"
+  },
+  "color_palette": {
+   "anyOf": [
+    {
+     "properties": {
+      "name": {
+       "anyOf": [
+        {
+         "enum": [
+          "EMBER",
+          "FRESH",
+          "JUNGLE",
+          "MAGIC",
+          "MELON",
+          "MOSAIC",
+          "PASTEL",
+          "ULTRAMARINE"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Name",
+       "description": "A color palette preset value"
+      },
+      "members": {
+       "anyOf": [
+        {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ColorPaletteMember"
+         }
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Members",
+       "description": "A list of color palette members that define the color palette"
+      }
+     },
+     "title": "ColorPalette",
+     "type": "object"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "A color palette for generation, must EITHER be specified via one of the presets (name) or explicitly via hexadecimal representations of the color with optional weights (members)"
+  },
+  "reference_image_urls": {
+   "title": "Reference Image Urls",
+   "description": "A set of images to use as character references. Currently only 1 image is supported, rest will be ignored. (maximum total size 10MB across all character references). The images should be in JPEG, PNG or WebP format",
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "num_images": {
+   "minimum": 1,
+   "default": 1,
+   "description": "Number of images to generate.",
+   "maximum": 8,
+   "type": "integer",
+   "title": "Num Images"
+  },
+  "negative_prompt": {
+   "default": "",
+   "description": "Description of what to exclude from an image. Descriptions in the prompt take precedence to descriptions in the negative prompt.",
+   "title": "Negative Prompt",
+   "type": "string"
+  },
+  "style": {
+   "enum": [
+    "AUTO",
+    "REALISTIC",
+    "FICTION"
+   ],
+   "default": "AUTO",
+   "description": "The style type to generate with. Cannot be used with style_codes.",
+   "title": "Style",
+   "type": "string"
+  },
+  "reference_mask_urls": {
+   "title": "Reference Mask Urls",
+   "description": "A set of masks to apply to the character references. Currently only 1 mask is supported, rest will be ignored. (maximum total size 10MB across all character references). The masks should be in JPEG, PNG or WebP format",
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  },
+  "prompt": {
+   "title": "Prompt",
+   "description": "The prompt to fill the masked part of the image.",
+   "type": "string"
+  }
+ },
+ "output": {
+  "properties": {
+   "seed": {
+    "title": "Seed",
+    "description": "Seed used for the random number generator",
+    "type": "integer",
+    "examples": [
+     123456
+    ]
+   },
+   "images": {
+    "title": "Images",
+    "examples": [
+     [
+      {
+       "url": "https://v3.fal.media/files/monkey/NC_1eo9ecE9fARcxviJ2R_image.png"
+      }
+     ]
+    ],
+    "type": "array",
+    "items": {
+     "properties": {
+      "content_type": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Content Type",
+       "description": "The mime type of the file.",
+       "examples": [
+        "image/png"
+       ]
+      },
+      "file_name": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Name",
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "examples": [
+        "z9RV14K95DvU.png"
+       ]
+      },
+      "file_size": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "File Size",
+       "description": "The size of the file in bytes.",
+       "examples": [
+        4404019
+       ]
+      },
+      "url": {
+       "title": "Url",
+       "description": "The URL where the file can be downloaded from.",
+       "type": "string"
+      }
+     },
+     "title": "File",
+     "type": "object",
+     "required": [
+      "url"
+     ]
+    }
+   }
+  },
+  "title": "CharacterOutputV3",
+  "type": "object",
+  "required": [
+   "images",
+   "seed"
+  ]
+ },
+ "fetched_at": "2026-10-23T14:26:04+00:00"
+}

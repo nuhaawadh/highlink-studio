@@ -1,0 +1,9 @@
+{
+ "endpoint": "blackforestlabs/flux-3/text-to-image",
+ "unit": "image",
+ "usd": 0.048,
+ "pricing_text": "Image pricing varies by resolution. A 1K (1 MP) image costs **$0.048**. — One flat price per image, set by resolution.",
+ "source_url": "https://fal.ai/models/blackforestlabs/flux-3/text-to-image",
+ "confidence": "medium",
+ "notes": "سعر ثابت لكل صورة يتحدد بالدقة؛ الصفحة وصفحة /api تذكران سعر 1K فقط ($0.048، وهي الدقة الافتراضية). أسعار 768sq و1.5k و2k و4k غير منشورة في النص، لذا by_resolution غير مذكور والثقة medium. لا تفعّل الدقات الأعلى حتى يُعرف سعرها."
+}

@@ -1,0 +1,10 @@
+{
+ "endpoint": "fal-ai/longcat-single-avatar/image-audio-to-video",
+ "unit": "second",
+ "usd": 0.15,
+ "by_resolution": {"480p": 0.15, "720p": 0.3},
+ "pricing_text": "Your request will cost **$0.3** per **video second** for **720p**, **$0.15** per **video second** for **480p**.",
+ "source_url": "https://fal.ai/models/fal-ai/longcat-single-avatar/image-audio-to-video",
+ "confidence": "high",
+ "notes": "لكل ثانية فيديو؛ usd = 480p (الأرخص). تصحيح: pricing_parsed في fal-launch.json كان unit=unknown وusd=0.3؛ الوحدة الصحيحة second. طول الفيديو يتبع طول الصوت المُدخل."
+}

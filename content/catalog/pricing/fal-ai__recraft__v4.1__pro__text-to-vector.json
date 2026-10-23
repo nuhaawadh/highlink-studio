@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/recraft/v4.1/pro/text-to-vector",
+ "unit": "image",
+ "usd": 0.3,
+ "pricing_text": "Your request will cost $0.3 per image.",
+ "source_url": "https://fal.ai/models/fal-ai/recraft/v4.1/pro/text-to-vector",
+ "confidence": "high",
+ "notes": "النص الحرفي في الصفحة: \"Your requestwill cost$0.3per image.\" (مسافات مفقودة في الاستخراج). سعر ثابت لكل صورة SVG بغض النظر عن image_size. pricing_text كان null في fal-launch.json."
+}

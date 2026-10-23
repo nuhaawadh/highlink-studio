@@ -1,0 +1,244 @@
+{
+ "endpoint": "krea/v3/text-to-image",
+ "required": [
+  "prompt"
+ ],
+ "properties": {
+  "sync_mode": {
+   "description": "Return images as data URIs instead of saving them in request history.",
+   "title": "Sync Mode",
+   "default": false,
+   "type": "boolean"
+  },
+  "enable_safety_checker": {
+   "description": "Check output images for unsafe content. Disabling requires account authorization.",
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "output_format": {
+   "description": "Output image format.",
+   "title": "Output Format",
+   "default": "png",
+   "enum": [
+    "png",
+    "jpeg"
+   ],
+   "type": "string"
+  },
+  "model": {
+   "description": "Model variant: berry favors quality, jam favors speed.",
+   "title": "Model",
+   "default": "berry",
+   "enum": [
+    "berry",
+    "jam"
+   ],
+   "type": "string"
+  },
+  "seed": {
+   "description": "Latent noise seed. Use a new seed when editing a previous output again.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed"
+  },
+  "prompt": {
+   "description": "Description of the image to generate.",
+   "maxLength": 5000,
+   "title": "Prompt",
+   "type": "string"
+  },
+  "image_size": {
+   "description": "Output size, rounded up to multiples of 16, at most 4,220,160 total pixels (1680×2512). auto lets the prompt expander pick the aspect ratio at about 2048×2048.",
+   "anyOf": [
+    {
+     "title": "ImageSize",
+     "properties": {
+      "height": {
+       "description": "The height of the generated image.",
+       "title": "Height",
+       "exclusiveMinimum": 0,
+       "default": 512,
+       "maximum": 14142,
+       "type": "integer"
+      },
+      "width": {
+       "description": "The width of the generated image.",
+       "title": "Width",
+       "exclusiveMinimum": 0,
+       "default": 512,
+       "maximum": 14142,
+       "type": "integer"
+      }
+     },
+     "type": "object"
+    },
+    {
+     "enum": [
+      "square_hd",
+      "square",
+      "portrait_4_3",
+      "portrait_16_9",
+      "landscape_4_3",
+      "landscape_16_9",
+      "auto"
+     ],
+     "type": "string"
+    }
+   ],
+   "default": "auto",
+   "title": "Image Size"
+  },
+  "negative_prompt": {
+   "description": "What to keep out of the image. Used by berry only.",
+   "maxLength": 1024,
+   "title": "Negative Prompt",
+   "default": "",
+   "type": "string"
+  },
+  "reasoning_level": {
+   "description": "How much effort the harness spends reasoning about the given prompt. Higher reasoning effort means slower generation time. Both levels bill $0.025 per output megapixel.",
+   "title": "Reasoning Level",
+   "default": "medium",
+   "enum": [
+    "low",
+    "medium"
+   ],
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "Krea3Output",
+  "properties": {
+   "prompt": {
+    "description": "Prompt used for generation, after expansion.",
+    "title": "Prompt",
+    "type": "string"
+   },
+   "timings": {
+    "description": "Seconds spent in each generation stage; `inference` is the total GPU sampling time.",
+    "title": "Timings",
+    "additionalProperties": {
+     "type": "number"
+    },
+    "type": "object"
+   },
+   "has_nsfw_concepts": {
+    "items": {
+     "type": "boolean"
+    },
+    "description": "Safety result for each image.",
+    "title": "Has Nsfw Concepts",
+    "type": "array"
+   },
+   "seed": {
+    "description": "Latent noise seed used for generation.",
+    "title": "Seed",
+    "type": "integer"
+   },
+   "images": {
+    "items": {
+     "title": "ImageFile",
+     "properties": {
+      "height": {
+       "description": "The height of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Height"
+      },
+      "url": {
+       "description": "The URL where the file can be downloaded from.",
+       "title": "Url",
+       "type": "string"
+      },
+      "content_type": {
+       "description": "The mime type of the file.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "image/png"
+       ],
+       "title": "Content Type"
+      },
+      "file_size": {
+       "description": "The size of the file in bytes.",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        4404019
+       ],
+       "title": "File Size"
+      },
+      "width": {
+       "description": "The width of the image",
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Width"
+      },
+      "file_name": {
+       "description": "The name of the file. It will be auto-generated if not provided.",
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "examples": [
+        "z9RV14K95DvU.png"
+       ],
+       "title": "File Name"
+      }
+     },
+     "required": [
+      "url"
+     ],
+     "type": "object"
+    },
+    "description": "Generated images.",
+    "title": "Images",
+    "type": "array"
+   }
+  },
+  "required": [
+   "images",
+   "seed",
+   "prompt",
+   "timings",
+   "has_nsfw_concepts"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:26:03+00:00"
+}

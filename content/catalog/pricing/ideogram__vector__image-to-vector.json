@@ -1,0 +1,9 @@
+{
+ "endpoint": "ideogram/vector/image-to-vector",
+ "unit": "image",
+ "usd": 0.1,
+ "pricing_text": "Billing is **$0.10 per generated SVG**, in both **default** and **simple** modes. Converting one image into one SVG costs **$0.10**.",
+ "source_url": "https://fal.ai/models/ideogram/vector/image-to-vector",
+ "confidence": "high",
+ "notes": "سعر ثابت $0.10 لكل ملف SVG مُولَّد (الوحدة = صورة/ملف مخرج) في الوضعين default وsimple. fal-launch.json صنّف الوحدة unknown؛ الصحيح لكل مخرج."
+}
