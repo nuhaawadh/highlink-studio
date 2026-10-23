@@ -129,7 +129,7 @@ export function TemplateDetailPage() {
               {tpl.season && <> · {seasonName(tpl.season, locale)}</>} · {t(`templates.kind.${tpl.tier_set}`)} · <span className="font-latin">{tpl.aspect_ratio}</span>
               {tpl.duration ? <> · {t('video.seconds', { n: tpl.duration })}</> : null}
             </p>
-            <h1 className="text-xl font-bold">{locale === 'ar' ? tpl.title_ar : tpl.title_en}</h1>
+            <h1 className="text-xl font-extrabold">{locale === 'ar' ? tpl.title_ar : tpl.title_en}</h1>
             <p className="text-sm text-muted">{locale === 'ar' ? tpl.desc_ar : tpl.desc_en}</p>
           </div>
         </div>

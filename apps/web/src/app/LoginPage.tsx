@@ -36,7 +36,7 @@ export function LoginPage() {
   return (
     <section className="flex flex-1 items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm rounded-[var(--radius-lg)] border border-border bg-surface p-6">
-        <h1 className="text-xl font-bold">{t('auth.title')}</h1>
+        <h1 className="text-xl font-extrabold">{t('auth.title')}</h1>
         <p className="mt-1 text-sm text-muted">{t('auth.subtitle')}</p>
 
         <Button variant="secondary" className="mt-6 w-full" onClick={() => void signInWithGoogle()}>

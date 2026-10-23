@@ -112,7 +112,7 @@ export function VideoGeneratePage() {
       {/* شريط الإعدادات */}
       <aside className="flex w-full shrink-0 flex-col gap-5 md:w-80">
         <div>
-          <h1 className="text-xl font-bold">{t('video.title')}</h1>
+          <h1 className="text-xl font-extrabold">{t('video.title')}</h1>
           <p className="mt-1 text-sm text-muted">{t('video.subtitle')}</p>
         </div>
 

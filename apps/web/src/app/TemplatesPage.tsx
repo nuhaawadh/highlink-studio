@@ -47,7 +47,7 @@ export function TemplatesPage() {
   return (
     <section className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:py-10">
       <header className="max-w-2xl">
-        <h1 className="text-2xl font-bold md:text-3xl">{t('templates.title')}</h1>
+        <h1 className="text-2xl font-extrabold md:text-3xl">{t('templates.title')}</h1>
         <p className="mt-2 text-sm text-muted md:text-base">{t('templates.subtitle', { n: templateCatalog.templates.length })}</p>
       </header>
 

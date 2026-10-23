@@ -28,7 +28,7 @@ export function PricingPage() {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-10 md:py-16">
       <header className="mb-10 text-center">
-        <h1 className="text-3xl font-bold md:text-4xl">{t('pricing.title')}</h1>
+        <h1 className="text-3xl font-extrabold md:text-4xl">{t('pricing.title')}</h1>
         <p className="mx-auto mt-3 max-w-2xl text-muted">{t('pricing.subtitle', { bonus: SIGNUP_BONUS_CREDITS })}</p>
 
         <div className="mt-6 inline-flex items-center gap-1 rounded-none border border-border bg-surface p-1 text-sm">

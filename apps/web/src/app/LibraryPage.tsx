@@ -26,7 +26,7 @@ export function LibraryPage() {
     <section className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 md:py-8">
       <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold">{t('library.title')}</h1>
+          <h1 className="text-xl font-extrabold">{t('library.title')}</h1>
           <p className="mt-1 text-sm text-muted">{t('library.subtitle')}</p>
         </div>
         <div role="tablist" className="inline-flex items-center gap-1 rounded-none border border-border bg-surface p-1 text-sm">

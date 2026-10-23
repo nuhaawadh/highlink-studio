@@ -104,7 +104,7 @@ export function AccountPage() {
   return (
     <section className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 md:py-8">
       <header className="mb-6">
-        <h1 className="text-xl font-bold">{t('account.title')}</h1>
+        <h1 className="text-xl font-extrabold">{t('account.title')}</h1>
         <p className="mt-1 text-sm text-muted">{t('account.subtitle')}</p>
       </header>
 

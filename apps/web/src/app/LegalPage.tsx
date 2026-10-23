@@ -21,7 +21,7 @@ export function LegalPage({ kind }: { kind: LegalKind }) {
         {t('nav.legal')}
       </Link>
       <header className="mb-10 border-b border-border pb-6">
-        <h1 className="text-3xl font-bold">{doc.title}</h1>
+        <h1 className="text-3xl font-extrabold">{doc.title}</h1>
         <p className="mt-2 text-sm text-muted">
           {t('legal.updated')}: {doc.updated}
         </p>
@@ -63,7 +63,7 @@ export function LegalCenterPage() {
   ]
   return (
     <section className="mx-auto w-full max-w-3xl px-4 py-10 md:py-16">
-      <h1 className="text-3xl font-bold">{t('nav.legal')}</h1>
+      <h1 className="text-3xl font-extrabold">{t('nav.legal')}</h1>
       <p className="mt-2 text-muted">{t('legal.centerSubtitle')}</p>
       <ul className="mt-8 flex flex-col gap-3">
         {docs.map((d) => (
