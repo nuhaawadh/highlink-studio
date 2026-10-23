@@ -1,9 +1,9 @@
 {
  "endpoint": "fal-ai/heygen/avatar5/digital-twin",
  "unit": "second",
- "usd": 0.1,
+ "usd": 0.15,
  "pricing_text": "**$0.10** per second of generated output video. The charge is based on final output duration in seconds.",
  "source_url": "https://fal.ai/models/fal-ai/heygen/avatar5/digital-twin",
- "confidence": "high",
- "notes": "سعر ثابت $0.10 لكل ثانية من مدة الفيديو النهائي (النص في fal-launch.json مكرر مرتين؛ حُفظ مرة واحدة)."
+ "confidence": "medium",
+ "notes": "رُفع إلى $0.15/ث (الأعلى بين نص السعر ووصف OpenAPI) احتياطًا. نص fal-launch.json يقول $0.10/ث من مدة الفيديو النهائي. **تعارض**: وصف OpenAPI للنقطة نفسها (info.about) يقول \"Billed per second of output video ($0.1500/s)\". لم يُحسم أيهما المعمول به — الثقة متوسطة؛ يُنصح بالتسعير على $0.15/ث احتياطًا أو التحقق بطلب تجريبي. الدقة الافتراضية 720p (متاح 1080p/4k دون ذكر سعر مختلف)."
 }

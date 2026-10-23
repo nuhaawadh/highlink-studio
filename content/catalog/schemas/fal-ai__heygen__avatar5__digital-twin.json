@@ -1,0 +1,470 @@
+{
+ "endpoint": "fal-ai/heygen/avatar5/digital-twin",
+ "required": [],
+ "properties": {
+  "background": {
+   "anyOf": [
+    {
+     "title": "AvatarVBackground",
+     "type": "object",
+     "description": "Background configuration for Avatar V videos.\n\nEither a solid color (``type=\"color\"``) or an image URL\n(``type=\"image\"``). Background is ignored when\n``output_format=\"webm\"`` because webm output forces a transparent\n(background-removed) result.",
+     "properties": {
+      "type": {
+       "enum": [
+        "color",
+        "image"
+       ],
+       "type": "string",
+       "description": "Type of background. 'color' for a solid hex color, 'image' for an image URL.",
+       "default": "color",
+       "title": "Type"
+      },
+      "value": {
+       "type": "string",
+       "examples": [
+        "#FFFFFF",
+        "https://example.com/background.jpg"
+       ],
+       "description": "Background value — hex color for 'color' type, or HTTP(S) URL for 'image' type.",
+       "default": "#FFFFFF",
+       "title": "Value"
+      }
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Optional background to composite behind the avatar. Ignored when ``output_format='webm'`` (webm output is transparent)."
+  },
+  "voice": {
+   "default": "Warm Pro Narrator",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Name of the text-to-speech voice to use for the avatar when ``audio_url`` is not provided.",
+   "enum": [
+    "Warm Pro Narrator",
+    "Chill Brian",
+    "Ivy",
+    "John Doe",
+    "Monika Sogam",
+    "Hope ",
+    "Archer ",
+    "Brittney",
+    "Patrick",
+    "David Castlemore",
+    "Michael C",
+    "Adam Stone ",
+    "Juniper",
+    "Cassidy ",
+    "Jessica Anne Bogart",
+    "Arabella",
+    "Andrew",
+    "Spuds Oxley ",
+    "Grace Elder",
+    "Helen",
+    "Canyon Rivers",
+    "Derya - Lifelike - Excited 🤩",
+    "Mellow Marcus",
+    "Jack Sterling - Broadcaster 🎙️",
+    "Brenda - UGC - 1.mp4",
+    "Reid",
+    "Reagan",
+    "Terry",
+    "Jenny",
+    "Radio Rick",
+    "Denise",
+    "Tim in car - Excited 🤩",
+    "Iskander",
+    "Thompson",
+    "Delicate Daisy - Excited 🤩",
+    "Kingston",
+    "George UGC 1",
+    "Bold Blake",
+    "Jane",
+    "Expressive Evan",
+    "Marianne - IA",
+    "Aaron",
+    "Modern Recipe Host - Voice 1",
+    "Willow",
+    "Cute Chloe - Friendly 😊",
+    "Rafael",
+    "June - Lifelike",
+    "Crisp Chloe",
+    "Slick Simon",
+    "Nassim - Informative",
+    "Baritone Ben",
+    "Maxwell",
+    "Ellie Faye - Excited 🤩",
+    "Milani",
+    "Feisty Fiona - Excited 🤩",
+    "Professor Dean",
+    "Rose - UGC - 1.mp4",
+    "Shona",
+    "Hudson Wilder",
+    "Ann - IA",
+    "Alastair Kensington",
+    "Oxley",
+    "Christina",
+    "Andrew Rizz ",
+    "Peyton",
+    "Gerardo - Outdoor",
+    "Chloe - Lifelike",
+    "Stephanie",
+    "Anthony - IA",
+    "Signal - Voice 1",
+    "Luca",
+    "Lisa - Voice 1",
+    "T.W.Tucker",
+    "Jack Sullivan - Serious 😐",
+    "Winter",
+    "Mireia - Lifelike",
+    "Georgia",
+    "Stella",
+    "Masha - Lifelike",
+    "Charming Charles - Friendly 😊",
+    "Serenity",
+    "Annie - Excited",
+    "Ralph",
+    "Bethany",
+    "Dominic",
+    "Mason Finn",
+    "Leena",
+    "Veteran Victor",
+    "Tamara",
+    "Nik Public",
+    "Calm Chloe",
+    "Sevik",
+    "Reilly",
+    "Raul",
+    "Imposing Ian",
+    "Relaxed Ray",
+    "Dexter - Professional",
+    "Relaxed Rick",
+    "Edwin",
+    "Rupert Blackwood",
+    "Ginny",
+    "Hope"
+   ],
+   "title": "Voice"
+  },
+  "watermark": {
+   "anyOf": [
+    {
+     "required": [
+      "image_url"
+     ],
+     "title": "AvatarVWatermark",
+     "type": "object",
+     "description": "Watermark configuration for Avatar V videos.",
+     "properties": {
+      "opacity": {
+       "anyOf": [
+        {
+         "type": "number",
+         "minimum": 0,
+         "maximum": 1
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Watermark opacity (0.0 = transparent, 1.0 = opaque).",
+       "title": "Opacity"
+      },
+      "image_url": {
+       "type": "string",
+       "description": "HTTP(S) URL of the watermark image to overlay on the video.",
+       "title": "Image Url"
+      },
+      "placement": {
+       "anyOf": [
+        {
+         "type": "string",
+         "enum": [
+          "top-left",
+          "top-right",
+          "bottom-left",
+          "bottom-right"
+         ]
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Where to place the watermark on the video.",
+       "title": "Placement"
+      },
+      "scale": {
+       "anyOf": [
+        {
+         "exclusiveMinimum": 0,
+         "type": "number",
+         "maximum": 2
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Watermark scale relative to the video (0.0 exclusive–2.0).",
+       "title": "Scale"
+      }
+     }
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Optional watermark image to overlay on the output video."
+  },
+  "avatar": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Name of the Avatar V-eligible avatar to use.",
+   "default": "Abigail Sofa Front",
+   "title": "Avatar"
+  },
+  "remove_background": {
+   "type": "boolean",
+   "description": "Remove the avatar's background. Requires a matting-enabled avatar.",
+   "default": false,
+   "title": "Remove Background"
+  },
+  "caption": {
+   "type": "boolean",
+   "description": "Generate a sidecar SRT caption file alongside the video.",
+   "default": false,
+   "title": "Caption"
+  },
+  "output_format": {
+   "enum": [
+    "mp4",
+    "webm"
+   ],
+   "type": "string",
+   "description": "Output container format. 'webm' produces a transparent video (automatically removes the background) and ignores the ``background`` field.",
+   "default": "mp4",
+   "title": "Output Format"
+  },
+  "fit": {
+   "enum": [
+    "contain",
+    "cover"
+   ],
+   "type": "string",
+   "description": "How the avatar fits within the output frame. 'contain' keeps the full avatar in view (may letterbox); 'cover' fills the frame (may crop).",
+   "default": "cover",
+   "title": "Fit"
+  },
+  "aspect_ratio": {
+   "enum": [
+    "16:9",
+    "9:16",
+    "4:5",
+    "5:4",
+    "1:1",
+    "auto"
+   ],
+   "type": "string",
+   "description": "Aspect ratio of the output video. Supported values: '16:9', '9:16', '4:5', '5:4', '1:1', and 'auto'. 'auto' preserves the source aspect ratio when HeyGen can read it, falling back to '16:9' otherwise.",
+   "default": "16:9",
+   "title": "Aspect Ratio"
+  },
+  "audio_url": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "HTTP(S) URL of an audio file for the avatar to lip-sync to. When provided, the avatar uses this audio instead of text-to-speech and ``prompt``/``voice`` are ignored.",
+   "title": "Audio Url"
+  },
+  "resolution": {
+   "enum": [
+    "720p",
+    "1080p",
+    "4k"
+   ],
+   "type": "string",
+   "description": "Output resolution preset.",
+   "default": "720p",
+   "title": "Resolution"
+  },
+  "enable_safety_checker": {
+   "type": "boolean",
+   "description": "Authorized callers may set false to request relaxed screening.",
+   "default": true,
+   "title": "Enable Safety Checker"
+  },
+  "prompt": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "description": "Text the avatar will speak. Required when ``audio_url`` is not provided.",
+   "title": "Prompt"
+  }
+ },
+ "output": {
+  "required": [
+   "video"
+  ],
+  "title": "AvatarVOutput",
+  "type": "object",
+  "description": "Output from the Avatar V digital-twin endpoint.",
+  "properties": {
+   "caption_file": {
+    "anyOf": [
+     {
+      "required": [
+       "url"
+      ],
+      "title": "File",
+      "type": "object",
+      "properties": {
+       "url": {
+        "type": "string",
+        "description": "The URL where the file can be downloaded from.",
+        "title": "Url"
+       },
+       "file_size": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "examples": [
+         4404019
+        ],
+        "description": "The size of the file in bytes.",
+        "title": "File Size"
+       },
+       "content_type": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "examples": [
+         "image/png"
+        ],
+        "description": "The mime type of the file.",
+        "title": "Content Type"
+       },
+       "file_name": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "examples": [
+         "z9RV14K95DvU.png"
+        ],
+        "description": "The name of the file. It will be auto-generated if not provided.",
+        "title": "File Name"
+       }
+      }
+     },
+     {
+      "type": "null"
+     }
+    ],
+    "description": "Generated caption file (SRT) when ``caption=True`` and HeyGen returns one."
+   },
+   "video": {
+    "description": "The generated Avatar V video file.",
+    "examples": [
+     {
+      "url": "https://v3b.fal.media/files/b/0a900636/DUES0_z4i7FWnife02ieH_output.mp4"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "url": {
+      "type": "string",
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url"
+     },
+     "file_size": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "description": "The size of the file in bytes.",
+      "title": "File Size"
+     },
+     "content_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "description": "The mime type of the file.",
+      "title": "Content Type"
+     },
+     "file_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "title": "File Name"
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:40:50+00:00"
+}

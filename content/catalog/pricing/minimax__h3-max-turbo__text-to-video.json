@@ -1,10 +1,14 @@
 {
  "endpoint": "minimax/h3-max-turbo/text-to-video",
  "unit": "second",
- "usd": 0.01625,
- "by_resolution": {"480p": 0.01625, "768p": 0.026, "1080p": 0.052},
+ "usd": 0.025,
+ "by_resolution": {
+  "480p": 0.025,
+  "768p": 0.04,
+  "1080p": 0.08
+ },
  "pricing_text": "Video costs **$0.01625** per second at **480p**, **$0.026** per second at **768p**, and **$0.052** per second at **1080p**.\n\nNote: these are promotional rates, **35%** off for a limited time. The discount ends **October 31**, after which **480p** is **$0.025**/second, **768p** is **$0.04**/second, and **1080p** is **$0.08**/second.",
  "source_url": "https://fal.ai/models/minimax/h3-max-turbo/text-to-video",
  "confidence": "high",
- "notes": "أسعار ترويجية (خصم 35%) تنتهي 31 أكتوبر 2026؛ بعدها: 480p $0.025/ث، 768p $0.04/ث، 1080p $0.08/ث — يُنصح بالتسعير على الأسعار الدائمة. usd للأرخص (480p)؛ الافتراضي في المخطط 768P. المدة 0.92–15 ث."
+ "notes": "اعتُمدت الأسعار الدائمة بعد انتهاء العرض الترويجي (ADR 0005: لا نسعّر على عرض مؤقت). أسعار ترويجية (خصم 35%) تنتهي 31 أكتوبر 2026؛ بعدها: 480p $0.025/ث، 768p $0.04/ث، 1080p $0.08/ث — يُنصح بالتسعير على الأسعار الدائمة. usd للأرخص (480p)؛ الافتراضي في المخطط 768P. المدة 0.92–15 ث."
 }

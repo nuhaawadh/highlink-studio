@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/bytedance/omnihuman/v1.5",
+ "unit": "second",
+ "usd": 0.16,
+ "pricing_text": "Your request will cost $0.16 per second.",
+ "source_url": "https://fal.ai/models/fal-ai/bytedance/omnihuman/v1.5",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص من صندوق التكلفة في صفحة النموذج (2026-10-23). $0.16 لكل ثانية؛ المخطط يذكر أن duration في المخرج = مدة الصوت المُدخل كما تُستخدم للفوترة. الصفحة تعرض سعرًا واحدًا للإعداد الافتراضي (1080p) ولا تذكر سعرًا مختلفًا لـ720p أو turbo_mode. حد الصوت: 30 ث عند 1080p، 60 ث عند 720p."
+}

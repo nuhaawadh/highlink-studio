@@ -1,0 +1,145 @@
+{
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "required": [
+  "text"
+ ],
+ "properties": {
+  "prompt_influence": {
+   "maximum": 1,
+   "title": "Prompt Influence",
+   "description": "How closely to follow the prompt (0-1). Higher values mean less variation.",
+   "default": 0.3,
+   "minimum": 0,
+   "type": "number"
+  },
+  "loop": {
+   "title": "Loop",
+   "description": "Whether to create a sound effect that loops smoothly.",
+   "default": false,
+   "type": "boolean"
+  },
+  "text": {
+   "title": "Text",
+   "description": "The text describing the sound effect to generate",
+   "type": "string",
+   "maxLength": 450
+  },
+  "duration_seconds": {
+   "title": "Duration Seconds",
+   "description": "Duration in seconds (0.5-22). If None, optimal duration will be determined from prompt.",
+   "anyOf": [
+    {
+     "maximum": 22,
+     "minimum": 0.5,
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "output_format": {
+   "title": "Output Format",
+   "description": "Output format of the generated audio. Formatted as codec_sample_rate_bitrate.",
+   "default": "mp3_44100_128",
+   "type": "string",
+   "enum": [
+    "mp3_22050_32",
+    "mp3_44100_32",
+    "mp3_44100_64",
+    "mp3_44100_96",
+    "mp3_44100_128",
+    "mp3_44100_192",
+    "pcm_8000",
+    "pcm_16000",
+    "pcm_22050",
+    "pcm_24000",
+    "pcm_44100",
+    "pcm_48000",
+    "ulaw_8000",
+    "alaw_8000",
+    "opus_48000_32",
+    "opus_48000_64",
+    "opus_48000_96",
+    "opus_48000_128",
+    "opus_48000_192"
+   ]
+  }
+ },
+ "output": {
+  "required": [
+   "audio"
+  ],
+  "description": "Output format for generated sound effects",
+  "title": "SoundEffectOutput",
+  "type": "object",
+  "properties": {
+   "audio": {
+    "description": "The generated sound effect audio file in MP3 format",
+    "examples": [
+     {
+      "url": "https://v3.fal.media/files/lion/WgnO-jy6WduosuG_Ibobx_sound_effect.mp3"
+     }
+    ],
+    "required": [
+     "url"
+    ],
+    "title": "File",
+    "type": "object",
+    "properties": {
+     "file_name": {
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name",
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "content_type": {
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type",
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "url": {
+      "title": "Url",
+      "description": "The URL where the file can be downloaded from.",
+      "type": "string"
+     },
+     "file_size": {
+      "examples": [
+       4404019
+      ],
+      "title": "File Size",
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    }
+   }
+  }
+ },
+ "fetched_at": "2026-10-23T14:41:23+00:00"
+}

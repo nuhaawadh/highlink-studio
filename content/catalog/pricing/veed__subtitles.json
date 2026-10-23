@@ -1,0 +1,9 @@
+{
+ "endpoint": "veed/subtitles",
+ "unit": "minute",
+ "usd": 0.1,
+ "pricing_text": "Your request will cost **$0.10** per minute of input video, with a 2x multiplier for resolutions above 1080p and a 2x multiplier for dynamic styling. Setting a translation_language adds a flat +**$0.20** / minute surcharge on top. Minimum charge: 1 minute.",
+ "source_url": "https://fal.ai/models/veed/subtitles",
+ "confidence": "high",
+ "notes": "السعر لكل دقيقة من الفيديو المدخل، بحد أدنى دقيقة واحدة. ×2 للدقة فوق 1080p، و×2 للأنماط الديناميكية (glass, whisper, glide2, fusion, glide, terminal, handwritten, backdrop, backdrop2 حسب المخطط) — الأساسية ×1. الترجمة (translation_language) +$0.20/دقيقة ثابتة. preset مطلوب بلا افتراضي، فالسعر يعتمد على النمط المختار."
+}

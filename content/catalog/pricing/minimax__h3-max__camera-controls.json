@@ -1,10 +1,14 @@
 {
  "endpoint": "minimax/h3-max/camera-controls",
  "unit": "second",
- "usd": 0.0325,
- "by_resolution": {"480p": 0.0325, "768p": 0.052, "1080p": 0.104},
+ "usd": 0.05,
+ "by_resolution": {
+  "480p": 0.05,
+  "768p": 0.08,
+  "1080p": 0.16
+ },
  "pricing_text": "Video costs **$0.0325** per second at **480p**, **$0.052** per second at **768p**, and **$0.104** per second at **1080p**.\n\nNote: these are promotional rates, **35%** off for a limited time. The discount ends **October 31**, after which **480p** is **$0.05**/second, **768p** is **$0.08**/second, and **1080p** is **$0.16**/second.",
  "source_url": "https://fal.ai/models/minimax/h3-max/camera-controls",
  "confidence": "medium",
- "notes": "أسعار ترويجية (خصم 35%) تنتهي 31 أكتوبر 2026؛ بعدها: 480p $0.05/ث، 768p $0.08/ث، 1080p $0.16/ث — الأنسب اعتماد أسعار ما بعد الترويج. usd = 480p وهو الافتراضي في المخطط هنا. المدة 0.92-15 ث (افتراضي 5). يتطلب image_url ومسار كاميرا (camera_trajectory 2-12 إطارًا مفتاحيًا)."
+ "notes": "اعتُمدت الأسعار الدائمة بعد انتهاء العرض الترويجي في 31 أكتوبر 2026 (قرار ADR 0005: لا نسعّر على عرض مؤقت). أسعار ترويجية (خصم 35%) تنتهي 31 أكتوبر 2026؛ بعدها: 480p $0.05/ث، 768p $0.08/ث، 1080p $0.16/ث — الأنسب اعتماد أسعار ما بعد الترويج. usd = 480p وهو الافتراضي في المخطط هنا. المدة 0.92-15 ث (افتراضي 5). يتطلب image_url ومسار كاميرا (camera_trajectory 2-12 إطارًا مفتاحيًا)."
 }

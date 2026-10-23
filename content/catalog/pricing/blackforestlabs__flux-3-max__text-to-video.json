@@ -1,10 +1,13 @@
 {
  "endpoint": "blackforestlabs/flux-3-max/text-to-video",
  "unit": "second",
- "usd": 0.0425,
- "by_resolution": {"720p": 0.0425, "1080p": 0.0725},
+ "usd": 0.17,
+ "by_resolution": {
+  "720p": 0.17,
+  "1080p": 0.29
+ },
  "pricing_text": "Video costs **$0.0425** per second at **720p** and **$0.0725** per second at **1080p**.\n\nNote: these are promotional rates, **75%** off for a limited time. The discount runs from **October 15** to **November 7**, after which **720p** is **$0.17**/second and **1080p** is **$0.29**/second.",
  "source_url": "https://fal.ai/models/blackforestlabs/flux-3-max/text-to-video",
  "confidence": "high",
- "notes": "**سعر ترويجي مؤقت** (خصم 75% من 15 أكتوبر إلى 7 نوفمبر 2026). بعد انتهاء العرض: 720p = $0.17/ث و1080p = $0.29/ث — يُنصح بالتسعير في الكتالوج على السعر الدائم لا الترويجي. usd = 720p (الافتراضي). المدة 5–20 ثانية. الصوت مضمّن."
+ "notes": "اعتُمدت الأسعار الدائمة بعد انتهاء العرض الترويجي (ADR 0005: لا نسعّر على عرض مؤقت). **سعر ترويجي مؤقت** (خصم 75% من 15 أكتوبر إلى 7 نوفمبر 2026). بعد انتهاء العرض: 720p = $0.17/ث و1080p = $0.29/ث — يُنصح بالتسعير في الكتالوج على السعر الدائم لا الترويجي. usd = 720p (الافتراضي). المدة 5–20 ثانية. الصوت مضمّن."
 }

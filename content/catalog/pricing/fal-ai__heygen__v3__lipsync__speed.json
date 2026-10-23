@@ -1,0 +1,9 @@
+{
+ "endpoint": "fal-ai/heygen/v3/lipsync/speed",
+ "unit": "second",
+ "usd": 0.05,
+ "pricing_text": "Lip-sync a video using Speed mode — faster processing.\n\nBilled per second of output video ($0.0500/s).",
+ "source_url": "https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=fal-ai/heygen/v3/lipsync/speed",
+ "confidence": "high",
+ "notes": "pricing_text في fal-launch.json كان null؛ النص الرسمي من وصف النقطة (about) في مخطط OpenAPI الخاص بـfal (2026-10-23). $0.05 لكل ثانية من الفيديو الناتج. enable_dynamic_duration افتراضيًا true فقد يتغير طول المخرج ليطابق الصوت الجديد."
+}

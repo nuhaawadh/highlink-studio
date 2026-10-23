@@ -1,0 +1,180 @@
+{
+ "endpoint": "fal-ai/longcat-single-avatar/image-audio-to-video",
+ "required": [
+  "image_url",
+  "audio_url"
+ ],
+ "properties": {
+  "prompt": {
+   "description": "The prompt to guide the video generation.",
+   "title": "Prompt",
+   "default": "A person is talking naturally with natural expressions and movements.",
+   "type": "string"
+  },
+  "enable_safety_checker": {
+   "description": "Whether to enable safety checker. Disabling it requires account authorization; unauthorized requests are always checked.",
+   "title": "Enable Safety Checker",
+   "default": true,
+   "type": "boolean"
+  },
+  "audio_url": {
+   "description": "The URL of the audio file to drive the avatar.",
+   "title": "Audio URL",
+   "type": "string"
+  },
+  "num_inference_steps": {
+   "description": "The number of inference steps to use.",
+   "title": "Number of Inference Steps",
+   "default": 50,
+   "minimum": 10,
+   "maximum": 100,
+   "type": "integer"
+  },
+  "seed": {
+   "description": "The seed for the random number generator.",
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Seed"
+  },
+  "negative_prompt": {
+   "description": "The negative prompt to avoid in the video generation.",
+   "title": "Negative Prompt",
+   "default": "Close-up, Bright tones, overexposed, static, blurred details, subtitles, style, works, paintings, images, static, overall gray, worst quality, low quality, JPEG compression residue, ugly, incomplete, extra fingers, poorly drawn hands, poorly drawn faces, deformed, disfigured, misshapen limbs, fused fingers, still picture, messy background, three legs, many people in the background, walking backwards",
+   "type": "string"
+  },
+  "image_url": {
+   "description": "The URL of the image to animate.",
+   "title": "Image URL",
+   "type": "string"
+  },
+  "resolution": {
+   "description": "Resolution of the generated video (480p or 720p). Billing is per video-second (16 frames): 480p is 1 unit per second and 720p is 4 units per second.",
+   "title": "Resolution",
+   "default": "480p",
+   "enum": [
+    "480p",
+    "720p"
+   ],
+   "type": "string"
+  },
+  "num_segments": {
+   "description": "Number of video segments to generate. Each segment adds ~5 seconds of video. First segment is ~5.8s, additional segments are 5s each.",
+   "title": "Number of Segments",
+   "default": 1,
+   "minimum": 1,
+   "maximum": 10,
+   "type": "integer"
+  },
+  "text_guidance_scale": {
+   "description": "The text guidance scale for classifier-free guidance.",
+   "title": "Text Guidance Scale",
+   "default": 4,
+   "minimum": 1,
+   "maximum": 10,
+   "type": "number"
+  },
+  "enable_prompt_expansion": {
+   "description": "Whether to enable prompt expansion using an LLM to enhance the prompt for better video quality.",
+   "title": "Enable Prompt Expansion",
+   "default": false,
+   "type": "boolean"
+  },
+  "audio_guidance_scale": {
+   "description": "The audio guidance scale. Higher values may lead to exaggerated mouth movements.",
+   "title": "Audio Guidance Scale",
+   "default": 4,
+   "minimum": 1,
+   "maximum": 10,
+   "type": "number"
+  }
+ },
+ "output": {
+  "description": "Response model for image+audio to video generation.",
+  "title": "ImageAudioToVideoResponse",
+  "properties": {
+   "video": {
+    "description": "The generated video file.",
+    "examples": [
+     "https://v3b.fal.media/files/b/0a87a0ce/2TnxxI02RHnLUvjGzhZa7_output_86da44aa6eed40ff9061b2213fb19793.mp4"
+    ],
+    "type": "object",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "title": "File"
+   },
+   "seed": {
+    "description": "The seed used for generation.",
+    "title": "Seed",
+    "examples": [
+     424911732
+    ],
+    "type": "integer"
+   }
+  },
+  "required": [
+   "video",
+   "seed"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:41:17+00:00"
+}

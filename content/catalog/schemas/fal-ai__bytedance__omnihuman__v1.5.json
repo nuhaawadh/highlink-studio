@@ -1,0 +1,140 @@
+{
+ "endpoint": "fal-ai/bytedance/omnihuman/v1.5",
+ "required": [
+  "image_url",
+  "audio_url"
+ ],
+ "properties": {
+  "prompt": {
+   "description": "The text prompt used to guide the video generation.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Prompt"
+  },
+  "image_url": {
+   "description": "The URL of the image used to generate the video",
+   "title": "Image Url",
+   "type": "string"
+  },
+  "audio_url": {
+   "description": "The URL of the audio file to generate the video. Audio must be under 30s long for 1080p generation and under 60s long for 720p generation.",
+   "title": "Audio Url",
+   "type": "string"
+  },
+  "turbo_mode": {
+   "description": "Generate a video at a faster rate with a slight quality trade-off.",
+   "title": "Turbo Mode",
+   "default": false,
+   "type": "boolean"
+  },
+  "mask_url": {
+   "description": "The URL of the mask image to apply to the image. Only the person in the white area of the mask will speak.",
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Mask Url"
+  },
+  "resolution": {
+   "description": "The resolution of the generated video. Defaults to 1080p. 720p generation is faster and higher in quality. 1080p generation is limited to 30s audio and 720p generation is limited to 60s audio.",
+   "title": "Resolution",
+   "default": "1080p",
+   "enum": [
+    "720p",
+    "1080p"
+   ],
+   "type": "string"
+  }
+ },
+ "output": {
+  "title": "OmniHumanv15Output",
+  "properties": {
+   "video": {
+    "description": "Generated video file",
+    "examples": [
+     {
+      "url": "https://storage.googleapis.com/falserverless/example_outputs/omnihuman_v15_output.mp4"
+     }
+    ],
+    "title": "File",
+    "properties": {
+     "url": {
+      "description": "The URL where the file can be downloaded from.",
+      "title": "Url",
+      "type": "string"
+     },
+     "content_type": {
+      "description": "The mime type of the file.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "image/png"
+      ],
+      "title": "Content Type"
+     },
+     "file_size": {
+      "description": "The size of the file in bytes.",
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       4404019
+      ],
+      "title": "File Size"
+     },
+     "file_name": {
+      "description": "The name of the file. It will be auto-generated if not provided.",
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "examples": [
+       "z9RV14K95DvU.png"
+      ],
+      "title": "File Name"
+     }
+    },
+    "required": [
+     "url"
+    ],
+    "type": "object"
+   },
+   "duration": {
+    "description": "Duration of audio input/video output as used for billing.",
+    "title": "Duration",
+    "type": "number"
+   }
+  },
+  "required": [
+   "video",
+   "duration"
+  ],
+  "type": "object"
+ },
+ "fetched_at": "2026-10-23T14:40:43+00:00"
+}
