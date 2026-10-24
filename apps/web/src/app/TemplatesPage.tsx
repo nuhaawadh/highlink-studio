@@ -22,7 +22,11 @@ export function TemplatesPage() {
   const { allModels: imageModels } = useModels('image')
   const { allModels: videoModels } = useModels('video')
   const models = useModelMap(imageModels, videoModels)
-  const [filter, setFilter] = useState<Filter>('all')
+  // ?c=<فئة> من بطاقات الحملات في الرئيسية
+  const [filter, setFilter] = useState<Filter>(() => {
+    const c = new URLSearchParams(window.location.search).get('c')
+    return c && templateCatalog.categories.some((k) => k.key === c) ? c : 'all'
+  })
 
   useEffect(() => {
     document.title = `${t('templates.title')} — ${env.VITE_APP_NAME}`

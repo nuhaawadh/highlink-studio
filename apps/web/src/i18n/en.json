@@ -275,5 +275,15 @@
     "needOutput": "Pick at least one size",
     "qa": "Quality {n}/10",
     "qaUnchecked": "Unchecked"
+  },
+  "campaigns": {
+    "title": "A full campaign for your sector",
+    "subtitle": "A reel, an Arabic poster and a product photo, all from studio templates. Click any piece to make one like it at the same price.",
+    "reel": "Reel",
+    "poster": "Poster",
+    "photo": "Product photo",
+    "pieces": "Reel + poster + product photo",
+    "total": "Whole campaign {n} credits",
+    "cta": "Make your campaign"
   }
 }

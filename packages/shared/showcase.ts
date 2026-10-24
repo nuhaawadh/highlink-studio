@@ -70,3 +70,19 @@ export function sampleValues(t: TemplateDef, overrides: Record<string, string> =
   }
   return out
 }
+
+/** حملة جاهزة لقطاع (content/showcase/campaigns.json): ريل + بوستر + صورة — كل قطعة معرّف قالب */
+export interface CampaignDef {
+  id: string
+  category: string
+  title_ar: string
+  title_en: string
+  video: string
+  poster: string
+  photo: string
+}
+
+export interface CampaignsFile {
+  showcase_tiers: Record<'video' | 'photo' | 'text', string>
+  campaigns: CampaignDef[]
+}

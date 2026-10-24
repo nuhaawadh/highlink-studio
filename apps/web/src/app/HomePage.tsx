@@ -1,13 +1,14 @@
 import { ArrowLeft } from 'lucide-react'
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { CampaignsSection } from '@/components/studio/CampaignsSection'
 import { MediaTile } from '@/components/studio/MediaTile'
 import { TemplateCover } from '@/components/studio/TemplateIcon'
 import { useI18n } from '@/i18n'
 import { useAuth } from '@/lib/auth'
 import { familyName, groupByFamily, modelDefaults, modelName, modelSupports, useModels, videoCost, type ModelRow } from '@/lib/models'
 import { familyMedia, heroShowcase, templateMedia, wallMedia } from '@/lib/showcase'
-import { templateCatalog, templateSeason } from '@/lib/templates'
+import { templateCatalog, templateSeason, useModelMap } from '@/lib/templates'
 import { cn } from '@/lib/utils'
 
 const defaultVideoCost = (m: ModelRow) => videoCost(m, { duration: modelDefaults(m).duration, resolution: modelDefaults(m).resolution })
@@ -38,7 +39,9 @@ export function HomePage() {
     return [...pool].sort((a, b) => rank(a.id) - rank(b.id)).slice(0, 8)
   }, [now])
 
-  const { models: videoModels } = useModels('video')
+  const { models: videoModels, allModels: allVideo } = useModels('video')
+  const { allModels: allImage } = useModels('image')
+  const modelMap = useModelMap(allImage, allVideo)
   const families = useMemo(() => groupByFamily(videoModels, defaultVideoCost), [videoModels])
   const shownFamilies = families.filter((f) => familyMedia('video', f.key)).slice(0, 6)
 
@@ -103,6 +106,9 @@ export function HomePage() {
           </div>
         )}
       </section>
+
+      {/* حملة كاملة لقطاعك: ريل + بوستر + صورة من القوالب نفسها */}
+      <CampaignsSection models={modelMap} />
 
       {/* ابدأ من قالب */}
       <section aria-labelledby="home-templates" className="mx-auto w-full max-w-7xl px-4 py-10 md:px-6">

@@ -40,7 +40,8 @@ export function TemplateDetailPage() {
 
   const tiers = useMemo(() => (tpl ? tiersFor(tpl) : []), [tpl])
   const available = useMemo(() => tiers.filter((tier) => tpl && tierCost(tpl, tier, models) != null), [tiers, tpl, models])
-  const [tierKey, setTierKey] = useState<string | null>(null)
+  // ?tier=<مستوى> من بطاقات الحملات: نفس المستوى الذي وُلّد به المثال المعروض
+  const [tierKey, setTierKey] = useState<string | null>(() => new URLSearchParams(window.location.search).get('tier'))
   const tier = available.find((x) => x.key === tierKey) ?? available[Math.min(1, available.length - 1)] ?? null
   const [values, setValues] = useState<Record<string, string>>({})
   const [busy, setBusy] = useState(false)

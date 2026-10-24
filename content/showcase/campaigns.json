@@ -1,0 +1,82 @@
+{
+  "about": "حملات جاهزة لكل قطاع (الرئيسية): ريل + بوستر بنص عربي + صورة منتج — كل قطعة قالب حقيقي، فالعميل يولّد مثلها بنفس المستوى والسعر. المستوى المستخدم في المعرض لكل نوع في showcase_tiers (يقرؤه scripts/make-showcase.ts أيضًا).",
+  "showcase_tiers": {
+    "video": "cinematic",
+    "photo": "balanced",
+    "text": "pro"
+  },
+  "campaigns": [
+    {
+      "id": "perfume",
+      "category": "perfume",
+      "title_ar": "إطلاق عطر",
+      "title_en": "Fragrance launch",
+      "video": "perfume-reel",
+      "poster": "perfume-launch",
+      "photo": "oud-luxury-photo"
+    },
+    {
+      "id": "food",
+      "category": "food",
+      "title_ar": "مطعم وعرض وجبة",
+      "title_en": "Restaurant offer",
+      "video": "food-steam-reel",
+      "poster": "food-menu-offer",
+      "photo": "food-hero-dish"
+    },
+    {
+      "id": "realestate",
+      "category": "realestate",
+      "title_ar": "عقار للبيع",
+      "title_en": "Property for sale",
+      "video": "re-walkthrough",
+      "poster": "re-listing",
+      "photo": "re-facade-photo"
+    },
+    {
+      "id": "fashion",
+      "category": "fashion",
+      "title_ar": "مجموعة عبايات",
+      "title_en": "Abaya collection",
+      "video": "abaya-reel",
+      "poster": "abaya-collection",
+      "photo": "thobe-eid"
+    },
+    {
+      "id": "cafe",
+      "category": "food",
+      "title_ar": "مقهى ومشروب جديد",
+      "title_en": "Café, new drink",
+      "video": "cafe-coffee-pour",
+      "poster": "event-poster",
+      "photo": "cafe-new-drink"
+    },
+    {
+      "id": "ramadan",
+      "category": "ramadan",
+      "title_ar": "حملة رمضان",
+      "title_en": "Ramadan campaign",
+      "video": "ramadan-lantern-reel",
+      "poster": "ramadan-offer",
+      "photo": "ramadan-iftar-table"
+    },
+    {
+      "id": "eid",
+      "category": "eid",
+      "title_ar": "هدايا العيد",
+      "title_en": "Eid gifts",
+      "video": "eid-gift-reel",
+      "poster": "eid-fitr-greeting",
+      "photo": "winter-kashta"
+    },
+    {
+      "id": "national",
+      "category": "national",
+      "title_ar": "اليوم الوطني والتأسيس",
+      "title_en": "National & Founding Day",
+      "video": "national-day-reel",
+      "poster": "national-day-post",
+      "photo": "founding-day-product"
+    }
+  ]
+}

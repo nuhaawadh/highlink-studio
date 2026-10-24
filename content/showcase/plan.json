@@ -1,5 +1,5 @@
 {
-  "about": "خطة معرض العرض (المخطط §9) — يقرؤها scripts/make-showcase.ts. البرومبتات بالإنجليزي (أدق للنماذج)، بلا علامات تجارية حقيقية، والشخصيات مولّدة فقط.",
+  "about": "خطة معرض العرض (المخطط §9) — يقرؤها scripts/make-showcase.ts. البرومبتات بالإنجليزي (أدق للنماذج)، بلا علامات تجارية حقيقية، والشخصيات مولّدة فقط. مستوى كل قالب في المعرض من content/showcase/campaigns.json (showcase_tiers).",
   "hero": {
     "model": "veo-3.1",
     "duration": 8,
@@ -50,7 +50,6 @@
     "image:hunyuan-image": "Concept art of a futuristic coastal city on the Red Sea at sunrise, sleek white towers among mountains, calm water, soft atmospheric light, highly detailed.",
     "image:bria": "Product photograph of a minimalist skincare bottle standing on rippled desert sand with long soft shadows, warm neutral palette, clean commercial look."
   },
-  "template_tier": "balanced",
   "template_values": {
     "social-three-reasons": {
       "r1": "تبدأ بدون رأس مال",

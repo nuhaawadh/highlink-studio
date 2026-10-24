@@ -74,9 +74,10 @@ const plan = JSON.parse(readFileSync(path.join(ROOT, 'content', 'showcase', 'pla
   hero: { model: string; duration: number; aspect: string; attempts: number; prompt: string }
   family_defaults: { video: { aspect: string[]; duration: number }; image: { aspect: string[] } }
   families: Record<string, string>
-  template_tier: string
   template_values: Record<string, Record<string, string>>
 }
+/** مستوى كل نوع قالب في المعرض — نفس ما تعرضه بطاقات الحملات في الرئيسية */
+const showcaseTiers = (JSON.parse(readFileSync(path.join(ROOT, 'content', 'showcase', 'campaigns.json'), 'utf8')) as { showcase_tiers: Record<string, string> }).showcase_tiers
 const templates = JSON.parse(readFileSync(path.join(ROOT, 'content', 'templates', 'saudi.json'), 'utf8')) as TemplateCatalog
 const current: ShowcaseFile = existsSync(SHOWCASE_FILE) ? JSON.parse(readFileSync(SHOWCASE_FILE, 'utf8')) : EMPTY_SHOWCASE
 
@@ -190,7 +191,7 @@ async function buildPlan(models: ModelRow[]): Promise<{ jobs: Job[]; skipped: st
     for (const t of templates.templates as TemplateDef[]) {
       if (!FORCE && current.templates[t.id]) continue
       const tiers = templates.tiers[t.tier_set]
-      const tier = tiers.find((x) => x.key === plan.template_tier) ?? tiers[0]
+      const tier = tiers.find((x) => x.key === showcaseTiers[t.tier_set]) ?? tiers[0]
       const m = byId.get(tier.model)
       if (!m) {
         skipped.push(`template ${t.id}: model ${tier.model} not enabled`)
