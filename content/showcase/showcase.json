@@ -1,10 +1,297 @@
 {
   "version": 1,
-  "generated_at": null,
+  "generated_at": "2026-10-24T14:51:04.844Z",
   "hero": {
-    "candidates": [],
+    "candidates": [
+      {
+        "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/hero/hero-2-20261024T1442.mp4",
+        "kind": "video",
+        "aspect": "16:9",
+        "model": "veo-3.1",
+        "prompt": "One continuous cinematic shot: a falcon glides low over golden desert dunes toward ancient sandstone cliffs at sunset; the camera follows just behind its wings, then rises to reveal the vast glowing horizon. Warm amber light, drifting dust particles, calm and epic, natural motion, film grain, no text.",
+        "created_at": "2026-10-24T14:43:41.132Z",
+        "config": {
+          "aspectRatio": "16:9",
+          "duration": 8,
+          "resolution": "720p",
+          "audio": false
+        }
+      },
+      {
+        "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/hero/hero-3-20261024T1442.mp4",
+        "kind": "video",
+        "aspect": "16:9",
+        "model": "veo-3.1",
+        "prompt": "One continuous cinematic shot: a falcon glides low over golden desert dunes toward ancient sandstone cliffs at sunset; the camera follows just behind its wings, then rises to reveal the vast glowing horizon. Warm amber light, drifting dust particles, calm and epic, natural motion, film grain, no text.",
+        "created_at": "2026-10-24T14:43:45.776Z",
+        "config": {
+          "aspectRatio": "16:9",
+          "duration": 8,
+          "resolution": "720p",
+          "audio": false
+        }
+      },
+      {
+        "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/hero/hero-1-20261024T1442.mp4",
+        "kind": "video",
+        "aspect": "16:9",
+        "model": "veo-3.1",
+        "prompt": "One continuous cinematic shot: a falcon glides low over golden desert dunes toward ancient sandstone cliffs at sunset; the camera follows just behind its wings, then rises to reveal the vast glowing horizon. Warm amber light, drifting dust particles, calm and epic, natural motion, film grain, no text.",
+        "created_at": "2026-10-24T14:43:58.021Z",
+        "config": {
+          "aspectRatio": "16:9",
+          "duration": 8,
+          "resolution": "720p",
+          "audio": false
+        }
+      }
+    ],
     "selected": 0
   },
-  "templates": {},
-  "families": {}
+  "templates": {
+    "ramadan-offer": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/ramadan-offer-20261024T1442.png",
+      "kind": "image",
+      "aspect": "9:16",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Vertical Ramadan promotional poster, warm lantern-lit evening scene with hanging fanous lanterns, dates and Arabic coffee cups on a carved wooden tray.\n[TYPOGRAPHY] Bold headline in the upper third. Arabic typography reads «خصم 30% طوال رمضان» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Smaller second line below it reads «على جميع منتجات القهوة», same Arabic typography rules. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] rich burgundy, gold and cream palette, high contrast between text and background, clean modern layout for Instagram stories, safe margins top and bottom.\n[AVOID] warped or mirrored Arabic letters, pseudo-Arabic glyphs, English text, clutter, watermark.",
+      "created_at": "2026-10-24T14:48:56.534Z"
+    },
+    "founding-day-post": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/founding-day-post-20261024T1442.png",
+      "kind": "image",
+      "aspect": "4:5",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Saudi Founding Day heritage poster: traditional Najdi mudbrick architecture with triangular crenellations at golden hour, palm trees, an ornate wooden door, Al-Sadu woven textile border.\n[TYPOGRAPHY] Central phrase. Arabic typography reads «يوم بدينا» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] earthy terracotta, ochre, deep brown and cream palette, heritage-meets-modern design, print quality.\n[AVOID] warped Arabic letters, English text, flags, emblems, watermark.",
+      "created_at": "2026-10-24T14:49:35.572Z"
+    },
+    "back-to-school": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/back-to-school-20261024T1442.png",
+      "kind": "image",
+      "aspect": "4:5",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Cheerful back-to-school poster: colorful backpack, notebooks, pencils and a lunch box arranged on a bright desk, paper-cut shapes.\n[TYPOGRAPHY] Playful bold headline. Arabic typography reads «العودة للمدارس» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Second line reads «خصم 20% على الحقائب», same Arabic typography rules. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] bright primary colors, friendly flat-3D illustration style, clean layout.\n[AVOID] warped Arabic letters, English text, children's faces, watermark.",
+      "created_at": "2026-10-24T14:49:38.820Z"
+    },
+    "event-poster": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/event-poster-20261024T1442.png",
+      "kind": "image",
+      "aspect": "9:16",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Vertical event poster with a festive mood: an open-air venue at night with stage lights, light beams and a crowd silhouette from behind, palm trees and string lights.\n[TYPOGRAPHY] Large event name at the top. Arabic typography reads «ليالي الشتاء» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Date line reads «الخميس 12 ديسمبر», same Arabic typography rules. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] vibrant night palette of purple, magenta and gold, cinematic lighting, modern event branding.\n[AVOID] warped Arabic letters, English text, recognizable faces, real brand logos, watermark.",
+      "created_at": "2026-10-24T14:49:56.346Z"
+    },
+    "food-menu-offer": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/food-menu-offer-20261024T1442.png",
+      "kind": "image",
+      "aspect": "4:5",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Restaurant promo post featuring mixed grill with rice photographed appetizingly on a rustic table.\n[TYPOGRAPHY] Meal name as headline. Arabic typography reads «وجبة الشواية العائلية» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Price badge in a bold circle reads «79 ريال», same Arabic typography rules. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] warm red, charcoal and cream palette, fast-casual restaurant branding, appetizing and bold.\n[AVOID] warped Arabic letters, English text, extra prices, watermark.",
+      "created_at": "2026-10-24T14:50:00.237Z"
+    },
+    "re-project-launch": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/re-project-launch-20261024T1442.png",
+      "kind": "image",
+      "aspect": "9:16",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Vertical launch poster for a residential compound: aerial view of modern low-rise villas, green parks and a central boulevard at sunset.\n[TYPOGRAPHY] Large project name. Arabic typography reads «مشروع واحة الخبر» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Tagline reads «حياة عصرية بلمسة سعودية», same Arabic typography rules. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] deep green, white and gold palette, prestigious developer branding.\n[AVOID] warped Arabic letters, English text, watermark.",
+      "created_at": "2026-10-24T14:50:16.602Z"
+    },
+    "clinic-service": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/clinic-service-20261024T1442.png",
+      "kind": "image",
+      "aspect": "4:5",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Clean medical-aesthetic promo post: bright modern clinic interior with soft curves, white and mint surfaces, a single orchid, abstract soft shapes; no people.\n[TYPOGRAPHY] Service name as headline. Arabic typography reads «تبييض الأسنان» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Offer badge reads «استشارة مجانية», same Arabic typography rules. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] white, mint and soft teal palette, trustworthy and calm, premium healthcare branding.\n[AVOID] before/after imagery, medical claims, warped Arabic letters, English text, watermark.",
+      "created_at": "2026-10-24T14:50:21.715Z"
+    },
+    "salon-offer": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/salon-offer-20261024T1442.png",
+      "kind": "image",
+      "aspect": "4:5",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Elegant beauty-salon promo: rose-gold styling tools, silk ribbons, dried flowers and a vanity mirror on a blush marble surface; no faces.\n[TYPOGRAPHY] Service as headline. Arabic typography reads «بروتين الشعر» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Offer line reads «خصم 25%», same Arabic typography rules. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] blush pink, cream and rose-gold palette, soft and luxurious.\n[AVOID] warped Arabic letters, English text, watermark.",
+      "created_at": "2026-10-24T14:50:34.259Z"
+    },
+    "store-new-arrival": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/store-new-arrival-20261024T1442.png",
+      "kind": "image",
+      "aspect": "4:5",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Product launch post: a brown leather bag on a minimal pedestal with soft studio shadows and a clean gradient backdrop.\n[TYPOGRAPHY] Headline in the top area. Arabic typography reads «وصل حديثًا» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Business name «مقهى الحي» at the bottom in a smaller weight, same Arabic typography rules.\n[STYLE] modern minimalist e-commerce aesthetic, soft neutral palette with one accent color.\n[AVOID] warped Arabic letters, English text, extra products, watermark.",
+      "created_at": "2026-10-24T14:50:46.027Z"
+    },
+    "social-tip-cover": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/social-tip-cover-20261024T1442.png",
+      "kind": "image",
+      "aspect": "4:5",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Instagram carousel cover slide: minimalist editorial layout with a bold headline, a small bookmark icon hinting to save, subtle paper texture.\n[TYPOGRAPHY] The headline fills most of the slide in heavy weight. Arabic typography reads «5 أخطاء تخسرك عملاءك» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Business name «مقهى الحي» as a small handle at the bottom corner, same Arabic typography rules.\n[STYLE] off-white background with one strong accent color, high contrast, modern creator style.\n[AVOID] warped Arabic letters, English text, clutter, watermark.",
+      "created_at": "2026-10-24T14:50:52.376Z"
+    },
+    "social-reel-cover": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/templates/social-reel-cover-20261024T1442.png",
+      "kind": "image",
+      "aspect": "9:16",
+      "model": "nano-banana-pro",
+      "prompt": "[SUBJECT] Vertical reel cover: background photo of a modern home office desk with a laptop and coffee, slightly blurred and darkened for contrast.\n[TYPOGRAPHY] Big bold title in the middle third, inside a high-contrast highlight box. Arabic typography reads «كيف ضاعفت مبيعاتي؟» exactly as written: correctly shaped, connected Arabic letters, right-to-left, no Latin letters, no extra words. Keep top and bottom 15% clear for app UI.\n[STYLE] bold creator style, strong contrast, one accent color.\n[AVOID] warped Arabic letters, English text, faces, watermark.",
+      "created_at": "2026-10-24T14:51:04.844Z"
+    }
+  },
+  "families": {
+    "video:hailuo": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-hailuo-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "hailuo-h3-max",
+      "prompt": "Slow dolly-in at golden hour across desert dunes: wind lifts fine sand off a dune crest in glowing ribbons, a brass dallah on a woven rug in the foreground, sandstone cliffs in soft haze behind, warm amber and teal grade.",
+      "created_at": "2026-10-24T14:43:53.618Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "480P",
+        "audio": false
+      }
+    },
+    "video:grok-video": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-grok-video-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "grok-video-1.5",
+      "prompt": "A falcon takes off from a falconer's leather glove in slow motion, wings spreading wide against a clear desert sky, feathers in sharp detail, dust swirling below, camera tilts up to follow.",
+      "created_at": "2026-10-24T14:44:28.531Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "480p",
+        "audio": false
+      }
+    },
+    "video:flux-video": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-flux-video-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "flux-3-video",
+      "prompt": "A woman in a flowing black abaya seen from behind walks across a rooftop at sunset, the fabric rippling in the wind, city lights beginning to glow below, slow tracking shot, elegant fashion film.",
+      "created_at": "2026-10-24T14:44:46.075Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "720p",
+        "audio": false
+      }
+    },
+    "video:kling": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-kling-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "kling-v4",
+      "prompt": "Slow-motion tracking shot of a white Arabian horse galloping along the shore at golden hour, sea spray and sand kicking up, mane flowing, low camera close to the waterline, warm backlight, cinematic depth of field.",
+      "created_at": "2026-10-24T14:44:47.520Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "720p",
+        "audio": false
+      }
+    },
+    "video:ltx": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-ltx-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "ltx-2.5-pro",
+      "prompt": "Top-down slow push-in over a large platter of lamb kabsa with roasted nuts and raisins, steam rising, hands placing fresh herbs, warm restaurant light, appetizing food commercial.",
+      "created_at": "2026-10-24T14:45:00.937Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 6,
+        "resolution": "720p",
+        "audio": false
+      }
+    },
+    "video:wan": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-wan-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "wan-3.0-prime",
+      "prompt": "Close-up slow motion of golden Saudi coffee being poured from a brass dallah into a small white finjan, steam rising, cardamom pods and dates on a wooden tray, warm morning light.",
+      "created_at": "2026-10-24T14:45:09.297Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "480p",
+        "audio": false
+      }
+    },
+    "video:seedance": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-seedance-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "seedance-2.5",
+      "prompt": "Macro 180-degree orbit around a dark oud perfume bottle on black marble, thin smoke curling around the glass, a single warm spotlight sliding across gold engraving, reflections on the marble, premium commercial look.",
+      "created_at": "2026-10-24T14:45:11.824Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "480p",
+        "audio": false
+      }
+    },
+    "video:veo": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-veo-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "veo-3.1",
+      "prompt": "Aerial drone shot at blue hour over a modern Gulf city skyline, glass towers lighting up, traffic light trails on wide boulevards, slow forward glide, soft haze, cinematic.",
+      "created_at": "2026-10-24T14:45:15.080Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 8,
+        "resolution": "720p",
+        "audio": false
+      }
+    },
+    "video:pixverse": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-pixverse-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "pixverse-v6",
+      "prompt": "An unbranded white sneaker slowly rotating on a glossy podium, colored light streaks sweeping across it, floating dust in the beams, dark studio background, crisp product commercial.",
+      "created_at": "2026-10-24T14:45:54.699Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "360p",
+        "audio": false
+      }
+    },
+    "video:omni-flash": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-omni-flash-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "omni-flash-1.1",
+      "prompt": "Stylized 3D animation: a glowing Ramadan lantern hangs over a quiet old-town alley at night, the crescent moon rises behind, soft floating light particles, gentle camera drift, warm gold and deep blue.",
+      "created_at": "2026-10-24T14:45:57.804Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "360p",
+        "audio": false
+      }
+    },
+    "video:luma-ray": {
+      "url": "https://pnxksotmpvdifpigrbux.supabase.co/storage/v1/object/public/media/showcase/families/video-luma-ray-20261024T1442.mp4",
+      "kind": "video",
+      "aspect": "16:9",
+      "model": "luma-ray-3.2",
+      "prompt": "Underwater shot in the Red Sea: sunlight rays dance over a colorful coral reef, schools of small fish part around the camera as it glides forward, clear turquoise water, calm and vivid.",
+      "created_at": "2026-10-24T14:46:06.579Z",
+      "config": {
+        "aspectRatio": "16:9",
+        "duration": 5,
+        "resolution": "540p",
+        "audio": false
+      }
+    }
+  }
 }
