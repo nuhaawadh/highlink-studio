@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils'
  */
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'flex h-8 items-center gap-1 rounded-[var(--radius-sm)] px-2 text-sm font-medium transition-colors',
+    'flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] px-2 text-sm font-medium transition-colors',
     isActive ? 'bg-text/[0.08] text-text' : 'text-muted hover:bg-text/[0.06] hover:text-text',
   )
 
@@ -81,21 +81,33 @@ export function Header() {
                 <Library className="size-4" /> {t('nav.library')}
               </NavLink>
             )}
-            <span className="ms-3 flex h-8 items-center gap-1.5 px-2 text-sm font-medium text-muted">
-              <LayoutGrid className="size-4" /> {t('nav.studios')}
-            </span>
-            {studios.map((s) => (
-              <NavLink key={s.to} to={s.to} className={navLinkClass}>
-                {s.label} <Badge tone={s.badge}>{s.badge === 'beta' ? 'Beta' : t('studios.soon')}</Badge>
-              </NavLink>
-            ))}
+            {/* الاستوديوهات قائمة منسدلة واحدة (تفتح بالمرور أو التركيز) — ثلاث روابط بشاراتها كانت تدفع الهيدر فوق أزرار الحساب على الشاشات المتوسطة */}
+            <div className="group relative flex h-full items-center">
+              <button
+                type="button"
+                aria-haspopup="true"
+                className={cn(
+                  navLinkClass({ isActive: location.pathname.startsWith('/studio/') }),
+                  'group-focus-within:bg-text/[0.06] group-focus-within:text-text',
+                )}
+              >
+                <LayoutGrid className="size-4" /> {t('nav.studios')}
+              </button>
+              <div className="invisible absolute top-full start-0 z-10 min-w-56 border border-border bg-bg p-1 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                {studios.map((s) => (
+                  <NavLink key={s.to} to={s.to} className={(st) => cn(navLinkClass(st), 'w-full justify-between gap-3')}>
+                    {s.label} <Badge tone={s.badge}>{s.badge === 'beta' ? 'Beta' : t('studios.soon')}</Badge>
+                  </NavLink>
+                ))}
+              </div>
+            </div>
           </nav>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex shrink-0 items-center gap-2 md:gap-3">
           <Link
             to="/pricing"
-            className="hidden h-8 items-center rounded-[var(--radius-sm)] border border-border bg-text/5 px-3 text-sm font-medium text-text hover:bg-text/10 md:flex"
+            className="hidden h-8 items-center whitespace-nowrap rounded-[var(--radius-sm)] border border-border bg-text/5 px-3 text-sm font-medium text-text hover:bg-text/10 md:flex"
           >
             {t('nav.pricing')}
           </Link>
