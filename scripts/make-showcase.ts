@@ -13,17 +13,33 @@
  *   --replicate-budget <دولار>  نفس السقف لـReplicate (القوالب بنص عربي)
  *   --key <مفتاح,مفتاح>  عناصر بعينها فقط (video:kling، ramadan-greeting، hero) — مع --force لإعادة توليدها
  * كل تشغيل (حتى --offline بلا --run) يكمّل إعدادات أمثلة العائلات والهيرو المولّدة قبل حفظها (لـ"سوّ مثلها") — بلا توليد.
+ *   --kind video|image  نوع واحد فقط (مع --only families --force لإعادة أمثلة الفيديو وحدها)
+ *   --attempts <2..4>  أكثر من محاولة لكل قالب/عائلة: أول ناتج يُعرض والباقي بدائل، وتفتح صفحة مراجعة في المتصفح بعد التشغيل
+ *   --review           يفتح صفحة المراجعة من الملف الحالي (بلا شبكة)
+ *   --pick <موضع>=<رقم>  يختار محاولة: --pick templates/perfume-reel=2 أو --pick families/video:kling=2 (بلا شبكة)
  *
  * ما يفعله عند --run: مستخدم مؤقت بباقة كريتورز (تزامن 8) + منحة رصيد بقدر التكلفة (دفتر الرصيد، نوع bonus)، يولّد،
  * ينسخ كل ناتج إلى media/showcase/… (عام)، يكتب content/showcase/showcase.json بعد كل نجاح، ثم يحذف المستخدم المؤقت وملفاته.
  * الانتظار هنا بالاستعلام كل بضع ثوانٍ — سكربت إداري، لا الواجهة (القاعدة 1 للواجهة).
  */
+import { spawn } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { createInterface } from 'node:readline/promises'
 import { CREDIT_USD, MARKUP, modelCredits, type ModelPricingRow } from '../packages/shared/pricing'
-import { EMPTY_SHOWCASE, familyKey, mergeShowcase, sampleValues, type ShowcaseConfig, type ShowcaseFile, type ShowcaseMedia } from '../packages/shared/showcase'
+import {
+  EMPTY_SHOWCASE,
+  familyKey,
+  mergeShowcase,
+  pickAlternate,
+  sampleValues,
+  setAlternates,
+  type ShowcaseConfig,
+  type ShowcaseFile,
+  type ShowcaseMedia,
+} from '../packages/shared/showcase'
 import { missingFields, renderTemplatePrompt, type TemplateCatalog, type TemplateDef } from '../packages/shared/templates'
 
 // يُشغَّل من جذر المستودع (التعليمات أعلاه)
@@ -47,6 +63,83 @@ const BUDGET: Record<string, number> = {
 }
 const CONCURRENCY = Math.min(8, Number(opt('--concurrency') ?? 6))
 const KEYS = opt('--key') ? new Set(opt('--key')!.split(',').map((k) => k.trim()).filter(Boolean)) : null
+/** --kind video|image: نوع واحد فقط (مثلًا إعادة أمثلة الفيديو دون الصور) */
+const KIND = opt('--kind')
+const ATTEMPTS = Math.max(1, Math.min(4, Math.floor(Number(opt('--attempts') ?? 1)) || 1))
+const PICK = opt('--pick')
+const REVIEW = flag('--review')
+const SHOWCASE_FILE = path.join(ROOT, 'content', 'showcase', 'showcase.json')
+const current: ShowcaseFile = existsSync(SHOWCASE_FILE) ? JSON.parse(readFileSync(SHOWCASE_FILE, 'utf8')) : EMPTY_SHOWCASE
+
+// ------------------------------------------------------------------ المراجعة والاختيار (بلا شبكة ولا مفاتيح)
+const RUN_LINE = 'node apps/web/node_modules/jiti/lib/jiti-cli.mjs scripts/make-showcase.ts'
+const esc = (x: string) => x.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!)
+
+/** صفحة مراجعة محلية: كل موضع له بدائل يُعرض بمحاولاته جنب بعض، وتحت كل محاولة أمر اختيارها */
+function writeReview(f: ShowcaseFile): string | null {
+  const slots = Object.entries(f.alternates ?? {}).filter(([, l]) => l.length)
+  if (!slots.length) return null
+  const tile = (m: ShowcaseMedia, n: number, slot: string) => `
+    <figure><div class="n">${n}${n === 1 ? ' · المعروض الآن' : ''}</div>
+      ${m.kind === 'video' ? `<video src="${esc(m.url)}" controls muted loop playsinline autoplay preload="metadata"></video>` : `<img src="${esc(m.url)}" alt="">`}
+      <code>${esc(`${RUN_LINE} --pick ${slot}=${n}`)}</code></figure>`
+  const sections = slots
+    .map(([slot, alts]) => {
+      const [section, key] = [slot.slice(0, slot.indexOf('/')), slot.slice(slot.indexOf('/') + 1)]
+      const main = (f as unknown as Record<string, Record<string, ShowcaseMedia>>)[section]?.[key]
+      const all = [...(main ? [main] : []), ...alts]
+      return `<section><h2>${esc(slot)} <small>${esc(all[0]?.model ?? '')}</small></h2><div class="row">${all.map((m, i) => tile(m, i + 1, slot)).join('')}</div>
+        <details><summary>البرومت</summary><pre>${esc(all[0]?.prompt ?? '')}</pre></details></section>`
+    })
+    .join('')
+  const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مراجعة المعرض</title><style>
+body{margin:0;padding:24px;background:#fff;color:#0a0a0a;font-family:Tajawal,system-ui,sans-serif}h1{margin:0 0 4px}p{color:#555;margin:0 0 24px}
+section{border-top:1px solid #ddd;padding:16px 0}h2{font-size:16px;margin:0 0 12px;font-family:"IBM Plex Mono",monospace}h2 small{color:#777;font-weight:400}
+.row{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}figure{margin:0;border:1px solid #ddd}
+.n{padding:6px 10px;font-weight:700;border-bottom:1px solid #ddd}video,img{display:block;width:100%;max-height:480px;object-fit:contain;background:#0a0a0a}
+code{display:block;direction:ltr;text-align:left;font-size:11px;padding:8px 10px;word-break:break-all;background:#f4f4f4}
+pre{direction:ltr;text-align:left;white-space:pre-wrap;font-size:12px;background:#f4f4f4;padding:10px}</style></head><body>
+<h1>مراجعة المعرض</h1><p>اختاري الأحلى في كل صف، وقولي لي الأرقام أو شغّلي الأمر اللي تحته من جذر المستودع.</p>${sections}</body></html>`
+  const file = path.join(os.tmpdir(), 'highlink-showcase-review.html')
+  writeFileSync(file, html)
+  return file
+}
+
+function openFile(file: string) {
+  try {
+    const [cmd, cmdArgs] = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', file]] : process.platform === 'darwin' ? ['open', [file]] : ['xdg-open', [file]]
+    spawn(cmd, cmdArgs as string[], { detached: true, stdio: 'ignore' }).unref()
+  } catch {
+    /* يكفي المسار المطبوع */
+  }
+}
+
+if (PICK) {
+  const m = /^(.+)=(\d+)$/.exec(PICK)
+  if (!m) {
+    console.error('use --pick templates/<id>=<n> or --pick families/<type:family>=<n>')
+    process.exit(1)
+  }
+  try {
+    const next = pickAlternate(current, m[1], Number(m[2]))
+    writeFileSync(SHOWCASE_FILE, JSON.stringify(next, null, 2) + '\n')
+    console.log(`picked ${m[1]} #${m[2]} → content/showcase/showcase.json`)
+  } catch (e) {
+    console.error(e instanceof Error ? e.message : String(e))
+    process.exit(1)
+  }
+  process.exit(0)
+}
+if (REVIEW) {
+  const file = writeReview(current)
+  if (!file) console.log('no alternates to review (run with --attempts 2 first)')
+  else {
+    console.log(`review page: ${file}`)
+    openFile(file)
+  }
+  process.exit(0)
+}
 
 // ------------------------------------------------------------------ إعداد
 function readEnv(p: string): Record<string, string> {
@@ -70,7 +163,6 @@ if (!OFFLINE && (!URL_ || !SERVICE || !ANON)) {
   process.exit(1)
 }
 
-const SHOWCASE_FILE = path.join(ROOT, 'content', 'showcase', 'showcase.json')
 const plan = JSON.parse(readFileSync(path.join(ROOT, 'content', 'showcase', 'plan.json'), 'utf8')) as {
   hero: { model: string; duration: number; aspect: string; attempts: number; prompt: string }
   family_defaults: { video: { aspect: string[]; duration: number }; image: { aspect: string[] } }
@@ -80,7 +172,6 @@ const plan = JSON.parse(readFileSync(path.join(ROOT, 'content', 'showcase', 'pla
 /** مستوى كل نوع قالب في المعرض — نفس ما تعرضه بطاقات الحملات في الرئيسية */
 const showcaseTiers = (JSON.parse(readFileSync(path.join(ROOT, 'content', 'showcase', 'campaigns.json'), 'utf8')) as { showcase_tiers: Record<string, string> }).showcase_tiers
 const templates = JSON.parse(readFileSync(path.join(ROOT, 'content', 'templates', 'saudi.json'), 'utf8')) as TemplateCatalog
-const current: ShowcaseFile = existsSync(SHOWCASE_FILE) ? JSON.parse(readFileSync(SHOWCASE_FILE, 'utf8')) : EMPTY_SHOWCASE
 
 // ------------------------------------------------------------------ HTTP
 function headers(key: string, bearer?: string): Record<string, string> {
@@ -134,6 +225,8 @@ interface Job {
   resolution: string | null
   cost: number
   template?: string
+  /** رقم المحاولة مع --attempts (1..N) */
+  attempt?: number
 }
 
 function pick<T>(preferred: T[], available: T[] | undefined, fallback: T): T {
@@ -216,6 +309,21 @@ async function buildPlan(models: ModelRow[]): Promise<{ jobs: Job[]; skipped: st
       job.template = t.id
       jobs.push(job)
     }
+  }
+  if (KIND) {
+    const keep = jobs.filter((j) => j.kind === KIND)
+    jobs.length = 0
+    jobs.push(...keep)
+  }
+  // --attempts N: نفس الإعداد N مرات لكل قالب/عائلة (الهيرو له محاولاته في plan.json)
+  if (ATTEMPTS > 1) {
+    const expanded: Job[] = []
+    for (const j of jobs) {
+      if (j.section === 'hero') expanded.push(j)
+      else for (let i = 1; i <= ATTEMPTS; i++) expanded.push({ ...j, slug: `${j.slug}-a${i}`, attempt: i, config: { ...j.config } })
+    }
+    jobs.length = 0
+    jobs.push(...expanded)
   }
   if (KEYS) {
     const keep = jobs.filter((j) => KEYS.has(j.key) || (KEYS.has('hero') && j.section === 'hero'))
@@ -323,6 +431,8 @@ async function main() {
 
     let next = 0
     let shown = current
+    // مواضع حصلت على أول ناتج في هذا التشغيل — الأول يُعرض والباقي بدائل للمراجعة
+    const filled = new Set<string>()
     const heroNew: ShowcaseMedia[] = []
     const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 13)
     const worker = async () => {
@@ -341,7 +451,14 @@ async function main() {
             const candidates = FORCE ? heroNew : [...current.hero.candidates, ...heroNew]
             shown = mergeShowcase(shown, { generated_at: new Date().toISOString(), hero: { candidates, selected: current.hero.selected } })
           } else {
-            shown = mergeShowcase(shown, { generated_at: new Date().toISOString(), [j.section]: { [j.key]: media } })
+            const slot = `${j.section}/${j.key}`
+            if (!filled.has(slot)) {
+              filled.add(slot)
+              // بدائل تشغيل سابق لنفس الموضع تُمسح — المراجعة تخص محاولات هذا التشغيل
+              shown = setAlternates(mergeShowcase(shown, { generated_at: new Date().toISOString(), [j.section]: { [j.key]: media } }), slot, [])
+            } else {
+              shown = setAlternates({ ...shown, generated_at: new Date().toISOString() }, slot, [...(shown.alternates?.[slot] ?? []), media])
+            }
           }
           writeFileSync(SHOWCASE_FILE, JSON.stringify(shown, null, 2) + '\n')
           console.log(`  done ${label} (${ok + failed}/${jobs.length})`)
@@ -352,6 +469,13 @@ async function main() {
       }
     }
     await Promise.all(Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker))
+    if (ATTEMPTS > 1) {
+      const file = writeReview(shown)
+      if (file) {
+        console.log(`\nreview page (pick the best of each): ${file}`)
+        openFile(file)
+      }
+    }
   } finally {
     const del = await call('DELETE', `/auth/v1/admin/users/${uid}`, SERVICE)
     const list = await call('POST', '/storage/v1/object/list/media', SERVICE, { prefix: `u/${uid}`, limit: 1000 })

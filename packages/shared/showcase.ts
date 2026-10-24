@@ -32,6 +32,11 @@ export interface ShowcaseFile {
   templates: Record<string, ShowcaseMedia>
   /** المفتاح familyKey(type, family) — "video:kling"، "image:seedream" */
   families: Record<string, ShowcaseMedia>
+  /**
+   * محاولات إضافية لم تُختر (make-showcase --attempts N): المفتاح موضع "templates/<id>" أو "families/<type:family>".
+   * الواجهة لا تقرؤها؛ نهى تختار من صفحة المراجعة (--review) ثم --pick يبدّل المعروض.
+   */
+  alternates?: Record<string, ShowcaseMedia[]>
 }
 
 export const EMPTY_SHOWCASE: ShowcaseFile = { version: 1, generated_at: null, hero: { candidates: [], selected: 0 }, templates: {}, families: {} }
@@ -56,7 +61,33 @@ export function mergeShowcase(prev: ShowcaseFile, next: Partial<Omit<ShowcaseFil
     hero: next.hero && next.hero.candidates.length ? next.hero : prev.hero,
     templates: { ...prev.templates, ...(next.templates ?? {}) },
     families: { ...prev.families, ...(next.families ?? {}) },
+    ...(prev.alternates || next.alternates ? { alternates: { ...(prev.alternates ?? {}), ...(next.alternates ?? {}) } } : {}),
   }
+}
+
+/** يضع بدائل موضع (قائمة فارغة تحذفه، وبلا مواضع يُحذف الحقل) — بلا تعديل للأصل */
+export function setAlternates(f: ShowcaseFile, slot: string, list: ShowcaseMedia[]): ShowcaseFile {
+  const next = { ...(f.alternates ?? {}) }
+  if (list.length) next[slot] = list
+  else delete next[slot]
+  const { alternates: _old, ...rest } = f
+  return Object.keys(next).length ? { ...rest, alternates: next } : rest
+}
+
+/**
+ * اختيار نهى بين المحاولات: المرشحون = المعروض الآن ثم البدائل بالترتيب (1 = المعروض). المختار يصير المعروض والباقي بدائل.
+ * موضع غير معروف أو رقم خارج المدى = RangeError (لا يُكتب شيء).
+ */
+export function pickAlternate(f: ShowcaseFile, slot: string, n: number): ShowcaseFile {
+  const i = slot.indexOf('/')
+  const section = slot.slice(0, i)
+  const key = slot.slice(i + 1)
+  if (i < 1 || (section !== 'templates' && section !== 'families') || !key) throw new RangeError(`unknown slot ${slot}`)
+  const main = Object.prototype.hasOwnProperty.call(f[section], key) ? f[section][key] : undefined
+  const all = [...(main ? [main] : []), ...(f.alternates?.[slot] ?? [])]
+  if (!Number.isInteger(n) || n < 1 || n > all.length) throw new RangeError(`${slot}: choose 1..${all.length}`)
+  const out: ShowcaseFile = { ...f, [section]: { ...f[section], [key]: all[n - 1] } }
+  return setAlternates(out, slot, all.filter((_, j) => j !== n - 1))
 }
 
 /** مفتاح "سوّ مثلها" (?like=) للهيرو المختار؛ باقي المفاتيح مفاتيح العائلات ("video:kling") */

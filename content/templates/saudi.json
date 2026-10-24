@@ -219,8 +219,8 @@
     "key": "cinematic",
     "ar": "سينمائي",
     "en": "Cinematic",
-    "model": "kling-v4",
-    "resolution": "720p"
+    "model": "veo-3.1-fast",
+    "resolution": "1080p"
    }
   ]
  },
@@ -349,9 +349,9 @@
      "placeholder_en": "a luxury box of dates"
     }
    ],
-   "prompt": "Slow cinematic push-in on {{product}} placed on a carved wooden table, surrounded by glowing brass Ramadan lanterns casting patterned light, a crescent moon visible through an arched window, gentle floating dust in warm light. Warm gold and deep blue palette, shallow depth of field, smooth steady camera, no text, no letters, no logos, no watermark.",
+   "prompt": "FORMAT: 8-second vertical 9:16 Ramadan commercial, one continuous take, no cuts.\nSCENE CONTEXT: {{product}} on a carved wooden table in a quiet room at night, brass Ramadan lanterns glowing around it and a crescent moon visible through an arched window.\n[00:00-00:03] A slow push-in through hanging lanterns whose pierced patterns cast moving shadows across the table.\n[00:03-00:06] The camera drifts around the product as a lantern sways gently and warm dust floats in the light.\n[00:06-00:08] The camera settles on a centered hero frame of the product with the crescent moon softly framed in the window behind.\nCAMERA: 50mm lens, f/2.2, shallow depth of field, smooth slider.\nLIGHTING: warm lantern glow against deep blue moonlight.\nSTYLE: elegant Ramadan campaign, gold and deep blue palette, fine film grain.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks.",
    "season": "ramadan",
-   "duration": 5
+   "duration": 8
   },
   {
    "id": "eid-fitr-greeting",
@@ -444,9 +444,9 @@
      "placeholder_en": "a gold watch"
     }
    ],
-   "prompt": "Close-up of an elegant gift box with a satin ribbon on a marble table; the ribbon unties and the lid lifts to reveal {{product}} glowing softly inside, confetti and gold sparkles drift down, festive string lights bokeh in the background. Smooth slow motion, premium commercial look, no text, no letters, no logos, no watermark.",
+   "prompt": "FORMAT: 8-second vertical 9:16 Eid gift commercial, one continuous take, no cuts.\nSCENE CONTEXT: an elegant gift box with a satin ribbon on a white marble table, warm string-light bokeh behind it.\n[00:00-00:02] Close-up as the satin ribbon slowly unties itself and slides away.\n[00:02-00:05] The lid lifts off to reveal {{product}} glowing softly inside on folded silk.\n[00:05-00:08] Gold confetti drifts down in slow motion as the camera settles on the product.\nCAMERA: 85mm lens, f/2.8, shallow depth of field, gentle push-in.\nLIGHTING: warm glow from inside the box, golden bokeh, soft fill.\nSTYLE: premium Eid gifting campaign, ivory and gold palette.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks.",
    "season": "eid_fitr",
-   "duration": 5
+   "duration": 8
   },
   {
    "id": "national-day-post",
@@ -504,9 +504,9 @@
      "placeholder_en": "a specialty coffee cup"
     }
    ],
-   "prompt": "Night aerial-style shot of a modern Riyadh skyline lit in green, fireworks blooming in green and white, then a smooth transition to a close-up of {{product}} on a rooftop table with green ambient light and celebratory bokeh. Energetic but smooth camera, cinematic, no text, no letters, no logos, no watermark.",
+   "prompt": "FORMAT: 8-second vertical 9:16 Saudi National Day commercial, one continuous camera move, no cuts.\nSCENE CONTEXT: night over the modern Riyadh skyline lit in green, fireworks blooming in green and white, a rooftop table in the foreground.\n[00:00-00:03] A wide aerial glide toward the illuminated skyline as fireworks bloom.\n[00:03-00:06] The camera descends to the rooftop and pushes toward the table.\n[00:06-00:08] A close-up hero frame of {{product}} on the table, green ambient light and firework bokeh behind.\nCAMERA: smooth drone-to-gimbal move, 35mm look, f/2.8 on the final frame.\nLIGHTING: green city glow, warm practical light on the product.\nSTYLE: celebratory national campaign, green and white palette, cinematic.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks. The frame stays free of flags.",
    "season": "national_day",
-   "duration": 5
+   "duration": 8
   },
   {
    "id": "founding-day-post",
@@ -914,8 +914,8 @@
      "placeholder_en": "living room with a majlis"
     }
    ],
-   "prompt": "Smooth gimbal walkthrough of a {{details}}: bright open-plan space, floor-to-ceiling windows, neutral stone and wood finishes, elegant low seating with Al-Sadu cushions, soft daylight. Slow forward dolly with a gentle pan, real-estate showcase style, no text, no letters, no logos, no watermark.",
-   "duration": 5
+   "prompt": "FORMAT: 8-second 16:9 luxury real-estate film, one continuous gimbal take, no cuts.\nSCENE CONTEXT: the interior of {{details}}: a bright open-plan living space with floor-to-ceiling windows, travertine floors, warm oak, low modern seating with Al-Sadu cushions and a palm courtyard outside.\n[00:00-00:03] The camera glides forward from the entrance into the living area as sheer curtains move gently in the breeze.\n[00:03-00:06] A slow pan to the right reveals the double-height windows and the courtyard, sunlight spilling across the floor.\n[00:06-00:08] The camera eases to a stop on a balanced wide frame of the whole space.\nCAMERA: 16mm wide lens, f/5.6, deep focus, straight verticals, stabilized gimbal at chest height.\nLIGHTING: soft natural daylight, warm bounce light, gentle window highlights.\nSTYLE: high-end architectural film, clean neutral grade.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks. The rooms are empty of people.",
+   "duration": 8
   },
   {
    "id": "re-project-launch",
@@ -1039,10 +1039,10 @@
   {
    "id": "cafe-coffee-pour",
    "category": "food",
-   "title_ar": "ريل صب القهوة السعودية",
-   "title_en": "Saudi coffee pour reel",
-   "desc_ar": "ريل عمودي لصب القهوة من الدلة في الفنجان",
-   "desc_en": "A vertical reel of coffee poured from a dallah into a finjan",
+   "title_ar": "ريل قهوة مختصة V60",
+   "title_en": "V60 specialty coffee reel",
+   "desc_ar": "ريل عمودي لتحضير قهوة V60 بالتقطير، من صب الماء إلى الكوب",
+   "desc_en": "A vertical reel of a V60 pour-over, from the first pour to the cup",
    "tier_set": "video",
    "aspect_ratio": "9:16",
    "fields": [
@@ -1053,13 +1053,13 @@
      "kind": "text",
      "required": false,
      "max": 60,
-     "default": "a modern specialty cafe counter",
-     "placeholder_ar": "مجلس تراثي",
-     "placeholder_en": "a heritage majlis"
+     "default": "a minimalist light-wood specialty coffee bar",
+     "placeholder_ar": "بار قهوة مختصة بخشب فاتح",
+     "placeholder_en": "a light-wood specialty coffee bar"
     }
    ],
-   "prompt": "Extreme close-up slow motion of golden Saudi coffee poured from a brass dallah into a small white finjan cup in {{setting}}, a plate of dates beside it, steam curling up, warm backlight catching the stream. Smooth macro camera, rich warm tones, no text, no letters, no logos, no watermark.",
-   "duration": 5
+   "prompt": "FORMAT: 8-second vertical 9:16 specialty coffee commercial, one continuous take, no cuts.\nSCENE CONTEXT: a glass V60 pour-over dripper with a paper filter sits on a clear glass server on {{setting}}; freshly ground coffee in the filter and a gooseneck kettle pouring.\n[00:00-00:02] Extreme close-up: a thin spiral of hot water from the gooseneck kettle hits the grounds and the coffee bloom rises and bubbles.\n[00:02-00:05] Side view through the glass server: dark amber coffee drips in a steady thread while steam curls up through the backlight.\n[00:05-00:08] The camera pulls back to a clean hero frame of the dripper and server with a ceramic cup beside them, light glowing through the coffee.\nCAMERA: 100mm macro lens, f/2.8, shallow depth of field, slow push-in on a smooth slider.\nLIGHTING: soft morning window light from behind, warm highlights in the coffee, clean bright tones.\nSTYLE: modern specialty cafe commercial, minimal, warm neutral palette.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks.",
+   "duration": 8
   },
   {
    "id": "cafe-new-drink",
@@ -1078,11 +1078,11 @@
      "kind": "text",
      "required": true,
      "max": 60,
-     "placeholder_ar": "لاتيه بالزعفران والهيل",
-     "placeholder_en": "saffron cardamom latte"
+     "placeholder_ar": "آيس سبانش لاتيه",
+     "placeholder_en": "iced Spanish latte"
     }
    ],
-   "prompt": "[SUBJECT] {{drink}} in a clear glass on a terrazzo counter, latte art or garnish visible, a few coffee beans and cardamom pods scattered.\n[LIGHTING] bright soft daylight with a gentle shadow.\n[LENS] 50mm, f/2.8, drink tack-sharp.\n[STYLE] specialty-cafe Instagram aesthetic, clean and fresh, no text, no letters, no logos, no watermark."
+   "prompt": "[SUBJECT] {{drink}} in a clear glass on a terrazzo counter, latte art or garnish visible, a few coffee beans scattered and a glass V60 softly blurred in the background.\n[LIGHTING] bright soft daylight with a gentle shadow.\n[LENS] 50mm, f/2.8, drink tack-sharp.\n[STYLE] specialty-cafe Instagram aesthetic, clean and fresh, no text, no letters, no logos, no watermark."
   },
   {
    "id": "food-steam-reel",
@@ -1105,8 +1105,8 @@
      "placeholder_en": "chicken mandi"
     }
    ],
-   "prompt": "Close-up of {{dish}} on a platter as rich sauce is poured over it in slow motion, steam rising, a hand sprinkling fresh herbs, warm restaurant lighting with dark background. Appetizing commercial food cinematography, smooth slow camera arc, no text, no letters, no logos, no watermark.",
-   "duration": 5
+   "prompt": "FORMAT: 8-second vertical 9:16 restaurant food commercial, one continuous take, no cuts.\nSCENE CONTEXT: {{dish}} plated generously on a dark ceramic platter on a walnut table in a warmly lit restaurant, dark background.\n[00:00-00:02] Low macro close-up: glossy sauce is poured over the dish in slow motion, catching the light.\n[00:02-00:05] A hand sprinkles fresh herbs from above; steam rises and curls through the backlight as the camera arcs slowly to the right.\n[00:05-00:08] The camera rises to a 45-degree hero angle and settles with the whole dish sharp and steam drifting.\nCAMERA: 85mm lens, f/2.8, shallow depth of field, slow-motion feel, smooth gimbal arc.\nLIGHTING: warm backlight that reveals the steam, soft side fill, rich shadows.\nSTYLE: premium food advertising, appetizing saturated colors, crisp textures.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks.",
+   "duration": 8
   },
   {
    "id": "oud-luxury-photo",
@@ -1152,8 +1152,8 @@
      "placeholder_en": "a crystal perfume bottle"
     }
    ],
-   "prompt": "Slow orbit around {{product}} on black marble as oud smoke swirls through a beam of golden light, tiny gold particles drifting, a drop of oil sliding down the glass. Luxury fragrance commercial, dark moody background, smooth cinematic motion, no text, no letters, no logos, no watermark.",
-   "duration": 5
+   "prompt": "FORMAT: 8-second vertical 9:16 luxury fragrance commercial, one continuous take, no cuts.\nSCENE CONTEXT: {{product}} stands on wet black marble in a dark studio; thin oud smoke drifts through a single narrow beam of warm light.\n[00:00-00:02] Extreme macro on the glass: a single drop of oil slides slowly down the surface, gold particles glinting in the beam.\n[00:02-00:05] The camera pulls back and orbits 90 degrees around the bottle as the smoke curls into the light and fine gold dust drifts down.\n[00:05-00:08] The camera settles on a centered hero frame; the smoke parts, a soft rim light traces the silhouette and its reflection glows on the marble.\nCAMERA: 100mm macro lens, f/2.8, shallow depth of field, slow motorized slider, perfectly smooth, 24fps film look.\nLIGHTING: low-key, one warm key light from top-left, gold rim light, deep blacks, light haze.\nSTYLE: high-end Gulf perfume advertising, black and gold palette, fine film grain.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks. Hands and extra bottles stay out of frame.",
+   "duration": 8
   },
   {
    "id": "perfume-launch",
@@ -1253,8 +1253,8 @@
      "placeholder_en": "black abaya with gold embroidery"
     }
    ],
-   "prompt": "A woman wearing {{details}} and a hijab walks slowly through a sunlit stone arcade, the fabric flowing gracefully in a soft breeze, camera tracking alongside then a slow-motion detail shot of the embroidery. Elegant fashion film, warm natural light, no text, no letters, no logos, no watermark.",
-   "duration": 5
+   "prompt": "FORMAT: 8-second vertical 9:16 fashion film, one continuous take, no cuts.\nSCENE CONTEXT: a woman wearing {{details}} and a hijab walks slowly through a sunlit limestone arcade at golden hour, her face turned softly away from the camera.\n[00:00-00:03] A tracking shot alongside her at waist height as the fabric flows in a soft breeze.\n[00:03-00:06] She passes through a beam of sunlight and the hem and sleeves ripple in slow motion.\n[00:06-00:08] A macro detail shot of the embroidery as light slides across the stitching.\nCAMERA: 50mm lens, f/2, shallow depth of field, smooth gimbal tracking, slow-motion feel.\nLIGHTING: warm low sun, long arch shadows, soft bounce on the fabric.\nSTYLE: modest luxury fashion campaign, warm neutral palette, fine film grain.\nCLEAN FRAME: free of on-screen text, letters, logos and watermarks.",
+   "duration": 8
   },
   {
    "id": "thobe-eid",

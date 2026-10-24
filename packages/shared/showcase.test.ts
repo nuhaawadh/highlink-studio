@@ -13,7 +13,9 @@ import {
   likeMedia,
   likeSettings,
   mergeShowcase,
+  pickAlternate,
   sampleValues,
+  setAlternates,
   type ShowcaseFile,
   type ShowcaseMedia,
 } from './showcase'
@@ -36,6 +38,30 @@ describe('showcase', () => {
     expect(out.templates.a.url).toBe('old-a')
     expect(out.templates.b.url).toBe('new-b')
     expect(out.hero.candidates[0].url).toBe('h')
+  })
+
+  it('البدائل: الدمج يحفظها، والاختيار يبدّل المعروض بالمحاولة المطلوبة والباقي يبقى بدائل', () => {
+    const base: ShowcaseFile = { ...EMPTY_SHOWCASE, templates: { r: media('a1') } }
+    const withAlts = setAlternates(base, 'templates/r', [media('a2'), media('a3')])
+    expect(withAlts.alternates?.['templates/r'].map((m) => m.url)).toEqual(['a2', 'a3'])
+    expect(base.alternates).toBeUndefined()
+    // الدمج لا يمسح البدائل، وتشغيل بلا بدائل لا يضيف الحقل
+    expect(mergeShowcase(withAlts, { templates: { x: media('x') } }).alternates?.['templates/r']).toHaveLength(2)
+    expect('alternates' in mergeShowcase(base, { templates: { x: media('x') } })).toBe(false)
+    const picked = pickAlternate(withAlts, 'templates/r', 3)
+    expect(picked.templates.r.url).toBe('a3')
+    expect(picked.alternates?.['templates/r'].map((m) => m.url)).toEqual(['a1', 'a2'])
+    // 1 = المعروض الآن (لا تغيير في المعروض)
+    expect(pickAlternate(withAlts, 'templates/r', 1).templates.r.url).toBe('a1')
+    // مفاتيح العائلات فيها نقطتان
+    const fam = setAlternates({ ...EMPTY_SHOWCASE, families: { 'video:kling': media('k1') } }, 'families/video:kling', [media('k2')])
+    expect(pickAlternate(fam, 'families/video:kling', 2).families['video:kling'].url).toBe('k2')
+    // قائمة فارغة تحذف الموضع، وبلا مواضع يُحذف الحقل
+    expect('alternates' in setAlternates(withAlts, 'templates/r', [])).toBe(false)
+    expect(() => pickAlternate(withAlts, 'templates/r', 4)).toThrow(RangeError)
+    expect(() => pickAlternate(withAlts, 'templates/r', 0)).toThrow(RangeError)
+    expect(() => pickAlternate(withAlts, 'hero/r', 1)).toThrow(RangeError)
+    expect(() => pickAlternate(withAlts, 'templates/none', 1)).toThrow(RangeError)
   })
 
   it('likeMedia: الهيرو المختار، مفتاح عائلة، وغير المعروف null (ولا يقرأ خصائص الكائن الموروثة)', () => {
