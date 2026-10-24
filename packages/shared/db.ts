@@ -206,6 +206,32 @@ export type Database = {
           },
         ]
       }
+      app_admins: {
+        Row: {
+          created_at: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_admins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assets: {
         Row: {
           api_key_id: string | null
@@ -228,6 +254,7 @@ export type Database = {
           provider: string | null
           provider_job_id: string | null
           resolution: string | null
+          run_id: string | null
           status: string
           thumbnail_url: string | null
           type: string
@@ -256,6 +283,7 @@ export type Database = {
           provider?: string | null
           provider_job_id?: string | null
           resolution?: string | null
+          run_id?: string | null
           status?: string
           thumbnail_url?: string | null
           type: string
@@ -284,6 +312,7 @@ export type Database = {
           provider?: string | null
           provider_job_id?: string | null
           resolution?: string | null
+          run_id?: string | null
           status?: string
           thumbnail_url?: string | null
           type?: string
@@ -730,6 +759,17 @@ export type Database = {
         }
         Returns: number
       }
+      claim_and_hold_run: {
+        Args: {
+          p_amount_each: number
+          p_assets: string[]
+          p_model: string
+          p_provider: string
+          p_type: string
+          p_user: string
+        }
+        Returns: number
+      }
       confirm_hold: { Args: { p_hold_id: number }; Returns: undefined }
       create_api_key: {
         Args: { p_mode: string; p_name: string; p_webhook_url?: string }
@@ -757,6 +797,8 @@ export type Database = {
         Args: { p_amount: number; p_asset: string; p_user: string }
         Returns: number
       }
+      invoke_reconcile: { Args: never; Returns: number }
+      is_app_admin: { Args: never; Returns: boolean }
       reconcile_holds: {
         Args: { p_image_older_than?: string; p_video_older_than?: string }
         Returns: {
@@ -775,6 +817,10 @@ export type Database = {
         Returns: undefined
       }
       revoke_api_key: { Args: { p_id: string }; Returns: boolean }
+      set_ops_secret: {
+        Args: { p_name: string; p_value: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

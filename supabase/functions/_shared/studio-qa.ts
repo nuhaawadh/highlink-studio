@@ -70,7 +70,7 @@ export async function studioQaGate(
   const expectedText = meta.text ?? undefined
 
   // الحَكَم: محاولة، وإن تعطّل نعيده مرة (rejudge)، ثم unchecked
-  let judge: JudgeResult | null = null
+  let judge: (JudgeResult & { model?: string }) | null = null
   let verdict: QaVerdict | undefined
   let judgeFailures = 0
   let judgeError: string | null = null
@@ -91,7 +91,7 @@ export async function studioQaGate(
   const base: QaState = {
     ...state,
     judge_failures: state.judge_failures + judgeFailures,
-    judge_model: judgeModel(),
+    judge_model: judge?.model ?? judgeModel(),
     product_match: judge?.product_match ?? null,
     text_exact: verdict?.text_exact ?? null,
     text_found: judge?.text_found ?? null,

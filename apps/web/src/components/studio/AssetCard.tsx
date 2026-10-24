@@ -30,6 +30,14 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
   // أصل من مفتاح API اختباري (ADR 0004): مكتمل بلا صورة ولا خصم
   const sandbox = asset.status === 'completed' && !asset.url && Boolean((asset.metadata as { sandbox?: unknown } | null)?.sandbox)
   const isVideo = asset.type === 'video'
+  // بوابة الجودة (ADR 0006): درجة مطابقة المنتج على صور الاستوديو المكتملة
+  const qa = (asset.metadata as { qa?: { status?: string; product_match?: number | null } } | null)?.qa
+  const qaLabel =
+    asset.status === 'completed' && qa?.status === 'passed' && typeof qa.product_match === 'number'
+      ? t('studio.qa', { n: qa.product_match })
+      : asset.status === 'completed' && qa?.status === 'unchecked'
+        ? t('studio.qaUnchecked')
+        : null
 
   function captureThumbnail(e: SyntheticEvent<HTMLVideoElement>) {
     if (asset.thumbnail_url || thumbAttempted.current) return
@@ -134,6 +142,7 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
           {asset.prompt ?? '—'}
         </span>
         <span className="flex shrink-0 items-center gap-2">
+          {qaLabel && <span className="border border-border px-1 text-[10px] text-text">{qaLabel}</span>}
           {isVideo && asset.duration_s != null && <span className="font-latin tabular-nums">{t('video.seconds', { n: Number(asset.duration_s) })}</span>}
           {asset.cost_credits != null && asset.status === 'completed' && (
             <span className="font-latin tabular-nums text-text">{t('credits.n', { n: asset.cost_credits })}</span>

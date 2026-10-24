@@ -183,10 +183,10 @@ export async function runStudio(ctx: { fn: string; userId: string; body: Generat
     await claimAndHoldRun({ userId, assetIds: ids, amountEach: each, provider: provider.name, model: model.id, type: 'image' })
     ownedQueued = []
 
-    // 8) إرسال مهمة لكل مقاس، ثم كتابتها — فشل مقاس لا يمس أخواته
+    // 8) إرسال مهمة لكل مقاس بالتتابع (دفعة Replicate = 1 تحت 5$ — التوازي خُنق في التجربة الحية 2026-10-24)، ثم كتابتها.
+    //    فشل مقاس لا يمس أخواته.
     const webhookUrl = `${projectUrl()}/functions/v1/provider-webhook?source=${provider.name}`
-    const results = await Promise.all(
-      plans.map(async (p) => {
+    const sendOne = async (p: (typeof plans)[number]) => {
         const meta: StudioAssetMeta = {
           id: recipe.id,
           preset: req.preset,
@@ -237,8 +237,9 @@ export async function runStudio(ctx: { fn: string; userId: string; body: Generat
           logRequest({ fn, user: userId, asset: p.asset.id, ms: Date.now() - started, ok: false, code: 'JOB_NOT_RECORDED', detail: `job ${jobId}: ${wErr?.message ?? 'state changed'}` })
         }
         return { assetId: p.asset.id, key: p.output.key, ok: true as const, jobId }
-      }),
-    )
+    }
+    const results: Array<Awaited<ReturnType<typeof sendOne>>> = []
+    for (const p of plans) results.push(await sendOne(p))
 
     const sent = results.filter((r) => r.ok)
     if (sent.length === 0) {

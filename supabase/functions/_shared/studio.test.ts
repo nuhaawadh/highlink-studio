@@ -34,7 +34,7 @@ describe('product-shot recipe', () => {
     expect(p).not.toMatch(/\{\{|\}\}/)
   })
 
-  it('المشهد والنص العربي يظهران فقط عند طلبهما، والنص بين « » حرفيًا', () => {
+  it('المشهد والنص العربي يظهران فقط عند طلبهما، والنص حرفيًا بلا علامات اقتباس', () => {
     const p = renderStudioPrompt(recipe, {
       preset: 'ramadan',
       scene: 'على طاولة خشبية في مجلس',
@@ -42,7 +42,9 @@ describe('product-shot recipe', () => {
       output: selectOutputs(recipe)[0],
     })
     expect(p).toContain('[SCENE] على طاولة خشبية في مجلس')
-    expect(p).toContain('«عرض رمضان 30%»')
+    expect(p).toContain('exactly these Arabic words and nothing else: عرض رمضان 30%')
+    expect(p).toContain('no quotation marks')
+    expect(p).not.toContain('«')
   })
 
   it('preset أو مقاس مجهول يُرفض', () => {

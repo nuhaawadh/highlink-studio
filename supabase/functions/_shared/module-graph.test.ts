@@ -16,6 +16,6 @@ describe('edge module graph loads', () => {
     expect(typeof studio.runStudio).toBe('function')
     expect(typeof qa.studioQaGate).toBe('function')
     expect(typeof fin.finalizeAsset).toBe('function')
-    expect(gem.judgeModel()).toBe('gemini-2.5-flash')
+    expect(gem.judgeModels()).toEqual(['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'])
   })
 })
