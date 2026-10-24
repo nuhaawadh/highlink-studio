@@ -12,7 +12,8 @@
       "aspect": [
         "16:9"
       ],
-      "duration": 5
+      "duration": 5,
+      "min_resolution": 720
     },
     "image": {
       "aspect": [

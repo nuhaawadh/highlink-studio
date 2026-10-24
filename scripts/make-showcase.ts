@@ -165,7 +165,8 @@ if (!OFFLINE && (!URL_ || !SERVICE || !ANON)) {
 
 const plan = JSON.parse(readFileSync(path.join(ROOT, 'content', 'showcase', 'plan.json'), 'utf8')) as {
   hero: { model: string; duration: number; aspect: string; attempts: number; prompt: string }
-  family_defaults: { video: { aspect: string[]; duration: number }; image: { aspect: string[] } }
+  /** min_resolution: أقل دقة (بالبكسل الرأسي) لأمثلة العائلات والهيرو — 720 = أقل خيار ≥ 720p يعرضه النموذج، وإلا افتراضه */
+  family_defaults: { video: { aspect: string[]; duration: number; min_resolution?: number }; image: { aspect: string[] } }
   families: Record<string, string>
   template_values: Record<string, Record<string, string>>
 }
@@ -236,10 +237,16 @@ function pick<T>(preferred: T[], available: T[] | undefined, fallback: T): T {
 const s = (m: ModelRow) => (m.supports ?? {}) as Record<string, any>
 const d = (m: ModelRow) => (m.default_params ?? {}) as Record<string, any>
 
-function videoJob(section: Job['section'], key: string, slug: string, m: ModelRow, prompt: string, duration: number, aspects: string[]): Job {
+/** "720p"/"768P"/"1080p" → 720/768/1080؛ غير ذلك 0 */
+const px = (r: string) => Number(/(\d{3,4})/.exec(r)?.[1] ?? 0)
+
+function videoJob(section: Job['section'], key: string, slug: string, m: ModelRow, prompt: string, duration: number, aspects: string[], minPx = 0): Job {
   const durations: number[] = s(m).durations ?? []
   const dur = durations.length ? (durations.includes(duration) ? duration : (d(m).duration ?? durations[0])) : d(m).duration
-  const resolution = d(m).resolution ?? null
+  const offered: string[] = s(m).resolutions ?? []
+  // أمثلة المعرض بدقة لا تقل عن minPx إن عرضها النموذج (أقلها فوق الحد)، وإلا افتراضه
+  const sharp = minPx ? offered.filter((r) => px(r) >= minPx).sort((a, b) => px(a) - px(b))[0] : undefined
+  const resolution = sharp ?? d(m).resolution ?? null
   const aspect = pick(aspects, s(m).aspect_ratios, '16:9')
   const config = { aspectRatio: aspect, duration: dur, ...(resolution ? { resolution } : {}), audio: false }
   return { section, key, slug, model: m, kind: 'video', prompt, aspect, config, resolution, cost: modelCredits(m, { duration: dur, resolution: resolution ?? undefined, audio: false }) }
@@ -259,7 +266,7 @@ async function buildPlan(models: ModelRow[]): Promise<{ jobs: Job[]; skipped: st
   if (want('hero') && (FORCE || !current.hero.candidates.length)) {
     const m = byId.get(plan.hero.model)
     if (!m) skipped.push(`hero: model ${plan.hero.model} not enabled`)
-    else for (let i = 1; i <= plan.hero.attempts; i++) jobs.push(videoJob('hero', `hero-${i}`, `hero-${i}`, m, plan.hero.prompt, plan.hero.duration, [plan.hero.aspect]))
+    else for (let i = 1; i <= plan.hero.attempts; i++) jobs.push(videoJob('hero', `hero-${i}`, `hero-${i}`, m, plan.hero.prompt, plan.hero.duration, [plan.hero.aspect], plan.family_defaults.video.min_resolution))
   }
 
   if (want('families')) {
@@ -277,7 +284,7 @@ async function buildPlan(models: ModelRow[]): Promise<{ jobs: Job[]; skipped: st
         continue
       }
       const slug = k.replace(':', '-')
-      jobs.push(m.type === 'video' ? videoJob('families', k, slug, m, prompt, plan.family_defaults.video.duration, plan.family_defaults.video.aspect) : imageJob('families', k, slug, m, prompt, plan.family_defaults.image.aspect))
+      jobs.push(m.type === 'video' ? videoJob('families', k, slug, m, prompt, plan.family_defaults.video.duration, plan.family_defaults.video.aspect, plan.family_defaults.video.min_resolution) : imageJob('families', k, slug, m, prompt, plan.family_defaults.image.aspect))
     }
   }
 
