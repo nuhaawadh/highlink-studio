@@ -37,6 +37,7 @@
 | B26 | نواتج > 50MB (30 ث 1080p نادرًا) تُرفض الآن نهائيًا (failed + استرداد) ونخسر تكلفة المزوّد: رفع `file_size_limit` للـbucket أو R2 (B16) | migration bucket / `storage.ts` | خسارة نادرة لكنها حقيقية | مع B16 |
 | B27 | انتهاء مهلة الإرسال (30 ث) بعد أن قبلت fal الطلب = استرداد ونحن ندفع: مفتاح idempotency عند المزوّد أو سؤال fal بالـ`gateway_request_id` | `providers/fal.ts`, `generate-core.ts` | خطر 6 في المراجعة المستقلة (الجزء المتبقي) | عند أول حادثة |
 | B28 | تحقق إضافي في webhook fal: `X-Fal-Webhook-User-Id` = حسابنا، وترويسة request id = `request_id` في الجسم | `providers/fal.ts` | دفاع إضافي (معرّفات الطلب غير قابلة للتخمين اليوم) | لاحقًا |
+| B29 | معرض العرض: توليده (`scripts/make-showcase.ts`) ثم نقله إلى Cloudflare Stream/R2 مع B16 (الآن Supabase Storage تحت `media/showcase/`)، وملصق (poster) صغير لكل فيديو بدل `#t=0.1` | `scripts/make-showcase.ts`, `storage.ts` | أول تحميل أخف على الجوال | مع R2 |
 
 ## ما يجب تذكّره عند لمس هذه الملفات
 - أي تعديل على الرصيد أو السياسات: اختبار SQL أولًا في `supabase/tests/credits.test.sql` (يعمل على القاعدة السحابية داخل معاملة تُلغى وفي CI).

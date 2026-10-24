@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { useI18n } from '@/i18n'
 import { env } from '@/lib/env'
 import { useModels } from '@/lib/models'
+import { templateMedia } from '@/lib/showcase'
 import { seasonName, templateCatalog, templateFromCost, templateSeason, useModelMap } from '@/lib/templates'
 import { cn } from '@/lib/utils'
 
@@ -93,7 +94,7 @@ function rank(tpl: TemplateDef, now: Date): number {
 
 function Grid({ items, models, now }: { items: TemplateDef[]; models: ReturnType<typeof useModelMap>; now: Date }) {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-6">
       {items.map((tpl) => (
         <TemplateCard key={tpl.id} tpl={tpl} cost={templateFromCost(tpl, models)} now={now} />
       ))}
@@ -112,7 +113,7 @@ function TemplateCard({ tpl, cost, now }: { tpl: TemplateDef; cost: number | nul
       to={`/templates/${tpl.id}`}
       className="group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface transition-colors hover:border-brand/60"
     >
-      <TemplateCover category={tpl.category} icon={category?.icon} className="h-28 md:h-32" />
+      <TemplateCover category={tpl.category} icon={category?.icon} media={templateMedia(tpl.id)} alt={locale === 'ar' ? tpl.title_ar : tpl.title_en} className="aspect-[4/5]" />
       <div className="flex flex-1 flex-col gap-1.5 p-3">
         <div className="flex flex-wrap items-center gap-1.5">
           <Badge>{t(`templates.kind.${tpl.tier_set}`)}</Badge>

@@ -5,6 +5,7 @@ import type { AspectRatio } from '@shared/types'
 import { AspectRatioPicker } from '@/components/studio/AspectRatioPicker'
 import { AssetCard } from '@/components/studio/AssetCard'
 import { CreditCostButton } from '@/components/studio/CreditCostButton'
+import { FamilyGallery } from '@/components/studio/FamilyGallery'
 import { ModelPicker } from '@/components/studio/ModelPicker'
 import { OptionChips } from '@/components/studio/OptionChips'
 import { Textarea } from '@/components/ui/textarea'
@@ -34,7 +35,8 @@ export function VideoGeneratePage() {
   const { models, loading: modelsLoading } = useModels('video')
   const { assets, loading: assetsLoading, upsertLocal } = useAssets(userId, { type: 'video', limit: 24 })
 
-  const [modelId, setModelId] = useState<string | null>(null)
+  // ?model=<id> من روابط المعرض في الرئيسية
+  const [modelId, setModelId] = useState<string | null>(() => new URLSearchParams(window.location.search).get('model'))
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9')
   const [duration, setDuration] = useState<number>(5)
   const [resolution, setResolution] = useState<string | undefined>(undefined)
@@ -193,8 +195,10 @@ export function VideoGeneratePage() {
               ))}
             </div>
           ) : assets.length === 0 ? (
-            <div className="flex h-full min-h-64 flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-border p-8 text-center text-sm text-muted">
-              {t('video.empty')}
+            // مساحة فارغة = معرض: مثال حقيقي لكل عائلة، والضغط يختارها
+            <div className="flex flex-col gap-4">
+              <p className="border-b border-border pb-3 text-sm text-muted">{t('video.empty')}</p>
+              <FamilyGallery models={models} type="video" defaultCost={defaultVideoCost} selectedId={model?.id ?? null} onPick={setModelId} />
             </div>
           ) : (
             <div data-testid="results-grid" className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">

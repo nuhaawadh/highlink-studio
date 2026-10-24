@@ -1,0 +1,61 @@
+{
+  "about": "خطة معرض العرض (المخطط §9) — يقرؤها scripts/make-showcase.ts. البرومبتات بالإنجليزي (أدق للنماذج)، بلا علامات تجارية حقيقية، والشخصيات مولّدة فقط.",
+  "hero": {
+    "model": "veo-3.1",
+    "duration": 8,
+    "aspect": "16:9",
+    "attempts": 3,
+    "prompt": "One continuous cinematic shot: a falcon glides low over golden desert dunes toward ancient sandstone cliffs at sunset; the camera follows just behind its wings, then rises to reveal the vast glowing horizon. Warm amber light, drifting dust particles, calm and epic, natural motion, film grain, no text."
+  },
+  "family_defaults": {
+    "video": {
+      "aspect": [
+        "16:9"
+      ],
+      "duration": 5
+    },
+    "image": {
+      "aspect": [
+        "4:5",
+        "3:4",
+        "1:1"
+      ]
+    }
+  },
+  "families": {
+    "video:kling": "Slow-motion tracking shot of a white Arabian horse galloping along the shore at golden hour, sea spray and sand kicking up, mane flowing, low camera close to the waterline, warm backlight, cinematic depth of field.",
+    "video:seedance": "Macro 180-degree orbit around a dark oud perfume bottle on black marble, thin smoke curling around the glass, a single warm spotlight sliding across gold engraving, reflections on the marble, premium commercial look.",
+    "video:veo": "Aerial drone shot at blue hour over a modern Gulf city skyline, glass towers lighting up, traffic light trails on wide boulevards, slow forward glide, soft haze, cinematic.",
+    "video:wan": "Close-up slow motion of golden Saudi coffee being poured from a brass dallah into a small white finjan, steam rising, cardamom pods and dates on a wooden tray, warm morning light.",
+    "video:hailuo": "Slow dolly-in at golden hour across desert dunes: wind lifts fine sand off a dune crest in glowing ribbons, a brass dallah on a woven rug in the foreground, sandstone cliffs in soft haze behind, warm amber and teal grade.",
+    "video:grok-video": "A falcon takes off from a falconer's leather glove in slow motion, wings spreading wide against a clear desert sky, feathers in sharp detail, dust swirling below, camera tilts up to follow.",
+    "video:flux-video": "A woman in a flowing black abaya seen from behind walks across a rooftop at sunset, the fabric rippling in the wind, city lights beginning to glow below, slow tracking shot, elegant fashion film.",
+    "video:ltx": "Top-down slow push-in over a large platter of lamb kabsa with roasted nuts and raisins, steam rising, hands placing fresh herbs, warm restaurant light, appetizing food commercial.",
+    "video:luma-ray": "Underwater shot in the Red Sea: sunlight rays dance over a colorful coral reef, schools of small fish part around the camera as it glides forward, clear turquoise water, calm and vivid.",
+    "video:pixverse": "An unbranded white sneaker slowly rotating on a glossy podium, colored light streaks sweeping across it, floating dust in the beams, dark studio background, crisp product commercial.",
+    "video:vidu": "Rain falling on an old carved wooden mashrabiya window in a historic coastal old town, warm lamp light glowing from inside, drops running down the wood, slow push-in, nostalgic mood.",
+    "video:omni-flash": "Stylized 3D animation: a glowing Ramadan lantern hangs over a quiet old-town alley at night, the crescent moon rises behind, soft floating light particles, gentle camera drift, warm gold and deep blue.",
+    "video:heygen-video": "A friendly presenter in a bright modern studio smiles and gestures toward a new cup of specialty coffee on the table, natural lighting, medium shot, clean commercial style.",
+    "image:nano-banana": "Minimal poster for a specialty coffee shop: a single cup of coffee with rising steam on a cream background, large elegant Arabic headline «قهوة الصباح» correctly shaped right-to-left, generous margins, premium print design.",
+    "image:seedream": "Luxury product photograph of a black oud perfume bottle with a gold cap on dark marble, dramatic side light, soft reflections, a few dried rose petals, high-end commercial photography.",
+    "image:flux": "Portrait photograph of a Saudi man in a white thobe and red shemagh standing in warm golden-hour light against a desert backdrop, calm confident expression, shallow depth of field, 85mm lens.",
+    "image:gpt-image": "Warm flat illustration of a cozy street cafe in an old Arabian town at dusk, string lights, people sitting on low benches drinking tea, rich textures, editorial illustration style.",
+    "image:ideogram": "Bold summer sale poster with large clear Arabic headline «عروض الصيف» correctly shaped right-to-left, bright turquoise and sunny yellow palette, sunglasses and a beach umbrella, clean graphic design.",
+    "image:recraft": "Clean isometric illustration of an online store setup: laptop with a product page, packed boxes, a delivery scooter, soft pastel palette, crisp shapes, modern brand illustration.",
+    "image:qwen-image": "Interior photograph of a modern Najdi-style majlis: low cushioned seating, carved wooden doors, warm lantern light, Arabic coffee set on a tray, elegant and inviting, architectural photography.",
+    "image:wan-image": "Fashion editorial: a model in an embroidered beige abaya standing on a sand dune at sunset, wind lifting the fabric, golden light, high-fashion magazine photography.",
+    "image:grok-image": "Cinematic night photograph of towering sandstone rock formations under a sky full of stars and the Milky Way, faint warm light at the base, long exposure, awe-inspiring.",
+    "image:krea": "Photoreal close-up of premium dates and a small cup of Arabic coffee on a brass tray, soft window light, rich textures, food styling photography.",
+    "image:luma-uni": "Architectural render of a modern luxury villa on the Gulf coast at dusk, warm interior lights, infinity pool reflecting the sky, palm trees, photorealistic.",
+    "image:hunyuan-image": "Concept art of a futuristic coastal city on the Red Sea at sunrise, sleek white towers among mountains, calm water, soft atmospheric light, highly detailed.",
+    "image:bria": "Product photograph of a minimalist skincare bottle standing on rippled desert sand with long soft shadows, warm neutral palette, clean commercial look."
+  },
+  "template_tier": "balanced",
+  "template_values": {
+    "social-three-reasons": {
+      "r1": "تبدأ بدون رأس مال",
+      "r2": "تتعلم وأنت تشتغل",
+      "r3": "أول عميل أقرب مما تتوقع"
+    }
+  }
+}

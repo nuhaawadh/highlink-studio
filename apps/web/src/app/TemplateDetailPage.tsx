@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { missingFields, renderTemplatePrompt, type TemplateField } from '@shared/templates'
 import { AssetCard } from '@/components/studio/AssetCard'
 import { CreditCostButton } from '@/components/studio/CreditCostButton'
+import { MediaTile } from '@/components/studio/MediaTile'
 import { OptionChips } from '@/components/studio/OptionChips'
 import { TemplateCover } from '@/components/studio/TemplateIcon'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,6 +15,7 @@ import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import { env } from '@/lib/env'
 import { useModels } from '@/lib/models'
+import { templateMedia } from '@/lib/showcase'
 import { findTemplate, seasonName, templateCatalog, tierCost, tiersFor, useModelMap } from '@/lib/templates'
 import { cn } from '@/lib/utils'
 
@@ -122,7 +124,12 @@ export function TemplateDetailPage() {
         </Link>
 
         <div className="overflow-hidden rounded-[var(--radius-lg)] border border-border">
-          <TemplateCover category={tpl.category} icon={category?.icon} className="h-32" />
+          {/* مثال حقيقي بنفس قياس القالب إن وُلّد، وإلا شريط الأيقونة */}
+          {templateMedia(tpl.id) ? (
+            <MediaTile media={templateMedia(tpl.id)!} alt={locale === 'ar' ? tpl.title_ar : tpl.title_en} className="max-h-[420px] object-contain" />
+          ) : (
+            <TemplateCover category={tpl.category} icon={category?.icon} className="h-32" />
+          )}
           <div className="space-y-1 p-4">
             <p className="text-xs text-muted">
               {locale === 'ar' ? category?.ar : category?.en}

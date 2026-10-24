@@ -4,6 +4,7 @@ import type { AspectRatio, ImageSize } from '@shared/types'
 import { AspectRatioPicker } from '@/components/studio/AspectRatioPicker'
 import { AssetCard } from '@/components/studio/AssetCard'
 import { CreditCostButton } from '@/components/studio/CreditCostButton'
+import { FamilyGallery } from '@/components/studio/FamilyGallery'
 import { ModelPicker } from '@/components/studio/ModelPicker'
 import { ResolutionPicker } from '@/components/studio/ResolutionPicker'
 import { Textarea } from '@/components/ui/textarea'
@@ -29,7 +30,8 @@ export function ImageGeneratePage() {
   const { models, loading: modelsLoading } = useModels('image')
   const { assets, loading: assetsLoading, upsertLocal } = useAssets(userId, { type: 'image', limit: 24 })
 
-  const [modelId, setModelId] = useState<string | null>(null)
+  // ?model=<id> من روابط المعرض في الرئيسية
+  const [modelId, setModelId] = useState<string | null>(() => new URLSearchParams(window.location.search).get('model'))
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('1:1')
   const [imageSize, setImageSize] = useState<ImageSize>('1K')
   const [prompt, setPrompt] = useState('')
@@ -132,8 +134,10 @@ export function ImageGeneratePage() {
               ))}
             </div>
           ) : assets.length === 0 ? (
-            <div className="flex h-full min-h-64 flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-border p-8 text-center text-sm text-muted">
-              {t('generate.empty')}
+            // مساحة فارغة = معرض: مثال حقيقي لكل عائلة، والضغط يختارها
+            <div className="flex flex-col gap-4">
+              <p className="border-b border-border pb-3 text-sm text-muted">{t('generate.empty')}</p>
+              <FamilyGallery models={models} type="image" defaultCost={defaultImageCost} selectedId={model?.id ?? null} onPick={setModelId} />
             </div>
           ) : (
             <div data-testid="results-grid" className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
