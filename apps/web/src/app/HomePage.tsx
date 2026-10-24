@@ -1,4 +1,6 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Gift } from 'lucide-react'
+import { SIGNUP_BONUS_CREDITS } from '@shared/plans'
+import { familyKey, type ShowcaseMedia } from '@shared/showcase'
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { CampaignsSection } from '@/components/studio/CampaignsSection'
@@ -6,17 +8,25 @@ import { MediaTile } from '@/components/studio/MediaTile'
 import { TemplateCover } from '@/components/studio/TemplateIcon'
 import { useI18n } from '@/i18n'
 import { useAuth } from '@/lib/auth'
-import { familyName, groupByFamily, modelDefaults, modelName, modelSupports, useModels, videoCost, type ModelRow } from '@/lib/models'
-import { familyMedia, heroShowcase, templateMedia, wallMedia } from '@/lib/showcase'
+import { familyName, groupByFamily, modelCost, modelDefaults, modelName, modelSupports, useModels, videoCost, type ModelRow } from '@/lib/models'
+import { familyMedia, heroShowcase, LIKE_HERO, likeCost, likeHref, templateMedia, wallMedia } from '@/lib/showcase'
 import { templateCatalog, templateSeason, useModelMap } from '@/lib/templates'
 import { cn } from '@/lib/utils'
 
 const defaultVideoCost = (m: ModelRow) => videoCost(m, { duration: modelDefaults(m).duration, resolution: modelDefaults(m).resolution })
+const defaultImageCost = (m: ModelRow) => modelCost(m, modelDefaults(m).imageSize ?? '1K')
+
+/** كم توليدة تكفيها هدية التسجيل بأرخص نموذج ظاهر (بإعداداته الافتراضية) — "حتى" لأن الأغلى أقل */
+function giftCount(models: ModelRow[], cost: (m: ModelRow) => number): number | null {
+  const costs = models.map(cost).filter((c) => c > 0)
+  return costs.length ? Math.floor(SIGNUP_BONUS_CREDITS / Math.min(...costs)) : null
+}
 
 /**
  * الرئيسية (دليل الهوية V1 + معرض العرض): العنوان والزر في البداية، وجدار من نتائج حقيقية ولّدتها المنصة في النهاية —
  * الشغل نفسه هو الواجهة. الليموني مرة وحدة (زر البداية)، والتدرّج على كلمة وحدة في العنوان (قاعدة الدليل).
  * بلا معرض بعد (showcase.json فارغ) = نفس العنوان بلا جدار. الحركة الوحيدة: الفيديوهات نفسها وهي ظاهرة.
+ * كل مثال رابط "سوّ مثلها" (?like=) يعبّي صفحة التوليد بنفس البرومت والنموذج والإعدادات، والزائر يرى هدية التسجيل تحت الزرين.
  */
 export function HomePage() {
   const { t, locale } = useI18n()
@@ -40,12 +50,14 @@ export function HomePage() {
   }, [now])
 
   const { models: videoModels, allModels: allVideo } = useModels('video')
-  const { allModels: allImage } = useModels('image')
+  const { models: imageModels, allModels: allImage } = useModels('image')
   const modelMap = useModelMap(allImage, allVideo)
   const families = useMemo(() => groupByFamily(videoModels, defaultVideoCost), [videoModels])
   const shownFamilies = families.filter((f) => familyMedia('video', f.key)).slice(0, 6)
 
-  const start = user ? '/image-generate' : '/login'
+  const start = user ? '/image-generate' : '/login?mode=signup'
+  const giftImages = useMemo(() => giftCount(imageModels, defaultImageCost), [imageModels])
+  const giftVideos = useMemo(() => giftCount(videoModels, defaultVideoCost), [videoModels])
 
   return (
     <div className="pt-16">
@@ -65,6 +77,7 @@ export function HomePage() {
               {t('home.templates')}
             </Link>
           </div>
+          {!user && <SignupGift images={giftImages} videos={giftVideos} />}
           <p className="border-t border-border pt-4 text-sm text-muted">{t('home.facts')}</p>
         </div>
 
@@ -73,12 +86,10 @@ export function HomePage() {
             {hero ? (
               // الهيرو المختار كبير، وتحته صف من ثلاثة أمثلة بنفس القص (4:5)
               <div className="flex flex-col gap-2 md:gap-3">
-                <MediaTile media={hero} alt={hero.prompt.slice(0, 120)} />
+                <LikeTile likeKey={LIKE_HERO} media={hero} />
                 <div className="grid grid-cols-3 gap-2 md:gap-3">
                   {wall.slice(0, 3).map((w) => (
-                    <div key={w.key} className="relative aspect-[4/5] overflow-hidden bg-inverse">
-                      <MediaTile media={w.media} alt={w.media.prompt.slice(0, 120)} fill className="absolute inset-0" />
-                    </div>
+                    <LikeTile key={w.key} likeKey={w.key} media={w.media} className="aspect-[4/5]" fill />
                   ))}
                 </div>
               </div>
@@ -88,7 +99,7 @@ export function HomePage() {
                 <div className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 md:hidden">
                   {wall.map((w) => (
                     <div key={w.key} className="w-[58%] shrink-0 snap-start">
-                      <MediaTile media={w.media} alt={w.media.prompt.slice(0, 120)} />
+                      <LikeTile likeKey={w.key} media={w.media} />
                     </div>
                   ))}
                 </div>
@@ -96,7 +107,7 @@ export function HomePage() {
                   {columns.map((col, c) => (
                     <div key={c} className={cn('flex flex-col gap-3', c === 1 && 'pt-10')}>
                       {col.map((w) => (
-                        <MediaTile key={w.key} media={w.media} alt={w.media.prompt.slice(0, 120)} />
+                        <LikeTile key={w.key} likeKey={w.key} media={w.media} />
                       ))}
                     </div>
                   ))}
@@ -153,10 +164,13 @@ export function HomePage() {
               const head = f.models[0]
               const name = f.models.length > 1 ? familyName(head, locale) : modelName(head, locale)
               const lab = modelSupports(head).lab
+              const media = familyMedia('video', f.key)!
+              const like = likeCost(media, videoModels)
+              // "سوّ مثلها": صفحة التوليد بالبرومت والنموذج والإعدادات نفسها (بلا جلسة → الدخول ثم الرجوع هنا)
               return (
-                <Link key={f.key} to={user ? `/video-generate?model=${encodeURIComponent(head.id)}` : '/login'} className="group flex flex-col gap-2">
+                <Link key={f.key} to={likeHref(familyKey('video', f.key), 'video')} className="group flex flex-col gap-2">
                   <div className="border border-border transition-colors group-hover:border-text">
-                    <MediaTile media={familyMedia('video', f.key)!} alt={name} />
+                    <MediaTile media={media} alt={name} />
                   </div>
                   <span className="flex items-baseline justify-between gap-3">
                     <span className="text-base font-semibold">
@@ -165,6 +179,15 @@ export function HomePage() {
                     </span>
                     <span className="font-latin text-xs tabular-nums text-muted">{t('generate.fromCost', { n: f.fromCost })}</span>
                   </span>
+                  <span dir="ltr" className="line-clamp-2 text-start font-latin text-xs leading-relaxed text-muted">
+                    {media.prompt}
+                  </span>
+                  <span className="flex items-baseline justify-between gap-3">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium underline-offset-4 group-hover:underline">
+                      {t('like.cta')} <ArrowLeft className="size-3.5 ltr:rotate-180" aria-hidden />
+                    </span>
+                    {like != null && <span className="font-latin text-xs tabular-nums text-text">{t('credits.n', { n: like })}</span>}
+                  </span>
                 </Link>
               )
             })}
@@ -172,5 +195,51 @@ export function HomePage() {
         </section>
       )}
     </div>
+  )
+}
+
+/** مثال في جدار الرئيسية = رابط "سوّ مثلها" (الشارة تحت، بنفس لغة شارات الحملات) */
+function LikeTile({ likeKey, media, className, fill }: { likeKey: string; media: ShowcaseMedia; className?: string; fill?: boolean }) {
+  const { t } = useI18n()
+  return (
+    <Link to={likeHref(likeKey, media.kind)} className={cn('group relative block overflow-hidden bg-inverse', className)}>
+      <MediaTile media={media} alt={media.prompt.slice(0, 120)} fill={fill} className={fill ? 'absolute inset-0' : undefined} />
+      <span className="absolute bottom-0 start-0 inline-flex items-center gap-1 bg-inverse px-2 py-1 text-[11px] font-medium text-inverse-ink">
+        {t('like.cta')} <ArrowLeft className="size-3 ltr:rotate-180" aria-hidden />
+      </span>
+    </Link>
+  )
+}
+
+/**
+ * هدية التسجيل (مثل عرض هيغز فيلد فوق الصفحة، بنبرتنا): بلوك أسود تحت الزرين — الليموني يبقى لزر البداية وحده (دليل الهوية).
+ * الأعداد محسوبة من أرخص نموذج ظاهر بإعداداته الافتراضية، فتبقى صحيحة لو تغيّر الكتالوج؛ قبل تحميل النماذج يظهر الرصيد فقط.
+ */
+function SignupGift({ images, videos }: { images: number | null; videos: number | null }) {
+  const { t } = useI18n()
+  return (
+    <Link to="/login?mode=signup" className="flex items-center gap-4 bg-inverse p-4 text-inverse-ink transition-colors hover:bg-inverse/90">
+      <Gift className="size-6 shrink-0" aria-hidden />
+      <span className="min-w-0 flex-1">
+        <span className="block font-bold">{t('gift.title', { n: SIGNUP_BONUS_CREDITS })}</span>
+        <span className="block text-sm text-inverse-ink/70">{t(images != null || videos != null ? 'gift.bodyUpTo' : 'gift.body')}</span>
+      </span>
+      {(images != null || videos != null) && (
+        <span className="flex shrink-0 gap-4 text-center">
+          {images != null && (
+            <span>
+              <span className="block font-latin text-2xl font-bold tabular-nums leading-none">{images}</span>
+              <span className="mt-1 block text-xs text-inverse-ink/70">{t('gift.images')}</span>
+            </span>
+          )}
+          {videos != null && (
+            <span>
+              <span className="block font-latin text-2xl font-bold tabular-nums leading-none">{videos}</span>
+              <span className="mt-1 block text-xs text-inverse-ink/70">{t('gift.videos')}</span>
+            </span>
+          )}
+        </span>
+      )}
+    </Link>
   )
 }

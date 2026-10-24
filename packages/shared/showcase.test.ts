@@ -3,7 +3,20 @@ import catalog from '../../content/templates/saudi.json'
 import plan from '../../content/showcase/plan.json'
 import showcase from '../../content/showcase/showcase.json'
 import campaignsRaw from '../../content/showcase/campaigns.json'
-import { type CampaignsFile, cssAspect, EMPTY_SHOWCASE, familyKey, heroMedia, mergeShowcase, sampleValues, type ShowcaseFile, type ShowcaseMedia } from './showcase'
+import {
+  type CampaignsFile,
+  cssAspect,
+  EMPTY_SHOWCASE,
+  familyKey,
+  heroMedia,
+  LIKE_HERO,
+  likeMedia,
+  likeSettings,
+  mergeShowcase,
+  sampleValues,
+  type ShowcaseFile,
+  type ShowcaseMedia,
+} from './showcase'
 import { missingFields, type TemplateCatalog } from './templates'
 
 const media = (url: string): ShowcaseMedia => ({ url, kind: 'video', aspect: '16:9', model: 'm', prompt: 'p', created_at: '2026-10-24T00:00:00Z' })
@@ -23,6 +36,31 @@ describe('showcase', () => {
     expect(out.templates.a.url).toBe('old-a')
     expect(out.templates.b.url).toBe('new-b')
     expect(out.hero.candidates[0].url).toBe('h')
+  })
+
+  it('likeMedia: الهيرو المختار، مفتاح عائلة، وغير المعروف null (ولا يقرأ خصائص الكائن الموروثة)', () => {
+    const f: ShowcaseFile = { ...EMPTY_SHOWCASE, hero: { candidates: [media('h1'), media('h2')], selected: 1 }, families: { 'video:kling': media('k') } }
+    expect(likeMedia(f, LIKE_HERO)?.url).toBe('h2')
+    expect(likeMedia(f, 'video:kling')?.url).toBe('k')
+    expect(likeMedia(f, 'video:none')).toBeNull()
+    expect(likeMedia(f, 'toString')).toBeNull()
+    expect(likeMedia(f, null)).toBeNull()
+    expect(likeMedia(EMPTY_SHOWCASE, LIKE_HERO)).toBeNull()
+  })
+
+  it('likeSettings: ينسخ فقط ما يعرضه النموذج الآن، والنسبة من aspect للمداخل القديمة بلا config', () => {
+    const old = media('x')
+    expect(likeSettings(old, { aspectRatios: ['16:9', '9:16'] })).toEqual({ aspectRatio: '16:9' })
+    expect(likeSettings(old, { aspectRatios: ['1:1'] })).toEqual({})
+    const withConfig: ShowcaseMedia = { ...old, config: { aspectRatio: '9:16', duration: 8, resolution: '1080p', audio: true } }
+    const offered = { aspectRatios: ['16:9', '9:16'], durations: [5, 8], resolutions: ['720p', '1080p'] }
+    // الصوت لا يُنسخ أبدًا (المعرض صامت)
+    expect(likeSettings(withConfig, offered)).toEqual({ aspectRatio: '9:16', duration: 8, resolution: '1080p' })
+    // مدة أو دقة لم تعد معروضة تسقط ويبقى افتراض الصفحة
+    expect(likeSettings(withConfig, { ...offered, durations: [5, 10], resolutions: ['720p'] })).toEqual({ aspectRatio: '9:16' })
+    const image: ShowcaseMedia = { ...old, kind: 'image', aspect: '4:5', config: { aspectRatio: '4:5', imageSize: '2K' } }
+    expect(likeSettings(image, { aspectRatios: ['1:1', '4:5'], sizes: ['1K', '2K'] })).toEqual({ aspectRatio: '4:5', imageSize: '2K' })
+    expect(likeSettings(image, { aspectRatios: ['1:1', '4:5'], sizes: ['1K'] })).toEqual({ aspectRatio: '4:5' })
   })
 
   it('familyKey وcssAspect', () => {

@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { likeSettings, type ShowcaseMedia } from '@shared/showcase'
 import type { AspectRatio, ImageSize } from '@shared/types'
 import { AspectRatioPicker } from '@/components/studio/AspectRatioPicker'
 import { AssetCard } from '@/components/studio/AssetCard'
@@ -13,7 +14,8 @@ import { createQueuedAsset, GenerateError, requestGeneration, useAssets } from '
 import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import { env } from '@/lib/env'
-import { modelAspectRatios, modelCost, modelDefaults, modelSizes, useModels, type ModelRow } from '@/lib/models'
+import { modelAspectRatios, modelCost, modelDefaults, modelSizes, modelSupports, useModels, type ModelRow } from '@/lib/models'
+import { likeFromUrl } from '@/lib/showcase'
 
 /** تكلفة النموذج بدقته الافتراضية — لبطاقات العائلات في المنتقي */
 const defaultImageCost = (m: ModelRow) => modelCost(m, modelDefaults(m).imageSize ?? '1K')
@@ -30,18 +32,32 @@ export function ImageGeneratePage() {
   const { models, loading: modelsLoading } = useModels('image')
   const { assets, loading: assetsLoading, upsertLocal } = useAssets(userId, { type: 'image', limit: 24 })
 
-  // ?model=<id> من روابط المعرض في الرئيسية
-  const [modelId, setModelId] = useState<string | null>(() => new URLSearchParams(window.location.search).get('model'))
+  // ?like=<مفتاح> ("سوّ مثلها" من المعرض): البرومت والنموذج والإعدادات من المثال. ?model=<id>: النموذج فقط
+  const [initialLike] = useState(() => {
+    const l = likeFromUrl()
+    return l && l.media.kind === 'image' ? { media: l.media, family: l.key.split(':')[1] ?? null } : null
+  })
+  const [modelId, setModelId] = useState<string | null>(() => initialLike?.media.model ?? new URLSearchParams(window.location.search).get('model'))
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('1:1')
   const [imageSize, setImageSize] = useState<ImageSize>('1K')
-  const [prompt, setPrompt] = useState('')
+  const [prompt, setPrompt] = useState(initialLike?.media.prompt ?? '')
   const [busy, setBusy] = useState(false)
+  // مثال ينتظر نموذجه حتى تُطبَّق إعداداته فوق الافتراض (النماذج تُحمَّل بعد أول عرض)
+  const pendingLike = useRef<{ media: ShowcaseMedia; family: string | null } | null>(initialLike)
 
   useEffect(() => {
     document.title = `${t('nav.images')} — ${env.VITE_APP_NAME}`
   }, [t])
 
-  const model = useMemo(() => models.find((m) => m.id === modelId) ?? models[0] ?? null, [models, modelId])
+  // نموذج المثال لو لم يعد في القائمة → نفس العائلة، وإلا الأول
+  const model = useMemo(
+    () =>
+      models.find((m) => m.id === modelId) ??
+      (initialLike?.family ? models.find((m) => modelSupports(m).family === initialLike.family) : undefined) ??
+      models[0] ??
+      null,
+    [models, modelId, initialLike],
+  )
 
   // عند تغيّر النموذج: نبدأ من افتراضياته (default_params) ضمن ما يدعمه
   useEffect(() => {
@@ -51,7 +67,34 @@ export function ImageGeneratePage() {
     const ratios = modelAspectRatios(model)
     setImageSize(d.imageSize && sizes.includes(d.imageSize) ? d.imageSize : sizes[0])
     setAspectRatio(d.aspectRatio && ratios.includes(d.aspectRatio) ? d.aspectRatio : ratios[0])
+    applyPendingLike(model)
   }, [model])
+
+  /** "سوّ مثلها": إعدادات المثال فوق الافتراض، ضمن ما يعرضه النموذج (أو عائلته لو تغيّر الإصدار) */
+  function applyPendingLike(m: ModelRow) {
+    const like = pendingLike.current
+    // لا يُمسح هنا (StrictMode يعيد الأثر)؛ يُمسح عند اختيار نموذج آخر يدويًا (pickModel)
+    if (!like || (like.media.model !== m.id && !(like.family && modelSupports(m).family === like.family))) return
+    const s = likeSettings(like.media, { aspectRatios: modelAspectRatios(m), sizes: modelSizes(m) })
+    if (s.imageSize) setImageSize(s.imageSize as ImageSize)
+    if (s.aspectRatio) setAspectRatio(s.aspectRatio as AspectRatio)
+  }
+
+  /** اختيار يدوي للنموذج يلغي المثال المنتظر — إعداداته لا تُفرض على نموذج اختاره المستخدم */
+  function pickModel(id: string) {
+    pendingLike.current = null
+    setModelId(id)
+  }
+
+  /** زر "سوّ مثلها" في معرض العائلات: البرومت الآن، والإعدادات عند تحديد النموذج */
+  function makeLike(media: ShowcaseMedia, family: string, headId: string) {
+    setPrompt(media.prompt)
+    pendingLike.current = { media, family }
+    const target = models.some((m) => m.id === media.model) ? media.model : headId
+    if (model?.id === target) applyPendingLike(model)
+    else setModelId(target)
+    toast(t('like.applied'))
+  }
 
   const cost = model ? modelCost(model, imageSize) : 0
   const canGenerate = Boolean(user && model && prompt.trim().length > 0)
@@ -107,7 +150,7 @@ export function ImageGeneratePage() {
 
         <div>
           <h2 className="mb-2 text-xs font-semibold text-muted">{t('generate.model')}</h2>
-          <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={setModelId} defaultCost={defaultImageCost} />
+          <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={pickModel} defaultCost={defaultImageCost} />
         </div>
 
         {model && (
@@ -137,7 +180,7 @@ export function ImageGeneratePage() {
             // مساحة فارغة = معرض: مثال حقيقي لكل عائلة، والضغط يختارها
             <div className="flex flex-col gap-4">
               <p className="border-b border-border pb-3 text-sm text-muted">{t('generate.empty')}</p>
-              <FamilyGallery models={models} type="image" defaultCost={defaultImageCost} selectedId={model?.id ?? null} onPick={setModelId} />
+              <FamilyGallery models={models} type="image" defaultCost={defaultImageCost} selectedId={model?.id ?? null} onPick={pickModel} onLike={makeLike} />
             </div>
           ) : (
             <div data-testid="results-grid" className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">

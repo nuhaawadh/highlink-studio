@@ -1,6 +1,7 @@
 import { Volume2, VolumeX } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { likeSettings, type ShowcaseMedia } from '@shared/showcase'
 import type { AspectRatio } from '@shared/types'
 import { AspectRatioPicker } from '@/components/studio/AspectRatioPicker'
 import { AssetCard } from '@/components/studio/AssetCard'
@@ -14,7 +15,8 @@ import { createQueuedAsset, GenerateError, requestGeneration, useAssets } from '
 import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import { env } from '@/lib/env'
-import { modelAspectRatios, modelAudioFree, modelDefaults, modelDurations, modelHasAudio, modelResolutions, useModels, videoCost, type ModelRow } from '@/lib/models'
+import { modelAspectRatios, modelAudioFree, modelDefaults, modelDurations, modelHasAudio, modelResolutions, modelSupports, useModels, videoCost, type ModelRow } from '@/lib/models'
+import { likeFromUrl } from '@/lib/showcase'
 import { cn } from '@/lib/utils'
 
 /** تكلفة النموذج بإعداداته الافتراضية (مدة/دقة الافتراض، بلا صوت) — لبطاقات العائلات */
@@ -35,20 +37,34 @@ export function VideoGeneratePage() {
   const { models, loading: modelsLoading } = useModels('video')
   const { assets, loading: assetsLoading, upsertLocal } = useAssets(userId, { type: 'video', limit: 24 })
 
-  // ?model=<id> من روابط المعرض في الرئيسية
-  const [modelId, setModelId] = useState<string | null>(() => new URLSearchParams(window.location.search).get('model'))
+  // ?like=<مفتاح> ("سوّ مثلها" من المعرض): البرومت والنموذج والإعدادات من المثال. ?model=<id>: النموذج فقط
+  const [initialLike] = useState(() => {
+    const l = likeFromUrl()
+    return l && l.media.kind === 'video' ? { media: l.media, family: l.key.split(':')[1] ?? null } : null
+  })
+  const [modelId, setModelId] = useState<string | null>(() => initialLike?.media.model ?? new URLSearchParams(window.location.search).get('model'))
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9')
   const [duration, setDuration] = useState<number>(5)
   const [resolution, setResolution] = useState<string | undefined>(undefined)
   const [audio, setAudio] = useState(false)
-  const [prompt, setPrompt] = useState('')
+  const [prompt, setPrompt] = useState(initialLike?.media.prompt ?? '')
   const [busy, setBusy] = useState(false)
+  // مثال ينتظر نموذجه حتى تُطبَّق إعداداته فوق الافتراض (النماذج تُحمَّل بعد أول عرض)
+  const pendingLike = useRef<{ media: ShowcaseMedia; family: string | null } | null>(initialLike)
 
   useEffect(() => {
     document.title = `${t('nav.video')} — ${env.VITE_APP_NAME}`
   }, [t])
 
-  const model = useMemo(() => models.find((m) => m.id === modelId) ?? models[0] ?? null, [models, modelId])
+  // نموذج المثال لو لم يعد في القائمة → نفس العائلة، وإلا الأول
+  const model = useMemo(
+    () =>
+      models.find((m) => m.id === modelId) ??
+      (initialLike?.family ? models.find((m) => modelSupports(m).family === initialLike.family) : undefined) ??
+      models[0] ??
+      null,
+    [models, modelId, initialLike],
+  )
   const durations = useMemo(() => (model ? modelDurations(model) : []), [model])
   const resolutions = useMemo(() => (model ? modelResolutions(model) : []), [model])
   const ratios = useMemo(() => (model ? modelAspectRatios(model) : []), [model])
@@ -66,7 +82,35 @@ export function VideoGeneratePage() {
     setAspectRatio(d.aspectRatio && rats.includes(d.aspectRatio) ? d.aspectRatio : (rats[0] ?? '16:9'))
     // الصوت المجاني يبدأ مفعّلًا (لا يغيّر التكلفة)؛ الصوت بزيادة يبدأ مطفأً
     setAudio(modelAudioFree(model))
+    applyPendingLike(model)
   }, [model])
+
+  /** "سوّ مثلها": إعدادات المثال فوق الافتراض، ضمن ما يعرضه النموذج (أو عائلته لو تغيّر الإصدار) */
+  function applyPendingLike(m: ModelRow) {
+    const like = pendingLike.current
+    // لا يُمسح هنا (StrictMode يعيد الأثر)؛ يُمسح عند اختيار نموذج آخر يدويًا (pickModel)
+    if (!like || (like.media.model !== m.id && !(like.family && modelSupports(m).family === like.family))) return
+    const s = likeSettings(like.media, { aspectRatios: modelAspectRatios(m), durations: modelDurations(m), resolutions: modelResolutions(m) })
+    if (s.duration) setDuration(s.duration)
+    if (s.resolution) setResolution(s.resolution)
+    if (s.aspectRatio) setAspectRatio(s.aspectRatio as AspectRatio)
+  }
+
+  /** اختيار يدوي للنموذج يلغي المثال المنتظر — إعداداته لا تُفرض على نموذج اختاره المستخدم */
+  function pickModel(id: string) {
+    pendingLike.current = null
+    setModelId(id)
+  }
+
+  /** زر "سوّ مثلها" في معرض العائلات: البرومت الآن، والإعدادات عند تحديد النموذج */
+  function makeLike(media: ShowcaseMedia, family: string, headId: string) {
+    setPrompt(media.prompt)
+    pendingLike.current = { media, family }
+    const target = models.some((m) => m.id === media.model) ? media.model : headId
+    if (model?.id === target) applyPendingLike(model)
+    else setModelId(target)
+    toast(t('like.applied'))
+  }
 
   const cost = model ? videoCost(model, { duration, resolution, audio: hasAudio ? audio : undefined }) : 0
   const canGenerate = Boolean(user && model && prompt.trim().length > 0 && cost > 0)
@@ -122,7 +166,7 @@ export function VideoGeneratePage() {
         <div>
           <h2 className="mb-2 text-xs font-semibold text-muted">{t('generate.model')}</h2>
           <div className="max-h-[50vh] overflow-y-auto pe-1 md:max-h-[60vh]">
-            <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={setModelId} defaultCost={defaultVideoCost} />
+            <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={pickModel} defaultCost={defaultVideoCost} />
           </div>
         </div>
 
@@ -198,7 +242,7 @@ export function VideoGeneratePage() {
             // مساحة فارغة = معرض: مثال حقيقي لكل عائلة، والضغط يختارها
             <div className="flex flex-col gap-4">
               <p className="border-b border-border pb-3 text-sm text-muted">{t('video.empty')}</p>
-              <FamilyGallery models={models} type="video" defaultCost={defaultVideoCost} selectedId={model?.id ?? null} onPick={setModelId} />
+              <FamilyGallery models={models} type="video" defaultCost={defaultVideoCost} selectedId={model?.id ?? null} onPick={pickModel} onLike={makeLike} />
             </div>
           ) : (
             <div data-testid="results-grid" className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">

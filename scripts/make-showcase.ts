@@ -12,6 +12,7 @@
  *                     فيديوهات العائلات من الأرخص، فيديوهات القوالب، ثم الهيرو) — والباقي يُكمَل في تشغيل لاحق بلا تكرار
  *   --replicate-budget <دولار>  نفس السقف لـReplicate (القوالب بنص عربي)
  *   --key <مفتاح,مفتاح>  عناصر بعينها فقط (video:kling، ramadan-greeting، hero) — مع --force لإعادة توليدها
+ * كل تشغيل (حتى --offline بلا --run) يكمّل إعدادات أمثلة العائلات والهيرو المولّدة قبل حفظها (لـ"سوّ مثلها") — بلا توليد.
  *
  * ما يفعله عند --run: مستخدم مؤقت بباقة كريتورز (تزامن 8) + منحة رصيد بقدر التكلفة (دفتر الرصيد، نوع bonus)، يولّد،
  * ينسخ كل ناتج إلى media/showcase/… (عام)، يكتب content/showcase/showcase.json بعد كل نجاح، ثم يحذف المستخدم المؤقت وملفاته.
@@ -22,7 +23,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { createInterface } from 'node:readline/promises'
 import { CREDIT_USD, MARKUP, modelCredits, type ModelPricingRow } from '../packages/shared/pricing'
-import { EMPTY_SHOWCASE, familyKey, mergeShowcase, sampleValues, type ShowcaseFile, type ShowcaseMedia } from '../packages/shared/showcase'
+import { EMPTY_SHOWCASE, familyKey, mergeShowcase, sampleValues, type ShowcaseConfig, type ShowcaseFile, type ShowcaseMedia } from '../packages/shared/showcase'
 import { missingFields, renderTemplatePrompt, type TemplateCatalog, type TemplateDef } from '../packages/shared/templates'
 
 // يُشغَّل من جذر المستودع (التعليمات أعلاه)
@@ -241,6 +242,30 @@ async function buildPlan(models: ModelRow[]): Promise<{ jobs: Job[]; skipped: st
   return { jobs: picked.slice(0, LIMIT), skipped }
 }
 
+/**
+ * "سوّ مثلها" يحتاج إعدادات كل مثال. المداخل المولّدة قبل حفظها (config) تُكمَّل هنا بنفس قواعد البناء أعلاه
+ * ونسبتها المسجّلة — بلا شبكة مع --offline وبلا أي توليد. العائلات والهيرو فقط (القوالب تفتح صفحة قالبها).
+ */
+function backfillConfig(models: ModelRow[]): number {
+  const byId = new Map(models.map((m) => [m.id, m]))
+  let n = 0
+  const fill = (media: ShowcaseMedia, duration: number) => {
+    if (media.config) return
+    const m = byId.get(media.model)
+    if (!m) return
+    const job = m.type === 'video' ? videoJob('families', '', '', m, media.prompt, duration, [media.aspect]) : imageJob('families', '', '', m, media.prompt, [media.aspect])
+    media.config = job.config as ShowcaseConfig
+    n++
+  }
+  for (const media of Object.values(current.families)) fill(media, plan.family_defaults.video.duration)
+  for (const media of current.hero.candidates) fill(media, plan.hero.duration)
+  if (n) {
+    writeFileSync(SHOWCASE_FILE, JSON.stringify(current, null, 2) + '\n')
+    console.log(`filled settings for ${n} existing showcase item(s) → content/showcase/showcase.json (for «سوّ مثلها»)`)
+  }
+  return n
+}
+
 // ------------------------------------------------------------------ التنفيذ
 async function main() {
   let models: unknown
@@ -252,6 +277,7 @@ async function main() {
     if (r.status !== 200 || !Array.isArray(r.data)) throw new Error(`could not load models: HTTP ${r.status}`)
     models = r.data
   }
+  backfillConfig(models as ModelRow[])
   const { jobs, skipped } = await buildPlan(models as ModelRow[])
 
   const usd = (credits: number) => (credits * CREDIT_USD) / MARKUP
@@ -380,7 +406,15 @@ async function runJob(j: Job, uid: string, jwt: string, stamp: string): Promise<
   const dest = `showcase/${j.section}/${j.slug}-${stamp}.${ext}`
   const copy = await call('POST', '/storage/v1/object/copy', SERVICE, { bucketId: 'media', sourceKey: source, destinationKey: dest })
   if (copy.status >= 300) throw new Error(`copy to ${dest} HTTP ${copy.status} ${JSON.stringify(copy.data).slice(0, 200)}`)
-  return { url: `${URL_}/storage/v1/object/public/media/${dest}`, kind: j.kind, aspect: j.aspect, model: j.model.id, prompt: j.prompt, created_at: new Date().toISOString() }
+  return {
+    url: `${URL_}/storage/v1/object/public/media/${dest}`,
+    kind: j.kind,
+    aspect: j.aspect,
+    model: j.model.id,
+    prompt: j.prompt,
+    created_at: new Date().toISOString(),
+    config: j.config as ShowcaseConfig,
+  }
 }
 
 main().catch((e) => {

@@ -1,20 +1,30 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/lib/auth'
 import { useI18n } from '@/i18n'
 
-/** صفحة الدخول — Google + إيميل/كلمة مرور. لا تلمس الرصيد؛ الـtrigger في قاعدة البيانات يمنح 30 رصيدًا. */
+/** مسار رجوع داخلي فقط (يبدأ بـ/ وليس //) — غيره أو بلا مسار = المكتبة */
+function safeReturn(from: unknown): string {
+  return typeof from === 'string' && from.startsWith('/') && !from.startsWith('//') && !from.startsWith('/login') ? from : '/library'
+}
+
+/**
+ * صفحة الدخول — Google + إيميل/كلمة مرور. لا تلمس الرصيد؛ الـtrigger في قاعدة البيانات يمنح 30 رصيدًا.
+ * ?mode=signup يفتحها على التسجيل (زر "ابدأ مجانًا" وهدية التسجيل)، وبعد الدخول ترجع لما طلبه الحارس (مثل "سوّ مثلها").
+ */
 export function LoginPage() {
   const { t } = useI18n()
   const { user, loading, signInWithGoogle, signInWithPassword, signUp } = useAuth()
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin')
+  const location = useLocation()
+  const [params] = useSearchParams()
+  const [mode, setMode] = useState<'signin' | 'signup'>(params.get('mode') === 'signup' ? 'signup' : 'signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
 
-  if (!loading && user) return <Navigate to="/library" replace />
+  if (!loading && user) return <Navigate to={safeReturn((location.state as { from?: unknown } | null)?.from)} replace />
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()

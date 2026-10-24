@@ -13,6 +13,16 @@ export interface ShowcaseMedia {
   model: string
   prompt: string
   created_at: string
+  /** الإعدادات التي وُلّد بها (config نفسه المرسل لـgenerate-media) — لـ"سوّ مثلها". المداخل القديمة بلاها تكتفي بالنسبة */
+  config?: ShowcaseConfig
+}
+
+export interface ShowcaseConfig {
+  aspectRatio?: string
+  duration?: number
+  resolution?: string
+  imageSize?: string
+  audio?: boolean
 }
 
 export interface ShowcaseFile {
@@ -47,6 +57,35 @@ export function mergeShowcase(prev: ShowcaseFile, next: Partial<Omit<ShowcaseFil
     templates: { ...prev.templates, ...(next.templates ?? {}) },
     families: { ...prev.families, ...(next.families ?? {}) },
   }
+}
+
+/** مفتاح "سوّ مثلها" (?like=) للهيرو المختار؛ باقي المفاتيح مفاتيح العائلات ("video:kling") */
+export const LIKE_HERO = 'hero'
+
+/** "سوّ مثلها": المفتاح → الوسيط الذي يُنسخ (برومته ونموذجه وإعداداته). مفتاح فارغ أو غير معروف = null */
+export function likeMedia(f: ShowcaseFile, key: string | null | undefined): ShowcaseMedia | null {
+  if (!key) return null
+  if (key === LIKE_HERO) return heroMedia(f)
+  return Object.prototype.hasOwnProperty.call(f.families, key) ? f.families[key] : null
+}
+
+/**
+ * إعدادات "سوّ مثلها" ضمن ما يعرضه النموذج المختار الآن: كل قيمة غير معروضة تسقط فيبقى افتراض الصفحة،
+ * فلا يصل للسيرفر خيار لا يقبله (normalizeOptions يرفضه) ولا يتغيّر السعر عن المعروض على الزر.
+ * الصوت لا يُنسخ: المعرض وُلّد صامتًا، والصفحة تبدأ بالصوت المجاني مفعّلًا وبالمدفوع مطفأً.
+ */
+export function likeSettings(
+  media: ShowcaseMedia,
+  offered: { aspectRatios: readonly string[]; durations?: readonly number[]; resolutions?: readonly string[]; sizes?: readonly string[] },
+): { aspectRatio?: string; duration?: number; resolution?: string; imageSize?: string } {
+  const c = media.config ?? {}
+  const out: { aspectRatio?: string; duration?: number; resolution?: string; imageSize?: string } = {}
+  const aspect = c.aspectRatio ?? media.aspect
+  if (aspect && offered.aspectRatios.includes(aspect)) out.aspectRatio = aspect
+  if (typeof c.duration === 'number' && offered.durations?.includes(c.duration)) out.duration = c.duration
+  if (c.resolution && offered.resolutions?.includes(c.resolution)) out.resolution = c.resolution
+  if (c.imageSize && offered.sizes?.includes(c.imageSize)) out.imageSize = c.imageSize
+  return out
 }
 
 /** "16:9" → "16 / 9" لـ CSS aspect-ratio؛ أي قيمة غير صالحة → 16 / 9 */

@@ -244,8 +244,8 @@
   },
   "gallery": {
     "title": "Pick by result",
-    "subtitleVideo": "Every example here was made with that model. Click one to select it in the sidebar, then write your scene.",
-    "subtitleImage": "Every example here was made with that model. Click one to select it in the sidebar, then write your description."
+    "subtitleVideo": "Every example here was made with that model. Click one to select it in the sidebar, or use “Make one like this” to copy its prompt and settings.",
+    "subtitleImage": "Every example here was made with that model. Click one to select it in the sidebar, or use “Make one like this” to copy its prompt and settings."
   },
   "studio": {
     "subtitle": {
@@ -285,5 +285,24 @@
     "pieces": "Reel + poster + product photo",
     "total": "Whole campaign {n} credits",
     "cta": "Make your campaign"
+  },
+  "like": {
+    "cta": "Make one like this",
+    "applied": "Copied the example’s prompt and settings. Edit anything, then generate."
+  },
+  "gift": {
+    "title": "Sign-up gift: {n} credits",
+    "body": "No card needed",
+    "bodyUpTo": "No card needed. Enough for up to",
+    "images": "images",
+    "videos": "videos"
+  },
+  "bottomNav": {
+    "label": "Quick navigation",
+    "home": "Home",
+    "templates": "Templates",
+    "library": "My library",
+    "account": "Account",
+    "login": "Sign in"
   }
 }
