@@ -21,6 +21,20 @@ function Invoke-Checked([string]$Exe, [string[]]$Arguments) {
   & $Exe @Arguments
   if ($LASTEXITCODE -ne 0) { throw "$Exe $($Arguments[0]) failed (exit $LASTEXITCODE)" }
 }
+# Supabase's Management API had elevated error rates (status.supabase.com, 2026-10-24) and the CLI reports it as
+# TransportError - every CLI call retries a few times before giving up.
+function Invoke-SupabaseTry([string[]]$Arguments, [int]$Attempts = 4) {
+  for ($i = 1; $i -le $Attempts; $i++) {
+    Write-Host "> npx supabase $($Arguments -join ' ')" -ForegroundColor DarkGray
+    & npx supabase @Arguments | Out-Host
+    if ($LASTEXITCODE -eq 0) { return $true }
+    if ($i -lt $Attempts) { Write-Host "  failed - retry $i/$($Attempts - 1) in 20s" -ForegroundColor Yellow; Start-Sleep -Seconds 20 }
+  }
+  return $false
+}
+function Invoke-Supabase([string[]]$Arguments) {
+  if (-not (Invoke-SupabaseTry $Arguments)) { throw "npx supabase $($Arguments[0]) $($Arguments[1]) failed after retries" }
+}
 function Ask([string]$Question) {
   $a = Read-Host "$Question [y/N]"
   return ($a -eq 'y' -or $a -eq 'Y')
@@ -47,37 +61,36 @@ if (Ask 'Push secrets from supabase\.env.local to the cloud project?') {
   $tmp = Join-Path $env:TEMP ('hl-secrets-' + [guid]::NewGuid().ToString() + '.env')
   try {
     Invoke-Checked 'python' @('-I', 'scripts/push-secrets.py', $tmp)
-    & npx supabase secrets set --env-file $tmp
-    if ($LASTEXITCODE -ne 0) {
-      Write-Host 'secrets set failed (known CLI issue: it ignores the browser login).' -ForegroundColor Yellow
-      Write-Host 'Create a personal token at https://supabase.com/dashboard/account/tokens and paste it below (hidden, used for this command only).'
-      $sec = Read-Host -AsSecureString 'SUPABASE_ACCESS_TOKEN'
+    if (-not (Invoke-SupabaseTry @('secrets', 'set', '--env-file', $tmp))) {
+      Write-Host 'secrets set still failing. If the error is about login (not TransportError), a personal token helps.' -ForegroundColor Yellow
+      Write-Host 'Token page: https://supabase.com/dashboard/account/tokens -> Generate new token. It starts with sbp_ (NOT the project sb_secret_ key).'
+      $sec = Read-Host -AsSecureString 'SUPABASE_ACCESS_TOKEN (sbp_..., hidden)'
       $env:SUPABASE_ACCESS_TOKEN = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
-      try { Invoke-Checked 'npx' @('supabase', 'secrets', 'set', '--env-file', $tmp) }
+      try { Invoke-Supabase @('secrets', 'set', '--env-file', $tmp) }
       finally { Remove-Item Env:SUPABASE_ACCESS_TOKEN -ErrorAction SilentlyContinue }
     }
   } finally {
     if (Test-Path $tmp) { Remove-Item $tmp -Force }
   }
-  Invoke-Checked 'npx' @('supabase', 'secrets', 'list')
+  [void](Invoke-SupabaseTry @('secrets', 'list') 2)
 }
 
 # --- 2) functions -------------------------------------------------------------------------------
 Step '2) Deploy the five Edge Functions'
 if (Ask 'Deploy generate-media, asset-thumbnail, provider-webhook, v1, reconcile?') {
-  Invoke-Checked 'npx' @('supabase', 'functions', 'deploy', 'generate-media')
-  Invoke-Checked 'npx' @('supabase', 'functions', 'deploy', 'asset-thumbnail')
-  Invoke-Checked 'npx' @('supabase', 'functions', 'deploy', 'provider-webhook', '--no-verify-jwt')
-  Invoke-Checked 'npx' @('supabase', 'functions', 'deploy', 'v1', '--no-verify-jwt')
-  Invoke-Checked 'npx' @('supabase', 'functions', 'deploy', 'reconcile', '--no-verify-jwt')
+  Invoke-Supabase @('functions', 'deploy', 'generate-media')
+  Invoke-Supabase @('functions', 'deploy', 'asset-thumbnail')
+  Invoke-Supabase @('functions', 'deploy', 'provider-webhook', '--no-verify-jwt')
+  Invoke-Supabase @('functions', 'deploy', 'v1', '--no-verify-jwt')
+  Invoke-Supabase @('functions', 'deploy', 'reconcile', '--no-verify-jwt')
 }
 
 # --- 3) seed ----------------------------------------------------------------------------------
 # Tries `supabase db query --linked` first. If the CLI cannot open its login role (TransportError),
 # falls back to the Management API (HTTPS only) with a personal token typed hidden, kept in memory for this step only.
 function Read-Token {
-  Write-Host 'Create a personal token at https://supabase.com/dashboard/account/tokens and paste it below (hidden, used for this step only).'
-  $sec = Read-Host -AsSecureString 'SUPABASE_ACCESS_TOKEN'
+  Write-Host 'Token page: https://supabase.com/dashboard/account/tokens -> Generate new token. It starts with sbp_ (NOT the project sb_secret_ key).'
+  $sec = Read-Host -AsSecureString 'SUPABASE_ACCESS_TOKEN (sbp_..., hidden)'
   return [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
 }
 function Invoke-SqlApi([string]$File, [string]$Token, [string]$Ref) {
@@ -100,8 +113,7 @@ if (Ask 'Apply supabase/seed.sql to the cloud database (in batches)?') {
     foreach ($f in (Get-ChildItem $dir -Filter '*.sql' | Sort-Object Name)) {
       Write-Host "  $($f.Name)"
       if (-not $token) {
-        & npx supabase db query --linked -f $f.FullName
-        if ($LASTEXITCODE -eq 0) { continue }
+        if (Invoke-SupabaseTry @('db', 'query', '--linked', '-f', $f.FullName) 3) { continue }
         Write-Host 'db query via CLI failed - switching to the Management API (HTTPS).' -ForegroundColor Yellow
         $token = Read-Token
       }
