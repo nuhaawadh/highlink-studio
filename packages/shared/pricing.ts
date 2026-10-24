@@ -44,6 +44,7 @@ export function applyModelResolution(
   return Math.ceil(baseCredits * m)
 }
 
+
 /** السعر بالريال لحزمة رصيد (شحن إضافي) — للعرض فقط. */
 export function sarForCredits(credits: number): number {
   return Math.round(credits * CREDIT_SAR * 100) / 100
@@ -52,7 +53,8 @@ export function sarForCredits(credits: number): number {
 /**
  * تسعير صف النموذج كاملًا (ADR 0005) — المصدر الوحيد للزر في الواجهة ولحجز الرصيد في Edge Functions.
  * - صورة: `cost_credits` × معامل الدقة (applyModelResolution مع `supports.resolution_multipliers`).
- * - فيديو بالثانية (`cost_per_second` رصيد/ثانية = usd/ث × 3 ÷ 0.042): السعر/ث يُؤخذ من `supports.cps_by_resolution[resolution]`
+ * - فيديو بالثانية (`cost_per_second` رصيد/ثانية = usd/ث × 3 ÷ 0.042): السعر/ث يُؤخذ من `supports.video_cost_per_second["<دقة>"|"<دقة>+audio"]`
+ *   (جدول كامل يشمل الصوت) إن وُجد، وإلا `supports.cps_by_resolution[resolution]`
  *   إن وُجد وإلا `cost_per_second`، يُضاف `supports.audio_cps` عند طلب الصوت، ثم × المدة والتقريب لأعلى على الإجمالي.
  * - فيديو بالمقطع (`cost_per_second` null): `supports.credits_by_duration[duration]` إن وُجد وإلا `cost_credits`.
  * - صوت: `cost_credits` ثابت (التسعير بالحروف يُضاف مع محرك الصوت).
@@ -104,6 +106,10 @@ export function modelCredits(row: ModelPricingRow, opts: ModelPricingOptions): n
     if (!duration) throw new RangeError('video model without duration')
     if (row.cost_per_second != null) {
       const resolution = opts.resolution ?? (defaults.resolution as string | undefined)
+      // جدول كامل بمفاتيح "<دقة>" و"<دقة>+audio" (Kling عبر Replicate: الصوت +50% يختلف حسب الدقة) يطغى على ما بعده
+      const table = obj(supports.video_cost_per_second)
+      const tabled = resolution ? positive(table[opts.audio ? `${resolution}+audio` : resolution]) : undefined
+      if (tabled) return Math.ceil(tabled * duration)
       const byRes = obj(supports.cps_by_resolution)
       const perSecond = (resolution ? positive(byRes[resolution]) : undefined) ?? positive(row.cost_per_second)
       if (!perSecond) throw new RangeError('video model with non-positive cost_per_second')

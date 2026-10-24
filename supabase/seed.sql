@@ -13,7 +13,7 @@ on conflict (id) do update set
   max_concurrent = excluded.max_concurrent, private_by_default = excluded.private_by_default, sort = excluded.sort;
 
 -- نماذج Replicate اليدوية (ADR 0003). cost_credits = ceil(usd × 3 ÷ 0.042). Kling/Seedance/Veo انتقلت إلى كتالوج fal المولّد أدناه (ADR 0005)
--- — صفوفها القديمة kling-v3-turbo (معطّل) تبقى في القاعدة بلا ضرر؛ seedance-2.5 وveo-3.1-fast يُعاد كتابتهما بصفوف fal.
+-- — kling-v3-turbo (Replicate) معطّل أدناه؛ seedance-2.5 وveo-3.1-fast يُعاد كتابتهما بصفوف fal.
 -- nano-banana-pro عبر Replicate (ADR 0003): سعر Replicate بتاريخ 2026-10-22: 1K/2K = 0.15$ → 11، 4K = 0.30$ → 22.
 --   supports.resolution_multipliers يطغى على معامل الدقة العام (applyModelResolution)، وinput_schema من مخطط Replicate (المخطط §15 الطبقة 1).
 insert into public.models (id, name_ar, name_en, type, provider, provider_slug, fallback_slug, cost_credits, cost_per_second, max_duration_s, supports, default_params, input_schema, enabled, badge, sort) values
@@ -24,7 +24,18 @@ insert into public.models (id, name_ar, name_en, type, provider, provider_slug, 
      '{"required":["prompt"],"properties":{"prompt":{"type":"string"},"image_input":{"type":"array","items":{"type":"string","format":"uri"},"maxItems":14,"default":[]},"aspect_ratio":{"type":"string","enum":["match_input_image","1:1","2:3","3:2","3:4","4:3","4:5","5:4","9:16","16:9","21:9"],"default":"match_input_image"},"resolution":{"type":"string","enum":["1K","2K","4K"],"default":"2K"},"output_format":{"type":"string","enum":["jpg","png"],"default":"jpg"},"safety_filter_level":{"type":"string","enum":["block_low_and_above","block_medium_and_above","block_only_high"],"default":"block_only_high"},"allow_fallback_model":{"type":"boolean","default":false}},"output":{"type":"string","format":"uri"}}',
      true, 'جديد', 1),
   ('flux-fast',       'فلوكس السريع',  'FLUX fast',       'image', 'replicate', 'black-forest-labs/flux-schnell', 'fal-ai/flux/schnell',
-     3, null, null, '{"ref_images":0,"text":false,"sizes":["1K"],"aspect_ratios":["1:1","9:16","16:9","4:5","3:4"]}', '{}', null, false, null, 2)
+     3, null, null, '{"ref_images":0,"text":false,"sizes":["1K"],"aspect_ratios":["1:1","9:16","16:9","4:5","3:4"]}', '{}', null, false, null, 2),
+  -- Kling 3 عبر Replicate — معطّل منذ دمج كتالوج fal (2026-10-24): Kling 3 من fal (kling-v3-std/pro) بنصف السعر (6 رصيد/ث مقابل 12).
+  --   يبقى الصف لأن أصولًا قديمة تشير إليه، وتسعيره (video_cost_per_second) يقرؤه modelCredits إن أُعيد تفعيله.
+  -- Kling 3 عبر Replicate (kwaivgi/kling-v3-video، مخطط OpenAPI بتاريخ 2026-10-23، الإصدار cadb27bd…). أسعار Replicate لكل ثانية:
+  --   standard (720p) 0.168$ → 12 رصيد/ث، pro (1080p) 0.224$ → 16، مع الصوت +50% (18 / 24)، 4K 0.42$ → 30 (غير معروض الآن).
+  --   cost_per_second = 12 (الأساس) والجدول الكامل في supports.video_cost_per_second (modelCredits)؛ mode_by_resolution يحوّل دقتنا إلى mode النموذج.
+  ('kling-v3-turbo',  'كلينج 3',       'Kling 3',         'video', 'replicate', 'kwaivgi/kling-v3-video', 'fal-ai/kling-video/v3/turbo',
+     null, 12, 15,
+     '{"i2v":true,"audio":true,"durations":[5,10],"resolutions":["720p","1080p"],"aspect_ratios":["16:9","9:16","1:1"],"video_cost_per_second":{"720p":12,"720p+audio":18,"1080p":16,"1080p+audio":24,"4K":30,"4K+audio":30},"mode_by_resolution":{"720p":"standard","1080p":"pro"}}',
+     '{"duration":5,"resolution":"720p","aspectRatio":"16:9","audio":false}',
+     '{"required":["prompt"],"properties":{"prompt":{"type":"string","description":"Text prompt for video generation. Max 2500 characters."},"negative_prompt":{"type":"string","default":""},"start_image":{"type":"string","format":"uri","nullable":true,"description":"First frame image. .jpg/.jpeg/.png, max 10MB, min 300px, aspect 1:2.5 to 2.5:1."},"end_image":{"type":"string","format":"uri","nullable":true},"mode":{"type":"string","enum":["standard","pro","4k"],"default":"pro"},"aspect_ratio":{"type":"string","enum":["16:9","9:16","1:1"],"default":"16:9","description":"Ignored when start_image is provided."},"duration":{"type":"integer","minimum":3,"maximum":15,"default":5},"generate_audio":{"type":"boolean","default":false},"multi_prompt":{"type":"string","nullable":true}},"output":{"type":"string","format":"uri"}}',
+     false, null, 3)
 on conflict (id) do update set
   name_ar = excluded.name_ar, name_en = excluded.name_en, type = excluded.type, provider = excluded.provider,
   provider_slug = excluded.provider_slug, fallback_slug = excluded.fallback_slug, cost_credits = excluded.cost_credits,

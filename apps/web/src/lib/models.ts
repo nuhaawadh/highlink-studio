@@ -33,6 +33,11 @@ export interface Supports {
   credits_by_duration?: Record<string, number>
   ref_images?: number
   requires_ref?: boolean
+  text?: boolean
+  i2v?: boolean
+  /** جدول كامل بالدقة والدقة+الصوت (Kling عبر Replicate) — يقرؤه modelCredits */
+  video_cost_per_second?: Record<string, number>
+  mode_by_resolution?: Record<string, string>
 }
 
 export interface ModelDefaults {
@@ -40,6 +45,7 @@ export interface ModelDefaults {
   aspectRatio?: AspectRatio
   duration?: number
   resolution?: string
+  audio?: boolean
 }
 
 export function modelSupports(model: ModelRow): Supports {

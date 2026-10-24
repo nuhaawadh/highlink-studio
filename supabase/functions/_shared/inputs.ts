@@ -5,6 +5,7 @@ import type { GenerateConfig, ModelRow } from './types.ts'
  * - لا كود لكل نموذج: إن كان للمخطط خاصية بهذا الاسم نضبطها، وإلا نتجاهلها. الأسماء المعروفة تغطي Replicate وfal معًا
  *   (image_input | image_url/image_urls، resolution | image_size، duration نصية "5" أو "8s" أو رقمية، generate_audio…).
  * - القيمة تُحوَّل إلى نوع المخطط (نص/رقم) وأي قيمة خارج enum تُرفض قبل الحجز (يرجع خطأ بسبب مفهوم).
+ * - الفيديو: `mode` من `supports.mode_by_resolution` (Kling عبر Replicate)، و`start_image`/`end_image` من المراجع.
  * نقي (بلا Deno) ليُختبر بـvitest.
  */
 export interface BuiltInput {
@@ -96,6 +97,7 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
   const input: Record<string, unknown> = schema.prompt || !model.input_schema ? { prompt } : {}
   const invalid: BuiltInput['invalid'] = []
   const defaults = model.default_params ?? {}
+  const supports = model.supports ?? {}
 
   /** يضبط المفتاح إن عرفه المخطط وقبِل القيمة؛ وإلا يسجّلها مرفوضة */
   const set = (key: string, value: unknown) => {
@@ -103,7 +105,9 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
     if (!prop || value === undefined) return
     const v = coerce(prop, value)
     if (v === undefined) {
-      invalid.push({ key, value, allowed: enumOf(prop) ?? [effective(prop).type ?? 'unknown'] })
+      const eff = effective(prop)
+      const range = eff.minimum !== undefined || eff.maximum !== undefined ? [eff.minimum ?? '-∞', eff.maximum ?? '∞'] : undefined
+      invalid.push({ key, value, allowed: enumOf(prop) ?? range ?? [eff.type ?? 'unknown'] })
       return
     }
     input[key] = v
@@ -119,7 +123,7 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
   if (refs[1] && schema.end_image_url) input.end_image_url = refs[1]
   // أسماء بديلة للإطار الأول/الأخير (Veo: first/last_frame_url، PixVerse: first/last_image_url)
   for (const k of ['first_frame_url', 'first_image_url'] as const) if (refs[0] && schema[k]) input[k] = refs[0]
-  for (const k of ['last_frame_url', 'last_image_url', 'tail_image_url'] as const) if (refs[1] && schema[k]) input[k] = refs[1]
+  for (const k of ['last_frame_url', 'last_image_url', 'tail_image_url', 'end_image'] as const) if (refs[1] && schema[k]) input[k] = refs[1]
   // تجربة الملابس/المنتج في اليد: images[0] = الشخص، images[1…] = القطعة أو المنتج (موثّق في docs/api.md)
   if (refs[0] && schema.person_image_url) input.person_image_url = refs[0]
   for (const k of ['product_image_url', 'garment_image_url'] as const) if (refs[1] && schema[k]) input[k] = refs[1]
@@ -136,10 +140,21 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
     else if (acceptsObject(schema.image_size) && IMAGE_SIZE_DIMENSIONS[wantRatio]) input.image_size = IMAGE_SIZE_DIMENSIONS[wantRatio]
     else invalid.push({ key: 'image_size', value: wantRatio, allowed: allowed ?? [] })
   }
+  // فيديو من صورة: أول مرجع هو الإطار الأول
+  if (schema.start_image && refs[0]) input.start_image = refs[0]
 
   // ---- الدقة: للصور 1K/2K/4K (imageSize)، للفيديو 480p/720p/1080p (resolution) — نفس المفتاح عند المزوّدين
   if (model.type === 'image') set('resolution', config?.imageSize ?? (defaults.imageSize as string | undefined))
   else set('resolution', config?.resolution ?? (defaults.resolution as string | undefined))
+
+  // ---- وضع الجودة المشتق من دقة الفيديو (Kling عبر Replicate: 720p → standard، 1080p → pro) عبر supports.mode_by_resolution
+  const videoRes = model.type === 'video' ? (config?.resolution ?? (defaults.resolution as string | undefined)) : undefined
+  const modeByRes = (supports as { mode_by_resolution?: Record<string, unknown> }).mode_by_resolution
+  if (schema.mode && videoRes && modeByRes && typeof modeByRes === 'object') {
+    const mode = modeByRes[videoRes]
+    if (mode === undefined) invalid.push({ key: 'resolution', value: videoRes, allowed: Object.keys(modeByRes) })
+    else set('mode', mode)
+  }
 
   // ---- المدة (فيديو): نصية "5" أو "8s" أو رقمية حسب المخطط
   if (model.type === 'video') set('duration', config?.duration ?? (defaults.duration as number | undefined))

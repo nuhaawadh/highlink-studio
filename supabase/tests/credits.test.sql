@@ -140,6 +140,8 @@ declare
   ac   uuid := gen_random_uuid();   -- completed + حجز قديم ما زال held → تأكيد (charge)
   af   uuid := gen_random_uuid();   -- failed + حجز قديم → تحرير
   an   uuid := gen_random_uuid();   -- processing + حجز حديث → لا يُمس
+  av   uuid := gen_random_uuid();   -- فيديو processing 31 د → تحت مهلة الفيديو
+  avo  uuid := gen_random_uuid();   -- فيديو processing 121 د → provider_check
   n    int;
   r    record;
   acts text[];
@@ -222,55 +224,150 @@ begin
     raise exception 'T10 service balance: expected 30, got %', public.get_balance(u2);
   end if;
 
-  -- T11: reconcile_holds — خمسة أصول لـu2، كل واحد بحجز 2
+  -- T11: reconcile_holds (0005: مهلة حسب النوع — صورة 30 د، فيديو 120 د — وprocessing بمهمة يُترك للمزوّد)
+  --   سبعة أصول لـu2، كل واحد بحجز 2
   insert into public.assets (id, user_id, type, status, provider, provider_job_id) values
-    (aq, u2, 'image', 'queued',     null,        null),
-    (ap, u2, 'image', 'processing', 'replicate', 'job-ap'),
-    (ac, u2, 'image', 'completed',  'replicate', 'job-ac'),
-    (af, u2, 'image', 'failed',     'replicate', 'job-af'),
-    (an, u2, 'image', 'processing', 'replicate', 'job-an');
+    (aq,  u2, 'image', 'queued',     null,        null),       -- قديم → تحرير + failed
+    (ap,  u2, 'image', 'processing', 'replicate', 'job-ap'),   -- قديم بمهمة → provider_check بلا تغيير
+    (ac,  u2, 'image', 'completed',  'replicate', 'job-ac'),   -- قديم → تأكيد
+    (af,  u2, 'image', 'failed',     'replicate', 'job-af'),   -- قديم → تحرير
+    (an,  u2, 'image', 'processing', 'replicate', 'job-an'),   -- حديث → لا يُمس
+    (av,  u2, 'video', 'processing', 'replicate', 'job-av'),   -- فيديو 31 د → تحت مهلة الفيديو، لا يُدرج
+    (avo, u2, 'video', 'processing', 'replicate', 'job-avo');  -- فيديو 121 د → provider_check
   perform public.hold_credits(u2, 2, aq);
   perform public.hold_credits(u2, 2, ap);
   perform public.hold_credits(u2, 2, ac);
   perform public.hold_credits(u2, 2, af);
   perform public.hold_credits(u2, 2, an);
-  if public.get_balance(u2) <> 20 then
-    raise exception 'T11 setup: expected 20, got %', public.get_balance(u2);
+  perform public.hold_credits(u2, 2, av);
+  perform public.hold_credits(u2, 2, avo);
+  if public.get_balance(u2) <> 16 then
+    raise exception 'T11 setup: expected 16, got %', public.get_balance(u2);
   end if;
   update public.credit_ledger set created_at = now() - interval '31 minutes'
-  where asset_id in (aq, ap, ac, af) and kind = 'hold' and status = 'held';
+  where asset_id in (aq, ap, ac, af, av) and kind = 'hold' and status = 'held';
+  update public.credit_ledger set created_at = now() - interval '121 minutes'
+  where asset_id = avo and kind = 'hold' and status = 'held';
 
   select array_agg(action order by hold_id) into acts from public.reconcile_holds();
-  if coalesce(array_length(acts, 1), 0) <> 4 then
-    raise exception 'T11 reconcile: expected 4 actions, got %', acts;
+  if acts is distinct from array['released_timeout', 'provider_check', 'confirmed', 'released', 'provider_check'] then
+    raise exception 'T11 reconcile actions: got %', acts;
   end if;
-  if public.get_balance(u2) <> 26 then
-    raise exception 'T11 reconcile: expected 26 (charge 2 + fresh hold 2), got %', public.get_balance(u2);
+  -- aq وaf حُرّرا (+4)، ac صار charge (-2)، ap وan وav وavo ما زالت held (-8) → 30 - 2 - 8 = 20
+  if public.get_balance(u2) <> 20 then
+    raise exception 'T11 reconcile: expected 20, got %', public.get_balance(u2);
   end if;
   select kind, status into r from public.credit_ledger where asset_id = ac and kind in ('hold', 'charge');
   if r.kind <> 'charge' or r.status <> 'posted' then
     raise exception 'T11 completed asset: expected charge/posted, got %/%', r.kind, r.status;
   end if;
-  select count(*) into n from public.credit_ledger where asset_id in (aq, ap, af) and kind = 'refund' and status = 'released';
-  if n <> 3 then
-    raise exception 'T11 released: expected 3 refund rows, got %', n;
-  end if;
-  select count(*) into n from public.assets where id in (aq, ap) and status = 'failed' and error_message is not null;
+  select count(*) into n from public.credit_ledger where asset_id in (aq, af) and kind = 'refund' and status = 'released';
   if n <> 2 then
-    raise exception 'T11 timeout assets: expected queued+processing → failed, got %', n;
+    raise exception 'T11 released: expected 2 refund rows, got %', n;
   end if;
-  select status into r from public.assets where id = an;
-  if r.status <> 'processing' then
-    raise exception 'T11 fresh hold: asset should stay processing, got %', r.status;
+  select count(*) into n from public.assets where id = aq and status = 'failed' and error_message is not null;
+  if n <> 1 then
+    raise exception 'T11 timeout queued asset: expected failed with message';
   end if;
-  select kind, status into r from public.credit_ledger where asset_id = an and kind = 'hold';
-  if r.status <> 'held' then
-    raise exception 'T11 fresh hold: should remain held, got %', r.status;
+  select count(*) into n from public.assets where id in (ap, an, av, avo) and status = 'processing';
+  if n <> 4 then
+    raise exception 'T11 processing assets with a job must stay processing (provider decides), got %', n;
   end if;
-  -- تشغيل ثانٍ لا يفعل شيئًا (idempotent)
-  select count(*) into n from public.reconcile_holds();
+  select count(*) into n from public.credit_ledger where asset_id in (ap, an, av, avo) and kind = 'hold' and status = 'held';
+  if n <> 4 then
+    raise exception 'T11 holds of processing assets must stay held, got %', n;
+  end if;
+  -- تشغيل ثانٍ: لا تغيير في الحالة؛ يعيد فقط ما ينتظر سؤال المزوّد
+  select array_agg(action order by hold_id) into acts from public.reconcile_holds();
+  if acts is distinct from array['provider_check', 'provider_check'] then
+    raise exception 'T11 second run: expected only provider_check rows, got %', acts;
+  end if;
+  -- مهلة فيديو أقصر تُدرج av أيضًا
+  select count(*) into n from public.reconcile_holds(interval '30 minutes', interval '30 minutes') where action = 'provider_check';
+  if n <> 3 then
+    raise exception 'T11 custom video threshold: expected 3 provider_check rows, got %', n;
+  end if;
+end $$;
+
+-- =====================================================================
+-- T12–T14: migration 0005 — claim_and_hold: حد التزامن + حجز الأصل + حجز الرصيد في معاملة واحدة تحت قفل المستخدم
+-- =====================================================================
+do $$
+declare
+  u3   uuid := gen_random_uuid();
+  u4   uuid := gen_random_uuid();
+  a    uuid := gen_random_uuid();
+  b    uuid := gen_random_uuid();
+  h    bigint;
+  n    int;
+  r    record;
+begin
+  insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  values
+    (u3, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'claim-test-' || u3 || '@example.invalid', '', now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now()),
+    (u4, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'claim-test-' || u4 || '@example.invalid', '', now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now());
+  -- الباقة المجانية: max_concurrent = 1
+  insert into public.assets (id, user_id, type, status, model) values (a, u3, 'image', 'queued', 'm'), (b, u3, 'image', 'queued', 'm');
+
+  -- T12: أول حجز يمر: الأصل processing بتكلفة ومزوّد ونوع، حجز 5، الرصيد 25
+  h := public.claim_and_hold(u3, a, 5, 'replicate', 'nano-banana-pro', 'image');
+  select status, provider, cost_credits, model, type into r from public.assets where id = a;
+  if r.status <> 'processing' or r.provider <> 'replicate' or r.cost_credits <> 5 or r.model <> 'nano-banana-pro' or r.type <> 'image' then
+    raise exception 'T12 claim: asset row %/%/%/%/%', r.status, r.provider, r.cost_credits, r.model, r.type;
+  end if;
+  if public.get_balance(u3) <> 25 then
+    raise exception 'T12 claim: expected balance 25, got %', public.get_balance(u3);
+  end if;
+
+  -- T13: الثاني يُرفض بحد التزامن (1) ولا يلمس الأصل ولا الرصيد
+  begin
+    perform public.claim_and_hold(u3, b, 5, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T13 should have failed';
+  exception when others then
+    if sqlerrm <> 'RATE_LIMITED' then raise exception 'T13: expected RATE_LIMITED, got %', sqlerrm; end if;
+  end;
+  select status into r from public.assets where id = b;
+  if r.status <> 'queued' then
+    raise exception 'T13 rate limited asset must stay queued, got %', r.status;
+  end if;
+  if public.get_balance(u3) <> 25 then
+    raise exception 'T13 rate limited must not hold, balance %', public.get_balance(u3);
+  end if;
+  -- إعادة حجز أصل محجوز → ALREADY_CLAIMED
+  begin
+    perform public.claim_and_hold(u3, a, 5, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T13b should have failed';
+  exception when others then
+    if sqlerrm <> 'ALREADY_CLAIMED' then raise exception 'T13b: expected ALREADY_CLAIMED, got %', sqlerrm; end if;
+  end;
+  -- أصل مستخدم آخر → ALREADY_CLAIMED (لا صف يطابق user_id)
+  begin
+    perform public.claim_and_hold(u4, b, 5, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T13c should have failed';
+  exception when others then
+    if sqlerrm <> 'ALREADY_CLAIMED' then raise exception 'T13c: expected ALREADY_CLAIMED, got %', sqlerrm; end if;
+  end;
+
+  -- T14: الذرّية: اكتمل a، ثم حجز b بمبلغ أكبر من الرصيد → INSUFFICIENT_CREDITS ويعود b إلى queued (لا حجز للأصل بلا رصيد)
+  update public.assets set status = 'completed' where id = a;
+  begin
+    perform public.claim_and_hold(u3, b, 40, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T14 should have failed';
+  exception when others then
+    if sqlerrm <> 'INSUFFICIENT_CREDITS' then raise exception 'T14: expected INSUFFICIENT_CREDITS, got %', sqlerrm; end if;
+  end;
+  select status, cost_credits into r from public.assets where id = b;
+  if r.status <> 'queued' or r.cost_credits is not null then
+    raise exception 'T14 atomicity: asset claim must roll back with the hold, got %/%', r.status, r.cost_credits;
+  end if;
+  select count(*) into n from public.credit_ledger where asset_id = b;
   if n <> 0 then
-    raise exception 'T11 idempotent: expected 0 actions on second run, got %', n;
+    raise exception 'T14 atomicity: no ledger row expected for b, got %', n;
+  end if;
+  -- ثم بمبلغ يكفي يمر
+  h := public.claim_and_hold(u3, b, 5, 'replicate', 'nano-banana-pro', 'image');
+  if public.get_balance(u3) <> 20 then
+    raise exception 'T14 claim after completion: expected 20, got %', public.get_balance(u3);
   end if;
 end $$;
 

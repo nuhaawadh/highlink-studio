@@ -14,7 +14,8 @@ zod يُستورد بصيغة Deno `npm:zod@4`؛ في vitest تحلّها إضا
 | `credits.ts` | `holdCredits` / `confirmAssetHold` / `releaseAssetHold` / `getBalance` — تغليف دوال SQL؛ التأكيد والتحرير بالأصل لأن الـwebhook لا يعرف إلا `asset_id` | |
 | `storage.ts` | محوّل التخزين الواحد (ADR 0002/0003): `put`, `publicUrl`, `copyFromUrl` — Supabase Storage bucket `media` الآن، R2 لاحقًا بتبديل هذا الملف فقط | |
 | `request.ts` | مخطط zod لطلب `generate-media` (روابط المراجع https فقط، `maxCredits` موجب) — منفصل عن index.ts ليُختبر | ✓ |
-| `generate-core.ts` | `runGenerate(ctx)` — الخطوات التسع (حجز ذرّي للأصل، حجز رصيد، مزوّد، كتابة المهمة، تنظيف عند الفشل) + مسار sandbox؛ يستدعيه `generate-media` و`v1` | |
+| `generate-core.ts` | `runGenerate(ctx)` — الخطوات التسع (`claim_and_hold` ذرّيًا: تزامن + أصل + رصيد، مزوّد، كتابة المهمة، تنظيف عند الفشل) + تسعير الصورة/الفيديو + مسار sandbox؛ يستدعيه `generate-media` و`v1` | |
+| `finalize.ts` | `finalizeAsset(asset, result)` و`timeoutAsset` — الإنهاء الموحّد (نسخ، completed/failed، تأكيد/تحرير، webhook العميل) لـ`provider-webhook` و`reconcile` | |
 | `api-types.ts` | API v1 النقي: `parseApiRoute`, `extractApiKey`, `canonicalJson`, `toPublicAsset` | ✓ |
 | `api-auth.ts` | `authenticateApiKey(req, {count})` → sha256 → RPC `api_authenticate`؛ `rateLimitHeaders` | |
 | `client-webhook.ts` | `scheduleAssetWebhook(assetId)` — POST موقّع (Standard Webhooks) إلى رابط العميل مع 3 محاولات وسجل في `api_webhook_deliveries` | |

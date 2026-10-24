@@ -9,10 +9,13 @@ import type { ProviderAdapter, ProviderWebhookResult } from './index.ts'
  * - الـwebhook: {request_id, gateway_request_id, status: "OK"|"ERROR", payload, error?, payload_error?} موقّع ED25519
  *   (الترويسات X-Fal-Webhook-*)، والمفاتيح العامة من JWKS تُخزَّن مؤقتًا ≤ 24 ساعة (fal: لا تخزّنها أطول).
  * - الناتج: payload يختلف بشكله بين النماذج (video.url، images[].url، audio.url…) — نستخرج روابط الملفات بترتيب معروف ثم بمسح عام.
+ * - getJob (reconcile، backlog B9): GET queue.fal.run/{owner}/{app}/requests/{id}/status — بلا مسار النقطة (falAppId)؛
+ *   الفاشل حالته COMPLETED مع error، والناجح نجلب نتيجته من …/requests/{id}.
  * الأسرار: FAL_KEY فقط (لا سر للويبهوك — التحقق بمفاتيح fal العامة).
  */
 const QUEUE = 'https://queue.fal.run'
 const SUBMIT_TIMEOUT_MS = 30_000
+const GET_TIMEOUT_MS = 15_000
 const JWKS_TTL_MS = 12 * 60 * 60 * 1000
 const JWKS_TIMEOUT_MS = 8_000
 
@@ -93,6 +96,23 @@ function errorText(p: z.infer<typeof WebhookPayload>): string | undefined {
   return undefined
 }
 
+/** معرّف التطبيق في روابط طلبات الطابور: أول مقطعين من مسار النقطة (fal-ai/kling-video/v3/… → fal-ai/kling-video) */
+export function falAppId(slug: string): string | null {
+  const parts = slug.split('/').filter(Boolean)
+  return parts.length >= 2 ? `${parts[0]}/${parts[1]}` : null
+}
+
+const QueueStatus = z.object({ status: z.string(), error: z.unknown().optional(), error_type: z.unknown().optional() })
+
+async function falGet(url: string): Promise<Response> {
+  return fetch(url, {
+    headers: { Authorization: `Key ${key()}`, 'User-Agent': 'highlink-studio/0.1 (+https://highlink.tech)' },
+    signal: AbortSignal.timeout(GET_TIMEOUT_MS),
+  }).catch((e: unknown) => {
+    throw new AppError('PROVIDER_ERROR', undefined, { detail: `fal get: ${e instanceof Error ? e.name + ' ' + e.message : String(e)}` })
+  })
+}
+
 export const fal: ProviderAdapter = {
   name: 'fal',
 
@@ -170,5 +190,42 @@ export const fal: ProviderAdapter = {
     }
     if (p.status === 'ERROR') return { jobId: p.request_id, status: 'failed', outputs: [], error: errorText(p) ?? 'ERROR' }
     return { jobId: p.request_id, status: 'processing', outputs: [] }
+  },
+
+  async getJob(jobId, slug): Promise<ProviderWebhookResult> {
+    const app = slug ? falAppId(slug) : null
+    if (!app) throw new AppError('PROVIDER_ERROR', undefined, { detail: `fal get: cannot derive app id from slug ${String(slug)}` })
+    const base = `${QUEUE}/${app}/requests/${encodeURIComponent(jobId)}`
+    const res = await falGet(`${base}/status`)
+    const text = await res.text()
+    // 404 = طلب لا تعرفه fal (منتهٍ أو لحساب آخر): لا ناتج سيأتي → فشل يحرّر الحجز بدل أن يبقى عالقًا
+    if (res.status === 404) return { jobId, status: 'failed', outputs: [], error: `fal get 404: ${text.slice(0, 200)}` }
+    if (!res.ok) throw new AppError('PROVIDER_ERROR', undefined, { detail: `fal get ${res.status}: ${text.slice(0, 200)}` })
+    let parsed: z.infer<typeof QueueStatus>
+    try {
+      parsed = QueueStatus.parse(JSON.parse(text))
+    } catch {
+      throw new AppError('PROVIDER_ERROR', undefined, { detail: `fal get: unexpected status body ${text.slice(0, 200)}` })
+    }
+    if (parsed.status !== 'COMPLETED') return { jobId, status: 'processing', outputs: [] }
+    if (parsed.error != null && parsed.error !== '') {
+      return { jobId, status: 'failed', outputs: [], error: `${String(parsed.error)}${parsed.error_type ? ` (${String(parsed.error_type)})` : ''}`.slice(0, 500) }
+    }
+    const out = await falGet(base)
+    const outText = await out.text()
+    if (!out.ok) {
+      // النتيجة نفسها قد ترجع 4xx للطلب الفاشل (مدخلات مرفوضة) — نفس معاملة الفشل
+      if (out.status >= 400 && out.status < 500) return { jobId, status: 'failed', outputs: [], error: `fal result ${out.status}: ${outText.slice(0, 300)}` }
+      throw new AppError('PROVIDER_ERROR', undefined, { detail: `fal result ${out.status}: ${outText.slice(0, 200)}` })
+    }
+    let payload: unknown
+    try {
+      payload = JSON.parse(outText)
+    } catch {
+      throw new AppError('PROVIDER_ERROR', undefined, { detail: 'fal result: non-JSON response' })
+    }
+    const outputs = extractFalOutputs(payload)
+    if (!outputs.length) return { jobId, status: 'failed', outputs: [], error: 'COMPLETED without media output' }
+    return { jobId, status: 'succeeded', outputs }
   },
 }

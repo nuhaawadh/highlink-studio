@@ -1,5 +1,53 @@
 import { describe, expect, it } from 'vitest'
-import { applyModelResolution, applyResolution, creditsForUsd, creditsForVideo, modelCredits, sarForCredits } from './pricing'
+import { applyModelResolution, applyResolution, creditsForUsd, creditsForVideo, modelCredits, sarForCredits, type ModelPricingRow } from './pricing'
+
+/**
+ * Kling 3 عبر Replicate (2026-10-23): standard 0.168$/ث، pro 0.224$/ث، الصوت +50%، 4K 0.42$/ث → بالرصيد 12/16/18/24/30.
+ * الجدول في supports.video_cost_per_second بمفاتيح "<دقة>" و"<دقة>+audio" — modelCredits يقرؤه قبل cps_by_resolution (دالة واحدة).
+ */
+const KLING_SUPPORTS = { video_cost_per_second: { '720p': 12, '720p+audio': 18, '1080p': 16, '1080p+audio': 24, '4K': 30, '4K+audio': 30 } }
+const klingRow = (supports: unknown = KLING_SUPPORTS, defaults: unknown = { duration: 5, resolution: '720p' }): ModelPricingRow => ({
+  type: 'video',
+  cost_credits: null,
+  cost_per_second: 12,
+  max_duration_s: 15,
+  supports,
+  default_params: defaults,
+})
+
+describe('modelCredits — جدول video_cost_per_second (Kling عبر Replicate)', () => {
+  it('أسعار Kling من صفحة Replicate تتحول إلى رصيد صحيح بلا كسور', () => {
+    expect(creditsForUsd(0.168)).toBe(12)
+    expect(creditsForUsd(0.224)).toBe(16)
+    expect(creditsForUsd(0.252)).toBe(18)
+    expect(creditsForUsd(0.336)).toBe(24)
+    expect(creditsForUsd(0.42)).toBe(30)
+  })
+  it('5 ثوانٍ 720p = 60، 10 ثوانٍ 1080p مع صوت = 240، 5 ثوانٍ 720p مع صوت = 90', () => {
+    expect(modelCredits(klingRow(), { duration: 5, resolution: '720p', audio: false })).toBe(60)
+    expect(modelCredits(klingRow(), { duration: 10, resolution: '1080p', audio: true })).toBe(240)
+    expect(modelCredits(klingRow(), { duration: 5, resolution: '720p', audio: true })).toBe(90)
+  })
+  it('مفتاح الجدول يطغى على audio_cps فلا يُضاف الصوت مرتين', () => {
+    const row = klingRow({ ...KLING_SUPPORTS, audio_cps: 6 })
+    expect(modelCredits(row, { duration: 5, resolution: '720p', audio: true })).toBe(90)
+  })
+  it('مفتاح غائب أو جدول غائب → cps_by_resolution ثم cost_per_second؛ 4K بالصوت نفس السعر', () => {
+    expect(modelCredits(klingRow(), { duration: 5, resolution: '480p' })).toBe(60)
+    expect(modelCredits(klingRow(KLING_SUPPORTS, { duration: 5 }), { duration: 5, audio: true })).toBe(60)
+    expect(modelCredits(klingRow(undefined), { duration: 5, resolution: '720p' })).toBe(60)
+    expect(modelCredits(klingRow(), { duration: 5, resolution: '4K', audio: true })).toBe(150)
+  })
+  it('الدقة الافتراضية من default_params تُسعَّر من الجدول', () => {
+    expect(modelCredits(klingRow(KLING_SUPPORTS, { duration: 5, resolution: '1080p' }), {})).toBe(80)
+  })
+  it('قيمة جدول غير صالحة (صفر/سالب/نص) لا تسعّر بصفر — ترجع للأساس', () => {
+    const bad = { video_cost_per_second: { '720p': 0, '1080p': -4, '720p+audio': '18' } }
+    expect(modelCredits(klingRow(bad), { duration: 5, resolution: '720p' })).toBe(60)
+    expect(modelCredits(klingRow(bad), { duration: 5, resolution: '1080p' })).toBe(60)
+    expect(modelCredits(klingRow(bad), { duration: 5, resolution: '720p', audio: true })).toBe(60)
+  })
+})
 
 describe('pricing — المخطط §7', () => {
   it('صورة سريعة 0.03$ ≈ 3 رصيد', () => {

@@ -1,5 +1,13 @@
 # سجل التغييرات
 
+## دمج main في فرع fal (2026-10-24)
+- دُمج عمل الجلسة الموازية (0005 `claim_and_hold`، `_shared/finalize.ts`، وظيفتا `reconcile` و`asset-thumbnail`، Kling 3 عبر Replicate) مع كتالوج fal والقوالب والهوية.
+- التسعير بدالة واحدة: حُذفت `videoCredits` وصار `modelCredits` يقرأ جدول `supports.video_cost_per_second` (`"<دقة>"`/`"<دقة>+audio"`) قبل `cps_by_resolution` — اختبارات Kling نُقلت إليه، والتطابق بين النسختين محروس.
+- محوّل fal: `getJob(jobId, slug)` — حالة الطابور من `queue.fal.run/{owner}/{app}/requests/{id}/status` ثم النتيجة؛ الفاشل (`COMPLETED` + `error`) أو 404 → فشل يحرّر الحجز. `reconcile` يمرّر `provider_slug` للنموذج.
+- `generate-core`: `claim_and_hold` الذري + `modelCredits` + رفض المدد خارج `supports.durations` + `duration_s` في الأصل. `inputs.ts`: `mode_by_resolution` و`start_image`/`end_image` فوق تحويل أسماء fal.
+- `kling-v3-turbo` (Replicate) **معطّل** في الـseed: Kling 3 من fal بنصف السعر (6 رصيد/ث مقابل 12). الصف باقٍ للأصول القديمة.
+- صفحة الفيديو: نسخة الكتالوج (عائلات، كل المدد والدقات) + التقاط المصغّر من main في `AssetCard`. منتقي «صورة البداية» من main يُبنى عليه في B13.
+
 ## الهوية — دليل الهوية البصرية V1 (2026-10-24)
 - اعتماد `docs/brand/highlink-brand-guide.pdf` مصدرًا للهوية بدل ألوان الموقع السابقة (الكحلي والأزرق). المطابقة في `docs/brand/palette.md`.
 - `tokens.css`: أبيض `#FFFFFF` خلفية أساسية، أسود `#0A0A0A` للنص والتحديد والأزرار العادية، الرمادي الفاتح `#F4F4F2` للأسطح، خط رفيع `#E4E4E4`، الليموني `#D0F94A` توكن مستقل (`lime`/`lime-ink`)، التدرّج `--grad-1..3`؛ كل الزوايا 0 وكل الظلال none.
@@ -27,6 +35,14 @@
 - مستندات: ADR 0005، `docs/competitive/higgsfield-inventory-2026-10.md` (جرد حيّ من MCP Higgsfield: 122 أداة، 134 نموذجًا، 700+ بريسيت، الأسعار الفعلية، 10 ثغرات)، `docs/competitive/beat-higgsfield-halai.md` (مصفوفة النماذج وعشر حركات مرتّبة بالقيمة ÷ الجهد)، تحديث `CLAUDE.md` (القاعدة 7 والحالة) وسكيل `new-model`.
 - الكتالوج المولّد: 233 نقطة نهاية بمخطط وسعر رسمي، **137 مفعّلًا** (63 صورة، 74 فيديو، 27 عائلة). قواعد أمان التسعير (العروض المؤقتة، الدقات بلا سعر، الأحجام، الصوت الصريح، التكلفة المعتمدة على حجم المدخل، المراجع الإلزامية، `min_refs`، الحقول غير المدعومة) في ADR 0005. حارس `catalog.test.ts` يبني طلب المزوّد لكل خيار لكل نموذج مفعّل (234 اختبارًا).
 - **غير منشور بعد**: يحتاج `FAL_KEY` في الأسرار، نشر `provider-webhook`/`generate-media`/`v1`، تطبيق الـseed، ثم بوابة 2 (توليدة فيديو حقيقية عبر Realtime). 4K معطّل حتى R2 (حد 50MB).
+
+## المرحلة 1 — الفيديو (Kling 3 عبر Replicate) + تصليب الحجوزات B2/B9 (2026-10-23)
+- migration `0005_concurrency_reconcile`: `claim_and_hold` — حد التزامن من الباقة + حجز الأصل (queued→processing) + حجز الرصيد في معاملة واحدة تحت قفل المستخدم (B2؛ T12–T14). `reconcile_holds(p_image, p_video)` بمهلة حسب النوع (صورة 30 د، فيديو 120 د) والأصول `processing` التي لها مهمة تُعاد كـ`provider_check` بدل اعتبارها فاشلة (B9؛ T11).
+- وظيفة `reconcile` (سر `RECONCILE_SECRET`، بلا JWT): تستدعي `reconcile_holds` ثم تسأل المزوّد (`getJob` = GET prediction) عن كل `provider_check` وتُنهي الأصل بنفس مسار الـwebhook (`_shared/finalize.ts`)؛ ما زال يعمل بعد السقف الصلب (صورة 4 س، فيديو 12 س) → تحرير + failed. `push-secrets.py` يولّد السر إن غاب.
+- `_shared/finalize.ts`: إنهاء موحّد (نسخ، completed/failed، تأكيد/تحرير، webhook العميل) يستخدمه `provider-webhook` و`reconcile`.
+- **Kling 3** (`kwaivgi/kling-v3-video`، مخطط OpenAPI 2026-10-23): `cost_per_second = 12` (standard 0.168$/ث) وجدول `supports.video_cost_per_second` {720p: 12, 720p+audio: 18, 1080p: 16, 1080p+audio: 24} و`mode_by_resolution`؛ `videoCredits()` في النسختين (contract.test) — 5 ث 720p = 60. `inputs.ts`: `start_image` من أول مرجع، `duration` ضمن min/max، `generate_audio`، `mode` من الدقة. النواة تسعّر الفيديو بالمدة قبل الإرسال وتكتب `duration_s`.
+- صفحة `/video-generate`: نص أو صورة→فيديو (رابط https أو من صورك الأخيرة)، المدة 5/10، القياس، الدقة 720p/1080p، صوت، التكلفة على الزر. بطاقة الأصل تشغّل الفيديو وتلتقط صورة مصغّرة من أول إطار وترفعها عبر `asset-thumbnail` (JWT، JPEG ≤ 300KB، للمالك فقط).
+- `smoke-gate1.py`: V1–V5 (منحة، مقطع 5 ث → حجز 60 بالضبط → mp4 + charge، فشل → استرداد، حدث واحد) وR1 (reconcile).
 
 ## المرحلة 1 — API عامة v1 (2026-10-22، ADR 0004)
 - وظيفة `v1` بلا JWT: `POST /v1/generate` · `GET /v1/assets/{id}` · `GET /v1/models` · `GET /v1/balance`، المصادقة بمفتاح `hl_live_`/`hl_test_` في `Authorization: Bearer` أو `X-API-Key`، وترويسات `X-RateLimit-*`.

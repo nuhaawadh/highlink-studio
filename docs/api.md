@@ -39,7 +39,7 @@
 | `config.duration` | integer (ثوانٍ) | فيديو — اختياري؛ من `durations` للنموذج، وإلا الافتراضي. التكلفة = السعر بالثانية × المدة |
 | `config.resolution` | string | فيديو — اختياري؛ كما يسمّيها النموذج في `resolutions` (`720p`، `1080p`، `768P`…)؛ قد تغيّر السعر |
 | `config.audio` | boolean | فيديو — اختياري؛ صوت أصلي من النموذج إن كان `audio: true`؛ قد يضيف تكلفة |
-| `images` | string[] | اختياري، حتى 14 رابط **https** لمراجع (منتج، شخصية). نماذج `requires_ref: true` (صورة→فيديو، تعديل بالمراجع) ترفض الطلب بدونها بـ`INVALID_INPUT` |
+| `images` | string[] | اختياري، حتى 14 رابط **https** لمراجع (منتج، شخصية). نماذج `requires_ref: true` (صورة→فيديو، تعديل بالمراجع) ترفض الطلب بدونها بـ`INVALID_INPUT`. للفيديو: الرابط الأول هو صورة البداية (والثاني الإطار الأخير إن دعمه النموذج) |
 | `maxCredits` | integer | اختياري: سقف إنفاق؛ إن تجاوزته التكلفة يُرفض الطلب بـ`OVER_BUDGET` بلا خصم |
 | `webhook_url` | string | اختياري، https: يطغى على رابط الـwebhook المضبوط في المفتاح لهذا الطلب فقط |
 | `feature_tag` | string | اختياري للتصنيف: `general` `product` `ads` `ugc` … |
@@ -121,7 +121,7 @@ curl "$HL_API/assets/6f1b7c2e-3d4a-4b5c-9d8e-7f6a5b4c3d2e" -H "Authorization: Be
 
 **الرد `200`**: `{ "asset": { …نفس الحقول أعلاه… } }`. عند الاكتمال `status: "completed"` و`url` رابط دائم للصورة. عند الفشل `status: "failed"` و`error: { code, message }` والرصيد مسترد. `404 NOT_FOUND` إن لم يكن الأصل لك.
 
-لا يُحسب على الحد اليومي. إن كنت لا تستطيع استقبال webhook، استعلم كل 5 ثوانٍ حتى تصبح الحالة نهائية (`completed` أو `failed` أو `canceled`)؛ الصور تكتمل عادة خلال 20–60 ثانية.
+لا يُحسب على الحد اليومي. إن كنت لا تستطيع استقبال webhook، استعلم كل 5 ثوانٍ حتى تصبح الحالة نهائية (`completed` أو `failed` أو `canceled`)؛ الصور تكتمل عادة خلال 20–60 ثانية، ومقاطع الفيديو خلال 2–6 دقائق (`url` ملف mp4، و`thumbnail_url` قد يكون `null` حتى يُلتقط).
 
 **n8n — HTTP Request**: `GET` إلى `{{ $vars.HL_API }}/assets/{{ $json.asset.id }}` بنفس الـCredential. للاستعلام الدوري: عقدة **Wait** (5 ثوانٍ) → HTTP Request → **IF** على `{{ ["completed","failed","canceled"].includes($json.asset.status) }}` → ارجع إلى Wait عند false.
 

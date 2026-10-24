@@ -53,8 +53,25 @@ describe('contract parity — packages/shared ↔ _shared', () => {
       { type: 'image' as const, cost_credits: 11, cost_per_second: null, max_duration_s: null, supports: { resolution_multipliers: { '1K': 1, '2K': 1, '4K': 2 } }, default_params: { imageSize: '2K' } },
       { type: 'video' as const, cost_credits: null, cost_per_second: 8, max_duration_s: 15, supports: { audio_cps: 2, cps_by_resolution: { '1080p': 12 } }, default_params: { duration: 5, resolution: '720p' } },
       { type: 'video' as const, cost_credits: 36, cost_per_second: null, max_duration_s: 9, supports: { credits_by_duration: { '9': 60 } }, default_params: { duration: 5 } },
+      // Kling 3 عبر Replicate: جدول video_cost_per_second بمفاتيح الدقة والدقة+الصوت
+      {
+        type: 'video' as const,
+        cost_credits: null,
+        cost_per_second: 12,
+        max_duration_s: 15,
+        supports: { video_cost_per_second: { '720p': 12, '720p+audio': 18, '1080p': 16, '1080p+audio': 24, '4K': 30 } },
+        default_params: { duration: 5, resolution: '720p' },
+      },
     ]
-    const opts = [{}, { imageSize: '4K' as const }, { duration: 10 }, { duration: 9, audio: true }, { duration: 5, resolution: '1080p', audio: true }]
+    const opts = [
+      {},
+      { imageSize: '4K' as const },
+      { duration: 10 },
+      { duration: 9, audio: true },
+      { duration: 5, resolution: '1080p', audio: true },
+      { duration: 3, resolution: '480p', audio: true },
+      { duration: 15, resolution: '4K', audio: true },
+    ]
     for (const r of rows) for (const o of opts) expect(edgeModelCredits(r, o), JSON.stringify([r.type, o])).toBe(modelCredits(r, o))
   })
 })

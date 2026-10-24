@@ -27,6 +27,11 @@ export interface ProviderAdapter {
   /** معرّف الحدث للـdedupe (ثابت عند إعادة الإرسال) */
   eventId(req: Request): string | null
   parseWebhook(rawBody: string): ProviderWebhookResult
+  /**
+   * يسأل المزوّد عن حالة مهمة (شبكة أمان الـwebhook — backlog B9، المخطط §15 الطبقة 4).
+   * `slug` = provider_slug للنموذج: fal يحتاجه لبناء رابط الطابور، وReplicate يتجاهله.
+   */
+  getJob(jobId: string, slug?: string): Promise<ProviderWebhookResult>
 }
 
 const adapters: Record<string, ProviderAdapter> = { replicate, fal }

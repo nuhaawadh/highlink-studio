@@ -11,6 +11,10 @@
   6. الحارس عبر PostgREST: PATCH status من الواجهة مرفوض.
   7. API v1 (ADR 0004): مفتاح hl_test_ (models/balance/generate sandbox/idempotency/assets/401/429/إبطال)
      ومفتاح hl_live_ (توليدة حقيقية 202 → completed عبر الـwebhook، الرصيد 19 → 8) وسجل تسليم webhook العميل.
+  8. الفيديو = بوابة 2 (ADR 0005، أرخص نموذج fal: Hailuo H3 Max Turbo، 5 ث 480P = 9 رصيد ≈ 0.13$ عند fal):
+     منحة 200، مقطع → حجز بالضبط ثم completed بـmp4 عبر webhook fal الموقّع وcharge بنفس القيمة؛
+     النسخة i2v بصورة بداية لا تُجلب → failed واسترداد. (يستغرق دقائق.) `--video-model <id>` لنموذج آخر.
+  9. reconcile بسر RECONCILE_SECRET → 200 وملخص؛ سر خاطئ → 401.
 
 يقرأ supabase/.env.local (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY) وapps/web/.env.local (VITE_SUPABASE_ANON_KEY) ولا يطبع قيمها.
 المفاتيح الجديدة (sb_secret_/sb_publishable_) ليست JWT وتُرسل كـapikey فقط؛ المفاتيح القديمة (JWT) تُرسل أيضًا في Authorization.
@@ -143,19 +147,22 @@ def wait_final(aid, seconds=180):
     return asset(aid)
 
 
+def generate_raw(aid, body):
+    return call('POST', '/functions/v1/generate-media', ANON, {'assetId': aid, 'feature_tag': 'general', 'locale': 'ar', **body}, bearer=jwt, timeout=120)
+
+
 def generate(aid, prompt, images=None):
-    body = {'assetId': aid, 'model': MODEL, 'prompt': prompt, 'config': {'aspectRatio': '1:1', 'imageSize': '1K'},
-            'feature_tag': 'general', 'locale': 'ar', 'maxCredits': EXPECTED_COST}
+    body = {'model': MODEL, 'prompt': prompt, 'config': {'aspectRatio': '1:1', 'imageSize': '1K'}, 'maxCredits': EXPECTED_COST}
     if images:
         body['images'] = images
-    return call('POST', '/functions/v1/generate-media', ANON, body, bearer=jwt, timeout=120)
+    return generate_raw(aid, body)
 
 
-def new_queued(prompt):
+def new_queued(prompt, kind='image', model=MODEL, aspect='1:1', resolution='1K'):
     aid = str(uuid.uuid4())
     st, rows = rest('POST', '/assets', jwt,
-                    {'id': aid, 'user_id': uid, 'type': 'image', 'status': 'queued', 'model': MODEL, 'prompt': prompt,
-                     'aspect_ratio': '1:1', 'resolution': '1K', 'feature_tag': 'general'},
+                    {'id': aid, 'user_id': uid, 'type': kind, 'status': 'queued', 'model': model, 'prompt': prompt,
+                     'aspect_ratio': aspect, 'resolution': resolution, 'feature_tag': 'general'},
                     extra={'Prefer': 'return=representation'})
     if st != 201:
         sys.exit(f'insert queued asset failed: HTTP {st} {str(rows)[:200]}')
@@ -334,6 +341,62 @@ try:
     st, ok = rest('POST', '/rpc/revoke_api_key', jwt, {'p_id': kt['id']})
     st2, _, _ = api('GET', '/balance', key_test)
     check('A14 revoke_api_key → true ثم 401', st == 200 and ok is True and st2 == 401, f'revoke={ok} after={st2}')
+
+    # ------------------------------------------------------------ 8) الفيديو (بوابة 2): أرخص نموذج fal بالثانية — التكلفة من صف النموذج نفسه
+    VIDEO_MODEL = sys.argv[sys.argv.index('--video-model') + 1] if '--video-model' in sys.argv else 'hailuo-h3-max-turbo'
+    VIDEO_FAIL_MODEL = VIDEO_MODEL + '-i2v'
+    VIDEO_DUR, VIDEO_RES = 5, '480P'
+    st, mrows = admin_rest('GET', f'/models?select=id,provider,enabled,cost_per_second,supports&id=in.({VIDEO_MODEL},{VIDEO_FAIL_MODEL})')
+    mby = {m['id']: m for m in (mrows or [])}
+    vm = mby.get(VIDEO_MODEL) or {}
+    # نفس modelCredits للفيديو بالثانية: ceil(cps_by_resolution[res] أو cost_per_second × المدة) — بلا صوت
+    import math
+    v_cps = ((vm.get('supports') or {}).get('cps_by_resolution') or {}).get(VIDEO_RES) or vm.get('cost_per_second') or 0
+    VIDEO_COST = math.ceil(float(v_cps) * VIDEO_DUR - 1e-9)
+    check(f'V0 نموذج الفيديو {VIDEO_MODEL} مفعّل عند fal وتكلفته > 0', bool(vm.get('enabled')) and vm.get('provider') == 'fal' and VIDEO_COST > 0,
+          f"enabled={vm.get('enabled')} provider={vm.get('provider')} cost={VIDEO_COST}")
+    st, _ = admin_rest('POST', '/rpc/grant_credits', {'p_user': uid, 'p_amount': 200, 'p_kind': 'bonus', 'p_ref': 'smoke-video'})
+    b0v = balance()
+    check('V1 منحة اختبار 200 رصيد (service_role)', st == 200 and b0v == 208, f'http={st} balance={b0v}')
+
+    vprompt = 'A slow cinematic push-in on a perfume bottle on white marble, soft studio light sweeping across'
+    v1 = new_queued(vprompt, kind='video', model=VIDEO_MODEL, aspect='16:9', resolution=VIDEO_RES)
+    st, res = generate_raw(v1, {'model': VIDEO_MODEL, 'prompt': vprompt, 'config': {'aspectRatio': '16:9', 'duration': VIDEO_DUR, 'resolution': VIDEO_RES, 'audio': False}, 'maxCredits': VIDEO_COST})
+    check(f'V2 طلب فيديو {VIDEO_DUR} ث → 200 وحجز {VIDEO_COST} بالضبط', st == 200 and (res or {}).get('cost') == VIDEO_COST and balance() == b0v - VIDEO_COST,
+          f"http={st} cost={(res or {}).get('cost')} balance={balance()} err={(res or {}).get('error')}")
+    a = wait_final(v1, seconds=720)
+    led = wait_ledger(v1, 'charge')
+    v_charged = any(r['kind'] == 'charge' and r['status'] == 'posted' and r['amount'] == -VIDEO_COST for r in led)
+    check(f'V3 المقطع يكتمل عبر الـwebhook: mp4 دائم، duration_s={VIDEO_DUR}، charge −{VIDEO_COST}',
+          bool(a and a['status'] == 'completed' and (a.get('url') or '').endswith('.mp4') and float(a.get('duration_s') or 0) == VIDEO_DUR and a.get('cost_credits') == VIDEO_COST) and v_charged and balance() == b0v - VIDEO_COST,
+          f"status={a and a['status']} url={'mp4' if a and (a.get('url') or '').endswith('.mp4') else (a and a.get('url'))} dur={a and a.get('duration_s')} ledger={[(r['kind'], r['status'], r['amount']) for r in led]} balance={balance()} err={a and a.get('error_message')}")
+    vjob = a and a.get('provider_job_id')
+
+    # فشل حقيقي للفيديو: صورة بداية لا يمكن جلبها → failed + استرداد
+    fail_model = VIDEO_FAIL_MODEL if mby.get(VIDEO_FAIL_MODEL, {}).get('enabled') else VIDEO_MODEL
+    v2 = new_queued(vprompt, kind='video', model=fail_model, aspect='16:9', resolution=VIDEO_RES)
+    st, res = generate_raw(v2, {'model': fail_model, 'prompt': vprompt, 'images': ['https://example.invalid/start-' + uuid.uuid4().hex + '.png'],
+                                'config': {'duration': VIDEO_DUR, 'resolution': VIDEO_RES, 'audio': False}, 'maxCredits': VIDEO_COST})
+    vpath = 'submit-rejected' if st != 200 else 'webhook-failed'
+    a = wait_final(v2, seconds=720)
+    led = wait_ledger(v2, 'refund')
+    check('V4 فشل الفيديو يعلّم failed ويسترد الرصيد', bool(a and a['status'] == 'failed' and a.get('error_message')) and any(r['kind'] == 'refund' for r in led) and balance() == b0v - VIDEO_COST,
+          f"path={vpath} status={a and a['status']} msg={a and a.get('error_message')} ledger={[(r['kind'], r['status'], r['amount']) for r in led]} balance={balance()}")
+    if vjob:
+        # fal: event_id = "fal:<request_id>"؛ Replicate: معرّف الحدث من الترويسة والمهمة في payload.id
+        evq = f'event_id=eq.fal:{vjob}' if vm.get('provider') == 'fal' else 'payload->>id=eq.' + vjob
+        st, evs = admin_rest('GET', '/webhook_events?select=id,processed_at&' + evq)
+        check('V5 حدث webhook واحد معالَج لمهمة الفيديو', st == 200 and len(evs or []) == 1 and all(e.get('processed_at') for e in evs), f'events={len(evs or [])}')
+
+    # ------------------------------------------------------------ 9) reconcile (شبكة الأمان): يعمل بالسر ويعيد ملخصًا بلا تغييرات على مستخدم نظيف
+    rsecret = fn_env.get('RECONCILE_SECRET', '')
+    if rsecret:
+        st, body = call('POST', '/functions/v1/reconcile', ANON, {}, bearer=rsecret, timeout=120)
+        st401, _ = call('POST', '/functions/v1/reconcile', ANON, {}, bearer='wrong', timeout=60)
+        check('R1 reconcile بالسر → 200 وملخص، وبسر خاطئ → 401', st == 200 and isinstance(body, dict) and body.get('ok') is True and 'sql' in body and st401 == 401,
+              f"http={st} sql={(body or {}).get('sql') if isinstance(body, dict) else body} wrong={st401}")
+    else:
+        print('SKIP R1 reconcile: RECONCILE_SECRET not in supabase/.env.local')
 finally:
     if KEEP:
         print('kept test user (--keep)')

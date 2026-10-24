@@ -27,6 +27,8 @@ export function toAppError(err: unknown): AppError {
   if (msg.includes('ALREADY_CHARGED')) return new AppError('INVALID_INPUT', 'هذا الطلب نُفّذ من قبل', { status: 409 })
   if (msg.includes('INVALID_AMOUNT') || msg.includes('INVALID_ASSET')) return new AppError('INVALID_INPUT', undefined, { detail: msg })
   if (msg.includes('DAILY_LIMIT')) return new AppError('DAILY_LIMIT')
+  if (msg.includes('RATE_LIMITED')) return new AppError('RATE_LIMITED')
+  if (msg.includes('ALREADY_CLAIMED')) return new AppError('INVALID_INPUT', 'هذا الطلب قيد التنفيذ', { status: 409 })
   if (msg.includes('UNAUTHORIZED')) return new AppError('UNAUTHORIZED')
   return new AppError('PROVIDER_ERROR', undefined, { detail: msg })
 }

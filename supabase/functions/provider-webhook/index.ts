@@ -1,28 +1,15 @@
 // provider-webhook — المرحلة 1 (المخطط §5). يستقبل نتيجة المزوّد، يتحقق من التوقيع، يمنع التكرار،
-// ينسخ الناتج إلى التخزين الدائم، يحدّث assets (Realtime) ويؤكد/يحرّر الحجز.
+// ثم يُنهي الأصل عبر _shared/finalize.ts (نسخ الناتج، completed/failed، تأكيد/تحرير الحجز، webhook العميل).
 // verify_jwt=false في config.toml — الحماية الوحيدة هي التوقيع، فلا طريق بدونه.
 // الترتيب مهم لأن المزوّد قد يرسل الحدث مرتين: التوقيع → dedupe → المعالجة → processed_at.
 import { z } from 'npm:zod@4'
-import { scheduleAssetWebhook } from '../_shared/client-webhook.ts'
 import { handleOptions } from '../_shared/cors.ts'
 import { confirmAssetHold, releaseAssetHold } from '../_shared/credits.ts'
-import { AppError, jsonResponse, toAppError } from '../_shared/errors.ts'
+import { jsonResponse, toAppError } from '../_shared/errors.ts'
+import { finalizeAsset, type FinalizableAsset } from '../_shared/finalize.ts'
 import { logRequest } from '../_shared/log.ts'
 import { getProvider } from '../_shared/providers/index.ts'
-import { copyFromUrl } from '../_shared/storage.ts'
 import { supabaseAdmin } from '../_shared/supabaseAdmin.ts'
-
-interface AssetRow {
-  id: string
-  user_id: string
-  type: 'image' | 'video' | 'audio'
-  status: string
-  metadata: Record<string, unknown> | null
-  api_key_id: string | null
-}
-
-const FAILED_MESSAGE_AR = 'فشل التوليد عند المزوّد — استُرجع رصيدك كاملًا'
-const CANCELED_MESSAGE_AR = 'أُلغي التوليد — استُرجع رصيدك كاملًا'
 
 /** المزوّدون الذين نقبل منهم webhooks (CLAUDE.md القاعدة 10) — google يُضاف مع محوّله */
 const Source = z.enum(['replicate', 'fal'])
@@ -81,12 +68,12 @@ Deno.serve(async (req) => {
       .select('id, user_id, type, status, metadata, api_key_id')
       .eq('provider', provider.name)
       .eq('provider_job_id', result.jobId)
-      .maybeSingle<AssetRow>()
+      .maybeSingle<FinalizableAsset>()
     if (assetErr) throw toAppError(new Error(assetErr.message))
 
     if (!asset) {
       // مهمة لا نعرفها بعد: قد يكون الحدث سبق تحديث الأصل في generate-media (فشل فوري عند المزوّد).
-      // نحذف صف الحدث ونرد 404 ليعيد المزوّد الإرسال لاحقًا (Replicate يعيد المحاولة على غير 2xx).
+      // نحذف صف الحدث ونرد 404 ليعيد المزوّد الإرسال لاحقًا (Replicate يعيد المحاولة على غير 2xx نحو دقيقة).
       await db.from('webhook_events').delete().eq('event_id', eventId)
       logRequest({ fn: 'provider-webhook', ms: Date.now() - started, ok: false, code: 'UNKNOWN_JOB', job: jobId })
       return jsonResponse({ ok: false, error: 'unknown job' }, 404)
@@ -102,53 +89,10 @@ Deno.serve(async (req) => {
       return jsonResponse({ ok: true, alreadyFinal: true, reconciled })
     }
 
-    if (result.status === 'processing') {
-      await db.from('webhook_events').update({ processed_at: new Date().toISOString() }).eq('event_id', eventId)
-      return jsonResponse({ ok: true, pending: true })
-    }
-
-    // 4) نجاح: نسخ الناتج إلى التخزين الدائم ثم completed ثم تأكيد الخصم
-    if (result.status === 'succeeded') {
-      const first = result.outputs[0]
-      if (!first) throw new AppError('PROVIDER_ERROR', undefined, { detail: 'succeeded without output' })
-      const copied = await copyFromUrl(first, `u/${asset.user_id}/${asset.id}`, asset.type === 'video' ? 'video' : 'image')
-      const qa = { fileOk: copied.bytes > 0, safe: true, retries: 0, notes: [`bytes=${copied.bytes}`, `type=${copied.contentType}`] }
-      const { error: updErr } = await db
-        .from('assets')
-        .update({
-          status: 'completed',
-          url: copied.url,
-          thumbnail_url: copied.url,
-          completed_at: new Date().toISOString(),
-          metadata: { ...(asset.metadata ?? {}), qa, provider_output: first, storage_path: copied.path },
-        })
-        .eq('id', asset.id)
-      if (updErr) throw toAppError(new Error(updErr.message))
-      const confirmed = await confirmAssetHold(asset.id)
-      await db.from('webhook_events').update({ processed_at: new Date().toISOString() }).eq('event_id', eventId)
-      logRequest({ fn: 'provider-webhook', user: asset.user_id, asset: assetId, ms: Date.now() - started, ok: true, code: 'COMPLETED', confirmed, bytes: copied.bytes })
-      // أصل أُنشئ عبر API → webhook موقّع للعميل (لا يؤثر في ردّنا للمزوّد)
-      if (asset.api_key_id) await scheduleAssetWebhook(asset.id)
-      return jsonResponse({ ok: true })
-    }
-
-    // 5) فشل/إلغاء: تحرير الحجز ثم failed برسالة عربية
-    const released = await releaseAssetHold(asset.id, `provider ${result.status}: ${(result.error ?? '').slice(0, 200)}`)
-    const { error: failErr } = await db
-      .from('assets')
-      .update({
-        status: 'failed',
-        error_code: 'PROVIDER_ERROR',
-        error_message: result.status === 'canceled' ? CANCELED_MESSAGE_AR : FAILED_MESSAGE_AR,
-        completed_at: new Date().toISOString(),
-        metadata: { ...(asset.metadata ?? {}), provider_error: result.error ?? null, provider_status: result.status },
-      })
-      .eq('id', asset.id)
-    if (failErr) throw toAppError(new Error(failErr.message))
+    // 4/5) الإنهاء الموحّد
+    const outcome = await finalizeAsset(asset, result, { fn: 'provider-webhook', started })
     await db.from('webhook_events').update({ processed_at: new Date().toISOString() }).eq('event_id', eventId)
-    logRequest({ fn: 'provider-webhook', user: asset.user_id, asset: assetId, ms: Date.now() - started, ok: true, code: 'FAILED_REFUNDED', released, detail: result.error })
-    if (asset.api_key_id) await scheduleAssetWebhook(asset.id)
-    return jsonResponse({ ok: true, refunded: released })
+    return jsonResponse({ ok: true, outcome })
   } catch (e) {
     // 6) استثناء بعد تسجيل الحدث: نحذف صفه ليعيد المزوّد الإرسال، ونرد 500
     const err = toAppError(e)
