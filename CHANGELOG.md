@@ -1,5 +1,10 @@
 # سجل التغييرات
 
+## جدولة reconcile (2026-10-24، backlog B7/B15/B23)
+- migration `0006_reconcile_cron`: pg_cron كل 5 دقائق يستدعي `invoke_reconcile()` التي ترسل عبر pg_net طلبًا بالسر إلى وظيفة `reconcile`. الرابط والسر في Supabase Vault (`ops_project_url`, `ops_reconcile_secret`) ولا يظهران في أي SQL.
+- `set_ops_secret` (service_role فقط، قائمة بيضاء من اسمين) و`scripts/push-vault-secrets.py` لتعبئة Vault دون طباعة قيم.
+- `supabase/tests/cron.test.sql` (الصلاحيات، القائمة البيضاء، المهمة بلا أسرار) على السحابة وفي CI. أول 38 تشغيلًا ناجحة وكل رد 200 `{"ok":true}`.
+
 ## إصلاحات المراجعة المستقلة لمنطق المال (2026-10-24، القاعدة 9)
 - **دقة/حجم/مدة بلا سعر = رفض قبل الحجز**: `_shared/options.ts` (`normalizeOptions`) يقبل فقط ما تعرضه `supports` (الدقة، الحجم، المدة، الصوت) ويوحّد حالة الأحرف؛ `generate-core` يستخدمه قبل بناء المدخلات والتسعير. كان ممكنًا طلب `4k` على omni-flash من خارج الواجهة فنخصم 18 رصيدًا (0.76$) وتحاسبنا fal بـ2.40$.
 - `modelCredits` صار صارمًا (النسختان): دقة لها جدول سعر بلا قيمة فيه، أو مدة خارج `credits_by_duration` = RangeError بدل الرجوع للسعر الأرخص.
