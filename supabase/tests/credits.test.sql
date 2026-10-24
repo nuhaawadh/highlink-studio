@@ -371,6 +371,166 @@ begin
   end if;
 end $$;
 
+-- =====================================================================
+-- T15–T21: migration 0007 — الاستوديوهات (ADR 0006): تشغيل متعدد الصور بحجز ذرّي، التزامن بالتشغيل،
+--          حارس run_id، المعاينة للمشرف، ورفع المراجع تحت up/{uid}/
+-- =====================================================================
+do $$
+declare
+  u5    uuid := gen_random_uuid();
+  u6    uuid := gen_random_uuid();
+  run1  uuid := gen_random_uuid();
+  run2  uuid := gen_random_uuid();
+  r1a   uuid := gen_random_uuid();
+  r1b   uuid := gen_random_uuid();
+  r1c   uuid := gen_random_uuid();
+  r2a   uuid := gen_random_uuid();
+  r2b   uuid := gen_random_uuid();
+  solo  uuid := gen_random_uuid();
+  other uuid := gen_random_uuid();
+  n     int;
+  h     bigint;
+  r     record;
+begin
+  insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  values
+    (u5, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'studio-test-' || u5 || '@example.invalid', '', now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now()),
+    (u6, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'studio-test-' || u6 || '@example.invalid', '', now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now());
+  -- الباقة المجانية (تزامن 1)، رصيد 30. تشغيل من 3 صور × 11 = 33
+  insert into public.assets (id, user_id, type, status, model, run_id) values
+    (r1a, u5, 'image', 'queued', 'studio:product-shot', run1),
+    (r1b, u5, 'image', 'queued', 'studio:product-shot', run1),
+    (r1c, u5, 'image', 'queued', 'studio:product-shot', run1),
+    (r2a, u5, 'image', 'queued', 'studio:product-shot', run2),
+    (r2b, u5, 'image', 'queued', 'studio:product-shot', run2),
+    (solo, u5, 'image', 'queued', 'nano-banana-pro', null),
+    (other, u6, 'image', 'queued', 'studio:product-shot', run1);
+
+  -- T15a: رصيد 30 < 33 → INSUFFICIENT_CREDITS ولا أثر: الأصول queued ولا صف في الدفتر
+  begin
+    perform public.claim_and_hold_run(u5, array[r1a, r1b, r1c], 11, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T15a should have failed';
+  exception when others then
+    if sqlerrm <> 'INSUFFICIENT_CREDITS' then raise exception 'T15a: expected INSUFFICIENT_CREDITS, got %', sqlerrm; end if;
+  end;
+  select count(*) into n from public.assets where id in (r1a, r1b, r1c) and status = 'queued' and cost_credits is null;
+  if n <> 3 then raise exception 'T15a atomicity: expected 3 untouched queued assets, got %', n; end if;
+  select count(*) into n from public.credit_ledger where asset_id in (r1a, r1b, r1c);
+  if n <> 0 then raise exception 'T15a atomicity: expected no ledger rows, got %', n; end if;
+
+  -- T15b: بعد منحة 10 (رصيد 40) يمر: 3 حجوزات × 11، الأصول processing، الرصيد 7
+  perform public.grant_credits(u5, 10, 'bonus', 'studio-test');
+  n := public.claim_and_hold_run(u5, array[r1a, r1b, r1c], 11, 'replicate', 'nano-banana-pro', 'image');
+  if n <> 3 then raise exception 'T15b: expected 3 holds, got %', n; end if;
+  if public.get_balance(u5) <> 7 then raise exception 'T15b: expected balance 7, got %', public.get_balance(u5); end if;
+  select count(*) into n from public.assets
+  where id in (r1a, r1b, r1c) and status = 'processing' and cost_credits = 11 and provider = 'replicate' and model = 'nano-banana-pro' and type = 'image';
+  if n <> 3 then raise exception 'T15b: expected 3 processing assets at 11, got %', n; end if;
+  select count(*) into n from public.credit_ledger where asset_id in (r1a, r1b, r1c) and kind = 'hold' and status = 'held' and amount = -11;
+  if n <> 3 then raise exception 'T15b: expected 3 holds of -11, got %', n; end if;
+
+  -- T16: التزامن يعدّ التشغيل كواحد (الباقة المجانية = 1): تشغيل ثانٍ أو طلب منفرد → RATE_LIMITED بلا أثر
+  perform public.grant_credits(u5, 100, 'bonus', 'studio-test');
+  begin
+    perform public.claim_and_hold_run(u5, array[r2a, r2b], 11, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T16 run should have failed';
+  exception when others then
+    if sqlerrm <> 'RATE_LIMITED' then raise exception 'T16 run: expected RATE_LIMITED, got %', sqlerrm; end if;
+  end;
+  begin
+    perform public.claim_and_hold(u5, solo, 11, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T16 solo should have failed';
+  exception when others then
+    if sqlerrm <> 'RATE_LIMITED' then raise exception 'T16 solo: expected RATE_LIMITED, got %', sqlerrm; end if;
+  end;
+  select count(*) into n from public.assets where id in (r2a, r2b, solo) and status = 'queued';
+  if n <> 3 then raise exception 'T16: rate-limited assets must stay queued, got %', n; end if;
+  -- باقة برو (تزامن 4): التشغيل الثاني يمر لأن الأول يُعدّ واحدًا
+  update public.profiles set plan_id = 'pro' where id = u5;
+  n := public.claim_and_hold_run(u5, array[r2a, r2b], 11, 'replicate', 'nano-banana-pro', 'image');
+  if n <> 2 then raise exception 'T16 pro: expected 2 holds, got %', n; end if;
+
+  -- T17: تحرير صورة واحدة من التشغيل لا يمس أخواتها
+  select id into h from public.credit_ledger where asset_id = r1b and kind = 'hold' and status = 'held';
+  perform public.release_hold(h, 'qa failed');
+  select count(*) into n from public.credit_ledger where asset_id in (r1a, r1c) and kind = 'hold' and status = 'held';
+  if n <> 2 then raise exception 'T17: siblings must stay held, got %', n; end if;
+
+  -- T18: تشغيل غير صالح → INVALID_RUN بلا أثر (فارغ، تكرار، run مختلط، أصل لمستخدم آخر، أصل بلا run، أكثر من 6)
+  for r in select * from (values
+      ('empty',   array[]::uuid[]),
+      ('dup',     array[r2a, r2a]),
+      ('mixed',   array[solo, r1a]),
+      ('foreign', array[other]),
+      ('no_run',  array[solo]),
+      ('seven',   array[gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), gen_random_uuid(), gen_random_uuid()])
+    ) as t(label, ids)
+  loop
+    begin
+      perform public.claim_and_hold_run(u5, r.ids, 11, 'replicate', 'nano-banana-pro', 'image');
+      raise exception 'T18 % should have failed', r.label;
+    exception when others then
+      if sqlerrm <> 'INVALID_RUN' then raise exception 'T18 %: expected INVALID_RUN, got %', r.label, sqlerrm; end if;
+    end;
+  end loop;
+  select status into r from public.assets where id = other;
+  if r.status <> 'queued' then raise exception 'T18 foreign asset must stay queued, got %', r.status; end if;
+
+  -- ---- كمستخدم مسجّل (الواجهة) ----
+  execute 'set local role authenticated';
+  perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u5)::text, true);
+
+  -- T19: run_id يُكتب عند الإدراج فقط، ولا يتغير بعده
+  insert into public.assets (id, user_id, type, status, model, run_id) values (gen_random_uuid(), u5, 'image', 'queued', 'studio:product-shot', gen_random_uuid());
+  begin
+    update public.assets set run_id = gen_random_uuid() where id = solo;
+    raise exception 'T19 should have failed';
+  exception when others then
+    if sqlerrm not like '%FORBIDDEN_COLUMN_UPDATE%' then raise exception 'T19: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
+  end;
+
+  -- T20: الاستوديو المعطّل لا يُقرأ إلا للمشرف؛ app_admins مغلق أمام الواجهة
+  select count(*) into n from public.studios where id = 'product-shot';
+  if n <> 0 then raise exception 'T20 disabled studio visible to non-admin (% rows)', n; end if;
+  select count(*) into n from public.app_admins;
+  if n <> 0 then raise exception 'T20 app_admins readable by authenticated (% rows)', n; end if;
+  begin
+    insert into public.app_admins (user_id) values (u5);
+    raise exception 'T20 self-promotion should have failed';
+  exception when others then
+    if sqlstate <> '42501' then raise exception 'T20 self-promotion: expected 42501, got % (%)', sqlstate, sqlerrm; end if;
+  end;
+
+  -- T21: رفع المراجع تحت up/{uid}/ فقط
+  insert into storage.objects (bucket_id, name) values ('media', 'up/' || u5 || '/product.png');
+  for r in select * from (values
+      ('other_user', 'up/' || u6 || '/x.png'),
+      ('outputs',    'u/'  || u5 || '/x.png'),
+      ('root',       'x.png'),
+      ('traversal',  'up/' || u5 || '/../' || u6 || '/x.png')
+    ) as t(label, path)
+  loop
+    begin
+      insert into storage.objects (bucket_id, name) values ('media', r.path);
+      raise exception 'T21 % should have been rejected', r.label;
+    exception when others then
+      if sqlstate <> '42501' then raise exception 'T21 %: expected 42501, got % (%)', r.label, sqlstate, sqlerrm; end if;
+    end;
+  end loop;
+
+  execute 'reset role';
+  perform set_config('request.jwt.claims', '', true);
+
+  -- T20b: بعد إضافة المستخدم مشرفًا يرى الاستوديو المعطّل
+  insert into public.app_admins (user_id) values (u5);
+  execute 'set local role authenticated';
+  perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u5)::text, true);
+  select count(*) into n from public.studios where id = 'product-shot';
+  if n <> 1 then raise exception 'T20b admin should see disabled studio, got % rows', n; end if;
+  execute 'reset role';
+  perform set_config('request.jwt.claims', '', true);
+end $$;
+
 select 'ALL CREDIT TESTS PASSED' as result;
 
 rollback;

@@ -35,3 +35,19 @@ describe('replicate.parseWebhook', () => {
     }
   })
 })
+
+describe('throttleWaitSeconds — 429 من Replicate (6/دقيقة بدفعة 1 تحت 5$)', () => {
+  it('يقرأ retry_after من الجسم، ثم الترويسة، ثم 10 افتراضًا', async () => {
+    const { throttleWaitSeconds } = await import('./replicate')
+    expect(throttleWaitSeconds(429, JSON.stringify({ status: 429, retry_after: 10 }), null)).toBe(10)
+    expect(throttleWaitSeconds(429, 'not json', '3')).toBe(3)
+    expect(throttleWaitSeconds(429, '{}', null)).toBe(10)
+    expect(throttleWaitSeconds(429, JSON.stringify({ retry_after: 0.2 }), null)).toBe(1)
+  })
+  it('لا إعادة لغير 429 أو لانتظار أطول من 15 ث', async () => {
+    const { throttleWaitSeconds } = await import('./replicate')
+    expect(throttleWaitSeconds(402, '{}', null)).toBeNull()
+    expect(throttleWaitSeconds(500, '{}', '1')).toBeNull()
+    expect(throttleWaitSeconds(429, JSON.stringify({ retry_after: 60 }), null)).toBeNull()
+  })
+})

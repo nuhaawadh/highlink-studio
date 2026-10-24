@@ -34,6 +34,15 @@ export interface GenerateRequest {
   maxCredits?: number
   /** معرّف القالب الجاهز (content/templates) — للتحليلات فقط، لا يغيّر التسعير */
   template?: string
+  /** الاستوديو (model = studio:<id>، ADR 0006): كل مقاس أصل queued بنفس run_id */
+  studio?: StudioRequest
+}
+
+export interface StudioRequest {
+  preset: string
+  scene?: string
+  text?: string
+  outputs: Array<{ assetId: string; key: string }>
 }
 
 /** رموز الأخطاء — القائمة الواحدة؛ نسخة Edge Functions في supabase/functions/_shared/types.ts (يحرسها contract.test.ts) */
@@ -62,6 +71,8 @@ export interface GenerateResponse {
   providerJobId?: string
   /** مفتاح hl_test_: تجربة جافة بلا مزوّد ولا خصم (ADR 0004) */
   sandbox?: boolean
+  /** الاستوديو (ADR 0006): نتيجة إرسال كل مقاس — مقاس فشل إرساله حُرّر حجزه */
+  outputs?: Array<{ assetId: string; key: string; ok: boolean; error?: { code: GenerateErrorCode; message: string } }>
   error?: { code: GenerateErrorCode; message: string }
 }
 

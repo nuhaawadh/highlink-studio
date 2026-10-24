@@ -11,6 +11,7 @@ import { LoginPage } from '@/app/LoginPage'
 import { PlaceholderPage } from '@/app/PlaceholderPage'
 import { PricingPage } from '@/app/PricingPage'
 import { RequireAuth } from '@/app/RequireAuth'
+import { StudioPage } from '@/app/StudioPage'
 import { TemplateDetailPage } from '@/app/TemplateDetailPage'
 import { TemplatesPage } from '@/app/TemplatesPage'
 
@@ -38,9 +39,7 @@ export default function App() {
             <Route path="account" element={<AccountPage />} />
             <Route path="image-generate" element={<ImageGeneratePage />} />
             <Route path="video-generate" element={<VideoGeneratePage />} />
-            <Route path="studio/product" element={<PlaceholderPage titleKey="studios.product" phase={2} />} />
-            <Route path="studio/ads" element={<PlaceholderPage titleKey="studios.ads" phase={2} />} />
-            <Route path="studio/ugc" element={<PlaceholderPage titleKey="studios.ugc" phase={2} />} />
+            <Route path="studio/:slug" element={<StudioPage />} />
           </Route>
           <Route path="*" element={<PlaceholderPage titleKey="errors.generic" phase={0} />} />
         </Route>

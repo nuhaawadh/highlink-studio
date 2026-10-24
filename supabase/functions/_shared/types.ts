@@ -100,6 +100,8 @@ export interface GenerateResponse {
   providerJobId?: string
   /** مفتاح hl_test_: تجربة جافة بلا مزوّد ولا خصم (ADR 0004) */
   sandbox?: boolean
+  /** الاستوديو (ADR 0006): نتيجة إرسال كل مقاس — مقاس فشل إرساله حُرّر حجزه */
+  outputs?: Array<{ assetId: string; key: string; ok: boolean; error?: { code: GenerateErrorCode; message: string } }>
   error?: { code: GenerateErrorCode; message: string }
 }
 

@@ -246,5 +246,34 @@
     "title": "Pick by result",
     "subtitleVideo": "Every example here was made with that model. Click one to select it in the sidebar, then write your scene.",
     "subtitleImage": "Every example here was made with that model. Click one to select it in the sidebar, then write your description."
+  },
+  "studio": {
+    "subtitle": {
+      "product": "Upload a phone photo of your product and pick a scene. You get store- and social-ready images, each checked before it reaches you."
+    },
+    "notAvailable": "This studio opens soon",
+    "preview": "Admin preview — not enabled for customers yet",
+    "step1": "Product photo",
+    "uploadHint": "Drop the photo here or click to choose. PNG, JPG or WEBP up to 8MB",
+    "uploading": "Uploading…",
+    "replace": "Change photo",
+    "tooLarge": "The photo is larger than 8MB",
+    "badType": "Unsupported format. Use PNG, JPG or WEBP",
+    "uploadFailed": "Upload failed, please try again",
+    "step2": "Scene",
+    "sceneLabel": "Or describe your scene (optional)",
+    "scenePlaceholder": "e.g. on a wooden table in a majlis, evening light",
+    "textLabel": "Arabic text on the image (optional)",
+    "textPlaceholder": "e.g. National Day offer",
+    "textHint": "Rendered exactly and checked after generation",
+    "step3": "Sizes",
+    "chargeNote": "{n} images × {each} credits. Only successful images are charged",
+    "results": "Your results",
+    "empty": "Studio results appear here as soon as you start",
+    "started": "Studio started. {n} credits held, charged only for successful images",
+    "needImage": "Upload the product photo first",
+    "needOutput": "Pick at least one size",
+    "qa": "Quality {n}/10",
+    "qaUnchecked": "Unchecked"
   }
 }

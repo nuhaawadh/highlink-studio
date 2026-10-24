@@ -96,6 +96,8 @@ export interface CreateAssetInput {
   aspectRatio?: AspectRatio
   resolution?: ImageSize | string
   featureTag?: FeatureTag
+  /** الاستوديو (ADR 0006): كل مقاسات التشغيل الواحد تشترك فيه — يُكتب عند الإدراج فقط */
+  runId?: string
 }
 
 /** يدرج صف assets بحالة queued — الوحيد المسموح للواجهة (سياسة RLS). المعرّف يُنشأ هنا ويُرسل لـgenerate-media. */
@@ -113,6 +115,7 @@ export async function createQueuedAsset(input: CreateAssetInput): Promise<AssetR
       aspect_ratio: input.aspectRatio ?? null,
       resolution: input.resolution ?? null,
       feature_tag: input.featureTag ?? 'general',
+      run_id: input.runId ?? null,
     })
     .select('*')
     .single()

@@ -25,6 +25,21 @@ export const GenerateRequestSchema = z.object({
   maxCredits: z.number().int().positive().optional(),
   /** معرّف القالب الجاهز إن جاء الطلب من /templates (للتحليلات والمجموعة الذهبية) — يُحفظ في metadata فقط */
   template: z.string().regex(/^[a-z0-9-]{1,64}$/).optional(),
+  /**
+   * الاستوديو (model = studio:<id>، ADR 0006): المشهد والنص والمقاسات، وكل مقاس أصل queued بنفس run_id.
+   * التوافق بين model وstudio وassetId يُفحص في generate-core (لا refine هنا لأن v1 يشتق المخطط بـomit).
+   */
+  studio: z
+    .object({
+      preset: z.string().regex(/^[a-z0-9-]{1,40}$/),
+      scene: z.string().trim().max(400).optional(),
+      text: z.string().trim().max(60).optional(),
+      outputs: z
+        .array(z.object({ assetId: z.uuid(), key: z.string().regex(/^[a-z0-9-]{1,32}$/) }))
+        .min(1)
+        .max(6),
+    })
+    .optional(),
 })
 
 export type GenerateRequestInput = z.infer<typeof GenerateRequestSchema>
