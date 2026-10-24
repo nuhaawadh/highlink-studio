@@ -17,6 +17,8 @@ export interface ProviderWebhookResult {
   status: ProviderJobStatus
   outputs: string[]
   error?: string
+  /** "نجح" بلا ناتج في الحدث (حمولة كبيرة/غير قابلة للتسلسل): اسأل getJob عن النتيجة قبل اعتباره فشلًا — المزوّد حاسبنا */
+  refetch?: boolean
 }
 
 export interface ProviderAdapter {

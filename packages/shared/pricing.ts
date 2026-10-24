@@ -56,7 +56,8 @@ export function sarForCredits(credits: number): number {
  * - فيديو بالثانية (`cost_per_second` رصيد/ثانية = usd/ث × 3 ÷ 0.042): السعر/ث يُؤخذ من `supports.video_cost_per_second["<دقة>"|"<دقة>+audio"]`
  *   (جدول كامل يشمل الصوت) إن وُجد، وإلا `supports.cps_by_resolution[resolution]`
  *   إن وُجد وإلا `cost_per_second`، يُضاف `supports.audio_cps` عند طلب الصوت، ثم × المدة والتقريب لأعلى على الإجمالي.
- * - فيديو بالمقطع (`cost_per_second` null): `supports.credits_by_duration[duration]` إن وُجد وإلا `cost_credits`.
+ * - فيديو بالمقطع (`cost_per_second` null): `supports.credits_by_duration[duration]` إن وُجد الجدول (ومدة ليست فيه = RangeError) وإلا `cost_credits`.
+ * - دقة لها جدول (`video_cost_per_second`/`cps_by_resolution`) بلا سعر فيه = RangeError — لا تسعير بالأرخص.
  * - صوت: `cost_credits` ثابت (التسعير بالحروف يُضاف مع محرك الصوت).
  * المدة: من الخيارات ثم `default_params.duration` ثم `supports.durations[0]` ثم `max_duration_s` — وإلا RangeError (لا خصم بصفر).
  */
@@ -106,17 +107,29 @@ export function modelCredits(row: ModelPricingRow, opts: ModelPricingOptions): n
     if (!duration) throw new RangeError('video model without duration')
     if (row.cost_per_second != null) {
       const resolution = opts.resolution ?? (defaults.resolution as string | undefined)
-      // جدول كامل بمفاتيح "<دقة>" و"<دقة>+audio" (Kling عبر Replicate: الصوت +50% يختلف حسب الدقة) يطغى على ما بعده
+      // جدول كامل بمفاتيح "<دقة>" و"<دقة>+audio" (Kling عبر Replicate: الصوت +50% يختلف حسب الدقة) يطغى على ما بعده.
+      // دقة لها جدول لكن بلا سعر فيه = رفض، لا السعر الأساسي (الأرخص) — المراجعة المستقلة 2026-10-24
       const table = obj(supports.video_cost_per_second)
-      const tabled = resolution ? positive(table[opts.audio ? `${resolution}+audio` : resolution]) : undefined
-      if (tabled) return Math.ceil(tabled * duration)
+      if (resolution && Object.keys(table).length) {
+        const key = opts.audio ? `${resolution}+audio` : resolution
+        const tabled = positive(table[key])
+        if (!tabled) throw new RangeError(`no price for ${key}`)
+        return Math.ceil(tabled * duration)
+      }
       const byRes = obj(supports.cps_by_resolution)
-      const perSecond = (resolution ? positive(byRes[resolution]) : undefined) ?? positive(row.cost_per_second)
+      let perSecond: number | undefined
+      if (resolution && Object.keys(byRes).length) {
+        perSecond = positive(byRes[resolution])
+        if (!perSecond) throw new RangeError(`no price for resolution ${resolution}`)
+      } else {
+        perSecond = positive(row.cost_per_second)
+      }
       if (!perSecond) throw new RangeError('video model with non-positive cost_per_second')
       const audio = opts.audio ? (positive(supports.audio_cps) ?? 0) : 0
       return Math.ceil((perSecond + audio) * duration)
     }
     const byDur = obj(supports.credits_by_duration)
+    if (Object.keys(byDur).length && !positive(byDur[String(duration)])) throw new RangeError(`no price for duration ${duration}`)
     const flat = positive(byDur[String(duration)]) ?? positive(row.cost_credits)
     if (!flat) throw new RangeError('video model without cost_credits')
     return Math.ceil(flat)

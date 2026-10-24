@@ -98,18 +98,21 @@ async function handleGenerate(req: Request, p: ApiPrincipal, started: number): P
   })
   if (insAssetErr) throw toAppError(new Error(insAssetErr.message))
 
+  let res: Awaited<ReturnType<typeof runGenerate>>
   try {
     const { webhook_url: _w, ...generateBody } = body
-    const res = await runGenerate({ fn: FN, userId: p.userId, body: { ...generateBody, assetId }, sandbox: p.mode === 'test', started })
-    const row = await loadAsset(assetId, p.userId)
-    const asset = row ? toPublicAsset(row) : null
-    if (res.sandbox) await scheduleAssetWebhook(assetId)
-    return await finish(res.sandbox ? 200 : 202, { asset, cost: res.cost, balance: res.balanceAfter, sandbox: res.sandbox === true })
+    res = await runGenerate({ fn: FN, userId: p.userId, body: { ...generateBody, assetId }, sandbox: p.mode === 'test', started })
   } catch (e) {
     const err = toAppError(e)
     const balance = await getBalance(p.userId).catch(() => null)
     return await finish(err.status, { error: { code: err.code, message: err.message }, asset_id: assetId, balance })
   }
+  // التوليد بدأ وحُجز الرصيد: أي فشل بعده (قراءة الأصل، webhook الاختبار) لا يُرجع 5xx — وإلا حُذف صف الـidempotency
+  // وأعاد العميل الطلب فصارت مهمتان وخصمان (المراجعة المستقلة 2026-10-24)
+  const row = await loadAsset(assetId, p.userId).catch(() => null)
+  const asset = row ? toPublicAsset(row) : { id: assetId, status: res.sandbox ? 'completed' : 'processing' }
+  if (res.sandbox) await scheduleAssetWebhook(assetId).catch(() => undefined)
+  return await finish(res.sandbox ? 200 : 202, { asset, cost: res.cost, balance: res.balanceAfter, sandbox: res.sandbox === true })
 }
 
 async function handleModels(p: ApiPrincipal): Promise<Response> {

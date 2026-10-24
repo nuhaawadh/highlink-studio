@@ -161,7 +161,10 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
 
   // ---- الصوت الأصلي: يُرسل دائمًا صراحةً (false ما لم يُطلب) — افتراض بعض المزوّدين true (Veo، Kling 3)
   //      وهو أغلى، فترك الافتراض يعني أن يولّد المزوّد بصوت ونحن سعّرنا بلا صوت
-  for (const k of ['generate_audio', 'enable_audio', 'with_audio'] as const) if (schema[k]) set(k, config?.audio ?? false)
+  //      الأسماء: generate_audio (Kling/Veo/Seedance)، generate_audio_switch (PixVerse)، audio (Wan/Vidu — منطقي فقط، لا رابط ملف)
+  for (const k of ['generate_audio', 'enable_audio', 'with_audio', 'generate_audio_switch', 'audio'] as const) {
+    if (schema[k] && effective(schema[k]).type === 'boolean') set(k, config?.audio ?? false)
+  }
 
   // ---- قرارات ثابتة للمنصة: ناتج واحد لكل عملية (تسعير دقيق)، PNG، فاحص الأمان مفعّل، مرشّح متوسط، لا نموذج بديل (ADR 0003)
   if (schema.num_images) input.num_images = 1

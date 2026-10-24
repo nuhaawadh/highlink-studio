@@ -59,16 +59,16 @@ Deno.serve(async (req) => {
       return jsonResponse({ ok: true, duplicate: true })
     }
 
-    const result = provider.parseWebhook(rawBody)
+    let result = provider.parseWebhook(rawBody)
     jobId = result.jobId
 
     // 3) الأصل المرتبط بالمهمة
     const { data: asset, error: assetErr } = await db
       .from('assets')
-      .select('id, user_id, type, status, metadata, api_key_id')
+      .select('id, user_id, type, status, metadata, api_key_id, model')
       .eq('provider', provider.name)
       .eq('provider_job_id', result.jobId)
-      .maybeSingle<FinalizableAsset>()
+      .maybeSingle<FinalizableAsset & { model: string | null }>()
     if (assetErr) throw toAppError(new Error(assetErr.message))
 
     if (!asset) {
@@ -87,6 +87,19 @@ Deno.serve(async (req) => {
       await db.from('webhook_events').update({ processed_at: new Date().toISOString() }).eq('event_id', eventId)
       logRequest({ fn: 'provider-webhook', ms: Date.now() - started, ok: true, code: 'ALREADY_FINAL', asset: assetId, status: asset.status, reconciled })
       return jsonResponse({ ok: true, alreadyFinal: true, reconciled })
+    }
+
+    // 3.5) "نجح" بلا ناتج في الحدث (fal: الحمولة كبيرة على الـwebhook) — نسأل المزوّد عن النتيجة قبل الاسترداد، لأنه حاسبنا.
+    //      إن تعذّر السؤال نُكمل بالنتيجة كما وصلت (فشل يحرّر الحجز) ولا نرمي.
+    if (result.refetch) {
+      try {
+        const { data: modelRow } = await db.from('models').select('provider_slug').eq('id', asset.model ?? '').maybeSingle<{ provider_slug: string }>()
+        const fetched = await provider.getJob(result.jobId, modelRow?.provider_slug)
+        logRequest({ fn: 'provider-webhook', ms: Date.now() - started, ok: true, code: 'REFETCHED', asset: assetId, status: fetched.status })
+        if (fetched.status === 'succeeded') result = fetched
+      } catch (e) {
+        logRequest({ fn: 'provider-webhook', ms: Date.now() - started, ok: false, code: 'REFETCH_FAILED', asset: assetId, detail: toAppError(e).detail ?? String(e) })
+      }
     }
 
     // 4/5) الإنهاء الموحّد

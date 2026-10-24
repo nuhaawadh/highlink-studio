@@ -32,8 +32,9 @@ describe('modelCredits — جدول video_cost_per_second (Kling عبر Replicat
     const row = klingRow({ ...KLING_SUPPORTS, audio_cps: 6 })
     expect(modelCredits(row, { duration: 5, resolution: '720p', audio: true })).toBe(90)
   })
-  it('مفتاح غائب أو جدول غائب → cps_by_resolution ثم cost_per_second؛ 4K بالصوت نفس السعر', () => {
-    expect(modelCredits(klingRow(), { duration: 5, resolution: '480p' })).toBe(60)
+  it('دقة غير موجودة في الجدول → RangeError (لا تسعير بالأرخص — المراجعة المستقلة 2026-10-24)؛ بلا جدول → cost_per_second', () => {
+    expect(() => modelCredits(klingRow(), { duration: 5, resolution: '480p' })).toThrow(RangeError)
+    expect(() => modelCredits(klingRow({ video_cost_per_second: { '720p': 12 } }), { duration: 5, resolution: '720p', audio: true })).toThrow(RangeError)
     expect(modelCredits(klingRow(KLING_SUPPORTS, { duration: 5 }), { duration: 5, audio: true })).toBe(60)
     expect(modelCredits(klingRow(undefined), { duration: 5, resolution: '720p' })).toBe(60)
     expect(modelCredits(klingRow(), { duration: 5, resolution: '4K', audio: true })).toBe(150)
@@ -41,11 +42,11 @@ describe('modelCredits — جدول video_cost_per_second (Kling عبر Replicat
   it('الدقة الافتراضية من default_params تُسعَّر من الجدول', () => {
     expect(modelCredits(klingRow(KLING_SUPPORTS, { duration: 5, resolution: '1080p' }), {})).toBe(80)
   })
-  it('قيمة جدول غير صالحة (صفر/سالب/نص) لا تسعّر بصفر — ترجع للأساس', () => {
+  it('قيمة جدول غير صالحة (صفر/سالب/نص) لا تسعّر بصفر ولا بالأساس — RangeError', () => {
     const bad = { video_cost_per_second: { '720p': 0, '1080p': -4, '720p+audio': '18' } }
-    expect(modelCredits(klingRow(bad), { duration: 5, resolution: '720p' })).toBe(60)
-    expect(modelCredits(klingRow(bad), { duration: 5, resolution: '1080p' })).toBe(60)
-    expect(modelCredits(klingRow(bad), { duration: 5, resolution: '720p', audio: true })).toBe(60)
+    expect(() => modelCredits(klingRow(bad), { duration: 5, resolution: '720p' })).toThrow(RangeError)
+    expect(() => modelCredits(klingRow(bad), { duration: 5, resolution: '1080p' })).toThrow(RangeError)
+    expect(() => modelCredits(klingRow(bad), { duration: 5, resolution: '720p', audio: true })).toThrow(RangeError)
   })
 })
 
@@ -127,7 +128,7 @@ describe('modelCredits — تسعير صف النموذج (ADR 0005)', () => {
     const wan = { ...kling, cost_per_second: 7.143, supports: { cps_by_resolution: { '720p': 7.143, '1080p': 10.715 } } }
     expect(modelCredits(wan, { duration: 5, resolution: '720p' })).toBe(36)
     expect(modelCredits(wan, { duration: 5, resolution: '1080p' })).toBe(54)
-    expect(modelCredits(wan, { duration: 5, resolution: '480p' })).toBe(36) // دقة غير مسعّرة → السعر الأساسي
+    expect(() => modelCredits(wan, { duration: 5, resolution: '480p' })).toThrow(RangeError) // دقة غير مسعّرة → رفض لا السعر الأساسي
   })
   it('فيديو بالمقطع (cost_per_second null): cost_credits ثابت أو حسب المدة', () => {
     const luma = { type: 'video' as const, cost_credits: 36, cost_per_second: null, max_duration_s: 9, supports: {}, default_params: { duration: 5 } }
@@ -136,7 +137,7 @@ describe('modelCredits — تسعير صف النموذج (ADR 0005)', () => {
     const hailuo = { ...luma, cost_credits: 20, supports: { credits_by_duration: { '6': 20, '10': 40 } } }
     expect(modelCredits(hailuo, { duration: 6 })).toBe(20)
     expect(modelCredits(hailuo, { duration: 10 })).toBe(40)
-    expect(modelCredits(hailuo, { duration: 7 })).toBe(20) // مدة غير مسعّرة → cost_credits
+    expect(() => modelCredits(hailuo, { duration: 7 })).toThrow(RangeError) // مدة غير مسعّرة → رفض لا cost_credits
   })
   it('صورة: نفس applyModelResolution القديمة (لا تغيير في نانو بنانا برو)', () => {
     const nano = { type: 'image' as const, cost_credits: 11, cost_per_second: null, max_duration_s: null, supports: { resolution_multipliers: { '1K': 1, '2K': 1, '4K': 2 } }, default_params: { imageSize: '2K' } }

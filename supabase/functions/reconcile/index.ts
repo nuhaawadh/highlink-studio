@@ -3,7 +3,7 @@
 //   1) reconcile_holds() في القاعدة: حجوزات أقدم من المهلة (صورة 30 د، فيديو 120 د) — تأكيد لمكتمل، تحرير لفاشل/مفقود/queued،
 //      وprocessing بمهمة يعود كـprovider_check بلا تغيير.
 //   2) لكل provider_check: نسأل المزوّد (Replicate GET prediction، fal حالة الطابور ثم النتيجة) ونُنهي عبر _shared/finalize.ts كما لو وصل الـwebhook؛
-//      وإن كان ما زال يعمل بعد سقف صلب (صورة 4 س، فيديو 12 س) نحرّر ونعلّم failed.
+//      وإن كان ما زال يعمل — أو تعذّر إنهاؤه بخطأ متكرر — بعد سقف صلب (صورة 4 س، فيديو 12 س) نحرّر ونعلّم failed.
 import { handleOptions } from '../_shared/cors.ts'
 import { jsonResponse, toAppError } from '../_shared/errors.ts'
 import { finalizeAsset, timeoutAsset, type FinalizableAsset } from '../_shared/finalize.ts'
@@ -13,6 +13,11 @@ import { supabaseAdmin } from '../_shared/supabaseAdmin.ts'
 
 const HARD_CAP_MS: Record<string, number> = { image: 4 * 60 * 60_000, video: 12 * 60 * 60_000, audio: 4 * 60 * 60_000 }
 const MAX_PROVIDER_CHECKS = 50
+
+function pastHardCap(asset: { type: string; created_at: string }): boolean {
+  const cap = HARD_CAP_MS[asset.type] ?? HARD_CAP_MS.image
+  return Date.now() - new Date(asset.created_at).getTime() > cap
+}
 
 interface ReconcileRow {
   hold_id: number
@@ -57,12 +62,14 @@ Deno.serve(async (req) => {
     const pending = rows.filter((r) => r.action === 'provider_check' && r.asset && r.provider && r.provider_job_id).slice(0, MAX_PROVIDER_CHECKS)
     for (const r of pending) {
       const entry: (typeof checks)[number] = { asset: r.asset!, job: r.provider_job_id, outcome: 'skipped' }
+      let asset: (FinalizableAsset & { created_at: string; model: string | null }) | null = null
       try {
-        const { data: asset } = await db
+        const { data } = await db
           .from('assets')
           .select('id, user_id, type, status, metadata, api_key_id, created_at, model')
           .eq('id', r.asset!)
           .maybeSingle<FinalizableAsset & { created_at: string; model: string | null }>()
+        asset = data
         if (!asset || asset.status !== 'processing') {
           entry.outcome = 'not_processing'
         } else {
@@ -74,9 +81,7 @@ Deno.serve(async (req) => {
           const result = await provider.getJob(r.provider_job_id!, modelRow?.provider_slug)
           entry.provider_status = result.status
           if (result.status === 'processing') {
-            const ageMs = Date.now() - new Date(asset.created_at).getTime()
-            const cap = HARD_CAP_MS[asset.type] ?? HARD_CAP_MS.image
-            if (ageMs > cap) {
+            if (pastHardCap(asset)) {
               await timeoutAsset(asset, { fn: 'reconcile', started })
               entry.outcome = 'timed_out'
             } else {
@@ -90,6 +95,15 @@ Deno.serve(async (req) => {
         const err = toAppError(e)
         entry.outcome = 'error'
         entry.detail = err.detail ?? err.message
+        // خطأ يتكرر (مزوّد لا يرد، نسخ يفشل…) بعد السقف الصلب: لا نترك الحجز والتزامن عالقين للأبد (المراجعة المستقلة 2026-10-24)
+        if (asset && asset.status === 'processing' && pastHardCap(asset)) {
+          try {
+            await timeoutAsset(asset, { fn: 'reconcile', started })
+            entry.outcome = 'timed_out_after_error'
+          } catch (inner) {
+            entry.detail = `${entry.detail}; timeout failed: ${toAppError(inner).message}`
+          }
+        }
       }
       checks.push(entry)
     }

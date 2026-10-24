@@ -1,9 +1,9 @@
 {
- "endpoint": "ideogram/v4.5",
- "unit": "image",
- "usd": 0.03,
- "pricing_text": "Your request will cost **$0.03** per image with Low, **$0.06** with Medium, and **$0.22** with High quality. The image size does not change the price.",
- "source_url": "https://fal.ai/models/ideogram/v4.5",
- "confidence": "high",
- "notes": "$0.03 للصورة بجودة Low، $0.06 Medium، $0.22 High. حجم الصورة لا يغيّر السعر. usd للأرخص (low)؛ لكن الافتراضي في المخطط quality=medium → $0.06 للصورة. num_images حتى 8 يضاعف السعر."
+  "endpoint": "ideogram/v4.5",
+  "unit": "image",
+  "usd": 0.06,
+  "pricing_text": "Your request will cost **$0.03** per image with Low, **$0.06** with Medium, and **$0.22** with High quality. The image size does not change the price.",
+  "source_url": "https://fal.ai/models/ideogram/v4.5",
+  "confidence": "high",
+  "notes": "usd = $0.06 لجودة medium وهي الافتراضية في المخطط (المحرك لا يضبط quality) — المراجعة المستقلة 2026-10-24 (كان $0.03 للأرخص low). low $0.03، high $0.22. الحجم لا يغيّر السعر. num_images مثبّت على 1."
 }

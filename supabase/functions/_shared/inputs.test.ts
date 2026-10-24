@@ -317,4 +317,17 @@ describe('buildProviderInput — مخططات fal (ADR 0005)', () => {
     expect(input.mode).toBe('high_control')
     expect(input).not.toHaveProperty('prompt')
   })
+
+  it('مفاتيح الصوت المنطقية كلها صريحة: generate_audio_switch (PixVerse) وaudio (Wan/Vidu) — ونص audio لا يُلمس', () => {
+    const base: ModelRow = { ...kling, type: 'video', supports: { audio: true }, default_params: {} }
+    const pix: ModelRow = { ...base, input_schema: { properties: { prompt: { type: 'string' }, generate_audio_switch: { type: 'boolean', default: false } } } }
+    expect(buildProviderInput(pix, 'p', undefined, {}).input.generate_audio_switch).toBe(false)
+    expect(buildProviderInput(pix, 'p', undefined, { audio: true }).input.generate_audio_switch).toBe(true)
+    const wan: ModelRow = { ...base, input_schema: { properties: { prompt: { type: 'string' }, audio: { type: 'boolean', default: true } } } }
+    expect(buildProviderInput(wan, 'p', undefined, {}).input.audio).toBe(false)
+    const tts: ModelRow = { ...base, input_schema: { properties: { prompt: { type: 'string' }, audio: { type: 'string' } } } }
+    const built = buildProviderInput(tts, 'p', undefined, { audio: true })
+    expect(built.input.audio).toBeUndefined()
+    expect(built.invalid).toEqual([])
+  })
 })

@@ -35,10 +35,10 @@
 | `model` | string | معرّف من `GET /models`، مثل `nano-banana-pro` |
 | `prompt` | string | 1–4000 حرف، عربي أو إنجليزي |
 | `config.aspectRatio` | `1:1` `9:16` `16:9` `4:5` `3:4` | اختياري؛ القيم المدعومة لكل نموذج في `GET /models` |
-| `config.imageSize` | `1K` `2K` `4K` | صور — اختياري؛ تؤثر في التكلفة (`costs` في `GET /models`) |
-| `config.duration` | integer (ثوانٍ) | فيديو — اختياري؛ من `durations` للنموذج، وإلا الافتراضي. التكلفة = السعر بالثانية × المدة |
-| `config.resolution` | string | فيديو — اختياري؛ كما يسمّيها النموذج في `resolutions` (`720p`، `1080p`، `768P`…)؛ قد تغيّر السعر |
-| `config.audio` | boolean | فيديو — اختياري؛ صوت أصلي من النموذج إن كان `audio: true`؛ قد يضيف تكلفة |
+| `config.imageSize` | `1K` `2K` `4K` | صور — اختياري؛ واحد من `sizes` للنموذج (غيره `INVALID_INPUT`)؛ تؤثر في التكلفة (`costs` في `GET /models`) |
+| `config.duration` | integer (ثوانٍ) | فيديو — اختياري؛ واحدة من `durations` للنموذج (غيرها `INVALID_INPUT`)، وإلا الافتراضي. التكلفة = السعر بالثانية × المدة |
+| `config.resolution` | string | فيديو — اختياري؛ واحدة من `resolutions` للنموذج (`720p`، `1080p`، `768P`… — حالة الأحرف لا تهم)؛ قد تغيّر السعر. أي دقة غير مدرجة (مثل `4k`) تُرفض بـ`INVALID_INPUT` قبل أي خصم |
+| `config.audio` | boolean | فيديو — اختياري؛ صوت أصلي فقط إن كان للنموذج `audio: true` (وإلا `true` يُرفض بـ`INVALID_INPUT`)؛ قد يضيف تكلفة |
 | `images` | string[] | اختياري، حتى 14 رابط **https** لمراجع (منتج، شخصية). نماذج `requires_ref: true` (صورة→فيديو، تعديل بالمراجع) ترفض الطلب بدونها بـ`INVALID_INPUT`. للفيديو: الرابط الأول هو صورة البداية (والثاني الإطار الأخير إن دعمه النموذج) |
 | `maxCredits` | integer | اختياري: سقف إنفاق؛ إن تجاوزته التكلفة يُرفض الطلب بـ`OVER_BUDGET` بلا خصم |
 | `webhook_url` | string | اختياري، https: يطغى على رابط الـwebhook المضبوط في المفتاح لهذا الطلب فقط |

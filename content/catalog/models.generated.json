@@ -22963,7 +22963,7 @@
    "kind": "t2i",
    "tier": "a",
    "enabled": true,
-   "cost_credits": 3,
+   "cost_credits": 5,
    "cost_per_second": null,
    "max_duration_s": null,
    "supports": {
@@ -22988,7 +22988,7 @@
     ],
     "pricing": {
      "unit": "image",
-     "usd": 0.03,
+     "usd": 0.06,
      "confidence": "high",
      "source": "https://fal.ai/models/ideogram/v4.5"
     },
@@ -23725,7 +23725,7 @@
    "kind": "transparent",
    "tier": "a",
    "enabled": true,
-   "cost_credits": 3,
+   "cost_credits": 5,
    "cost_per_second": null,
    "max_duration_s": null,
    "supports": {
@@ -23750,7 +23750,7 @@
     ],
     "pricing": {
      "unit": "image",
-     "usd": 0.03,
+     "usd": 0.06,
      "confidence": "high",
      "source": "https://fal.ai/models/fal-ai/ideogram/v3/generate-transparent"
     },
@@ -23854,7 +23854,7 @@
    "type": "image",
    "kind": "vector",
    "tier": "a",
-   "enabled": true,
+   "enabled": false,
    "cost_credits": 12,
    "cost_per_second": null,
    "max_duration_s": null,
@@ -23887,7 +23887,8 @@
     "sizes": [
      "1K"
     ],
-    "ui": true
+    "ui": false,
+    "notes": "ناتج SVG — يُفعَّل مع دعم SVG معقّم في التخزين"
    },
    "default_params": {
     "imageSize": "1K",
@@ -23989,7 +23990,7 @@
    "type": "image",
    "kind": "vectorize",
    "tier": "a",
-   "enabled": true,
+   "enabled": false,
    "cost_credits": 8,
    "cost_per_second": null,
    "max_duration_s": null,
@@ -24016,7 +24017,8 @@
      "1K"
     ],
     "min_refs": 1,
-    "ui": false
+    "ui": false,
+    "notes": "ناتج SVG — يُفعَّل مع دعم SVG معقّم في التخزين"
    },
    "default_params": {
     "imageSize": "1K"
@@ -24530,7 +24532,7 @@
    "type": "image",
    "kind": "vector",
    "tier": "a",
-   "enabled": true,
+   "enabled": false,
    "cost_credits": 22,
    "cost_per_second": null,
    "max_duration_s": null,
@@ -24563,7 +24565,8 @@
     "sizes": [
      "1K"
     ],
-    "ui": true
+    "ui": false,
+    "notes": "ناتج SVG — يُفعَّل مع دعم SVG معقّم في التخزين"
    },
    "default_params": {
     "imageSize": "1K",
@@ -24886,7 +24889,7 @@
    "type": "image",
    "kind": "vectorize",
    "tier": "a",
-   "enabled": true,
+   "enabled": false,
    "cost_credits": 1,
    "cost_per_second": null,
    "max_duration_s": null,
@@ -24913,7 +24916,8 @@
      "1K"
     ],
     "min_refs": 1,
-    "ui": false
+    "ui": false,
+    "notes": "ناتج SVG — يُفعَّل مع دعم SVG معقّم في التخزين"
    },
    "default_params": {
     "imageSize": "1K"

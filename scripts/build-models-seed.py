@@ -351,6 +351,11 @@ def main() -> int:
         if size_dependent:
             priced = False
             notes.append('التكلفة تعتمد على حجم صورة المستخدم — يُفعَّل مع رفع المراجع وقياس الحجم')
+        # ناتج SVG (vector/vectorize): التخزين لا يقبل image/svg+xml، والـSVG يحتاج تعقيمًا (XSS) قبل عرضه — المراجعة المستقلة 2026-10-24
+        svg_output = 'vector' in m['endpoint']
+        if svg_output:
+            priced = False
+            notes.append('ناتج SVG — يُفعَّل مع دعم SVG معقّم في التخزين')
         is_4k_variant = '4K' in m['variant_en'].upper()
         enabled = bool(schema) and priced and m['tier'] == 'a' and kind in ENGINE_KINDS and not only_4k and not is_4k_variant and typ != 'audio'
         if typ == 'video' and enabled and not durs and cost_per_second is not None:

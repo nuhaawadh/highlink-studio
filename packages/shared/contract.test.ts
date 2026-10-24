@@ -52,7 +52,7 @@ describe('contract parity — packages/shared ↔ _shared', () => {
     const rows = [
       { type: 'image' as const, cost_credits: 11, cost_per_second: null, max_duration_s: null, supports: { resolution_multipliers: { '1K': 1, '2K': 1, '4K': 2 } }, default_params: { imageSize: '2K' } },
       { type: 'video' as const, cost_credits: null, cost_per_second: 8, max_duration_s: 15, supports: { audio_cps: 2, cps_by_resolution: { '1080p': 12 } }, default_params: { duration: 5, resolution: '720p' } },
-      { type: 'video' as const, cost_credits: 36, cost_per_second: null, max_duration_s: 9, supports: { credits_by_duration: { '9': 60 } }, default_params: { duration: 5 } },
+      { type: 'video' as const, cost_credits: 36, cost_per_second: null, max_duration_s: 9, supports: { credits_by_duration: { '5': 36, '9': 60 } }, default_params: { duration: 5 } },
       // Kling 3 عبر Replicate: جدول video_cost_per_second بمفاتيح الدقة والدقة+الصوت
       {
         type: 'video' as const,
@@ -72,6 +72,22 @@ describe('contract parity — packages/shared ↔ _shared', () => {
       { duration: 3, resolution: '480p', audio: true },
       { duration: 15, resolution: '4K', audio: true },
     ]
-    for (const r of rows) for (const o of opts) expect(edgeModelCredits(r, o), JSON.stringify([r.type, o])).toBe(modelCredits(r, o))
+    // نفس القيمة أو نفس الرفض (دقة/مدة غير مسعّرة → RangeError في النسختين)
+    const outcome = (f: () => number) => {
+      try {
+        return f()
+      } catch (e) {
+        return e instanceof RangeError ? 'RangeError' : String(e)
+      }
+    }
+    let threw = 0
+    for (const r of rows) {
+      for (const o of opts) {
+        const shared = outcome(() => modelCredits(r, o))
+        if (shared === 'RangeError') threw++
+        expect(outcome(() => edgeModelCredits(r, o)), JSON.stringify([r.type, o])).toBe(shared)
+      }
+    }
+    expect(threw).toBeGreaterThan(0)
   })
 })

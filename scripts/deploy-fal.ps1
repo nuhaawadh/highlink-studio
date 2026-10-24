@@ -72,7 +72,7 @@ if (Ask 'Deploy generate-media, asset-thumbnail, provider-webhook, v1, reconcile
 }
 
 # --- 3) seed ----------------------------------------------------------------------------------
-Step '3) Seed: plans, manual models (Kling-Replicate off), 233 fal models (137 on)'
+Step '3) Seed: plans, manual models (Kling-Replicate off), 233 fal models (133 on)'
 if (Ask 'Apply supabase/seed.sql to the cloud database (in batches)?') {
   $dir = Join-Path $env:TEMP ('hl-seed-' + [guid]::NewGuid().ToString())
   try {

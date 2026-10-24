@@ -36,6 +36,12 @@ describe('fal.parseWebhook', () => {
     expect(fal.parseWebhook(JSON.stringify({ request_id: 'r2b', status: 'OK', payload: { text: 'x' } })).status).toBe('failed')
   })
 
+  it('OK بلا ملف يُعلَّم refetch: الحمولة قد تكون كبيرة على الـwebhook وfal حاسبتنا — نسأل getJob قبل الاسترداد', () => {
+    expect(fal.parseWebhook(JSON.stringify({ request_id: 'r2', status: 'OK', payload: null, payload_error: 'too large' })).refetch).toBe(true)
+    expect(fal.parseWebhook(JSON.stringify({ request_id: 'r3', status: 'ERROR', error: 'x' })).refetch).toBeUndefined()
+    expect(fal.parseWebhook(JSON.stringify({ request_id: 'r1', status: 'OK', payload: { video: { url: 'https://a/x.mp4' } } })).refetch).toBeUndefined()
+  })
+
   it('ERROR مع تفاصيل 422 → failed برسالة مجمّعة', () => {
     const r = fal.parseWebhook(
       JSON.stringify({ request_id: 'r3', status: 'ERROR', error: 'Invalid status code: 422', payload: { detail: [{ loc: ['body', 'duration'], msg: 'duration must be one of 5, 10', type: 'value_error' }] } }),

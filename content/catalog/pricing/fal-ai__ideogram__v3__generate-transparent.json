@@ -1,9 +1,9 @@
 {
- "endpoint": "fal-ai/ideogram/v3/generate-transparent",
- "unit": "image",
- "usd": 0.03,
- "pricing_text": "Each image costs **$0.03** with TURBO, **$0.06** with BALANCED, and **$0.09** with QUALITY.",
- "source_url": "https://fal.ai/models/fal-ai/ideogram/v3/generate-transparent",
- "confidence": "high",
- "notes": "$0.03 للصورة بـTURBO، $0.06 BALANCED، $0.09 QUALITY (حسب rendering_speed). usd للأرخص (TURBO)؛ الافتراضي في المخطط rendering_speed=BALANCED → $0.06 للصورة. num_images حتى 8 يضاعف السعر."
+  "endpoint": "fal-ai/ideogram/v3/generate-transparent",
+  "unit": "image",
+  "usd": 0.06,
+  "pricing_text": "Each image costs **$0.03** with TURBO, **$0.06** with BALANCED, and **$0.09** with QUALITY.",
+  "source_url": "https://fal.ai/models/fal-ai/ideogram/v3/generate-transparent",
+  "confidence": "high",
+  "notes": "usd = $0.06 لـrendering_speed=BALANCED وهو الافتراضي في المخطط (المحرك لا يضبطه) — المراجعة المستقلة 2026-10-24 (كان $0.03 للأرخص TURBO). TURBO $0.03، QUALITY $0.09. num_images مثبّت على 1."
 }

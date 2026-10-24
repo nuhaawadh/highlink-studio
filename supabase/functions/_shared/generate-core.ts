@@ -12,6 +12,7 @@ import { claimAndHold, getBalance, releaseAssetHold } from './credits.ts'
 import { AppError, toAppError } from './errors.ts'
 import { buildProviderInput } from './inputs.ts'
 import { logRequest } from './log.ts'
+import { normalizeOptions } from './options.ts'
 import { modelCredits, resolveDuration } from './pricing.ts'
 import { getProvider } from './providers/index.ts'
 import type { GenerateRequestInput } from './request.ts'
@@ -76,6 +77,8 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
   let claimed = false
   /** حجز رصيد نشط نملكه نحن (قبل انتقال الملكية إلى الـwebhook) */
   let held = false
+  /** معرّف المهمة عند المزوّد بعد الإرسال — وجوده يعني أن الحجز لا يُحرَّر في الـcatch */
+  let submittedJobId: string | null = null
 
   try {
     // 1) الأصل
@@ -141,28 +144,30 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     const provider = getProvider(model.provider)
 
     // 4) المدخلات ضد مخطط المزوّد + التسعير (ADR 0005: صورة بالدقة، فيديو بالثانية أو بالمقطع — modelCredits هي المصدر الوحيد)
-    const built = buildProviderInput(model, body.prompt, body.images, body.config)
+    // الخيارات أولًا: ما لا تعرضه supports (دقة/حجم/مدة/صوت بلا سعر متحقق) يُرفض قبل بناء المدخلات والتسعير
+    const normalized = normalizeOptions(model, body.config)
+    if (normalized.issue) {
+      const { key, value, allowed } = normalized.issue
+      throw new AppError('INVALID_INPUT', 'إعداد غير مدعوم لهذا النموذج', { detail: `${key}=${String(value)} not in ${JSON.stringify(allowed)}` })
+    }
+    const config = normalized.config
+    const built = buildProviderInput(model, body.prompt, body.images, config)
     if (built.invalid.length) {
       const first = built.invalid[0]
       throw new AppError('INVALID_INPUT', 'إعداد غير مدعوم لهذا النموذج', { detail: `${first.key}=${String(first.value)} not in ${JSON.stringify(first.allowed)}` })
     }
-    const imageSize = (body.config?.imageSize ?? (model.default_params.imageSize as '1K' | '2K' | '4K' | undefined) ?? '1K')
-    const duration = model.type === 'video' ? resolveDuration(model, body.config?.duration) : undefined
+    const imageSize = (config.imageSize ?? (model.default_params.imageSize as '1K' | '2K' | '4K' | undefined) ?? '1K')
+    const duration = model.type === 'video' ? resolveDuration(model, config.duration) : undefined
     if (model.type === 'video') {
       if (!duration) throw new AppError('MODEL_DISABLED', undefined, { detail: `model ${model.id} has no duration` })
-      // مدة خارج ما يعرضه النموذج (supports.durations) تُرفض قبل الحجز — لا نسعّر مدة لم نتحقق من سعرها
-      const allowed = (model.supports as { durations?: unknown }).durations
-      if (Array.isArray(allowed) && allowed.length && !allowed.includes(duration)) {
-        throw new AppError('INVALID_INPUT', 'مدة غير مدعومة لهذا النموذج', { detail: `duration=${duration} allowed=${JSON.stringify(allowed)}` })
-      }
       if (model.max_duration_s != null && duration > model.max_duration_s) {
         throw new AppError('INVALID_INPUT', 'المدة أطول مما يدعمه هذا النموذج', { detail: `duration=${duration} max=${model.max_duration_s}` })
       }
     }
-    const videoResolution = model.type === 'video' ? (body.config?.resolution ?? (model.default_params.resolution as string | undefined) ?? null) : null
+    const videoResolution = model.type === 'video' ? (config.resolution ?? (model.default_params.resolution as string | undefined) ?? null) : null
     let cost: number
     try {
-      cost = modelCredits(model, { imageSize, duration, resolution: videoResolution ?? undefined, audio: body.config?.audio })
+      cost = modelCredits(model, { imageSize, duration, resolution: videoResolution ?? undefined, audio: config.audio })
     } catch (e) {
       throw new AppError('MODEL_DISABLED', undefined, { detail: `pricing: ${e instanceof Error ? e.message : String(e)}` })
     }
@@ -176,7 +181,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
 
     const commonFields = {
       prompt: body.prompt,
-      aspect_ratio: (built.input.aspect_ratio as string | undefined) ?? body.config?.aspectRatio ?? null,
+      aspect_ratio: (built.input.aspect_ratio as string | undefined) ?? config.aspectRatio ?? null,
       resolution: model.type === 'video' ? videoResolution : imageSize,
       duration_s: model.type === 'video' ? (duration ?? null) : null,
       feature_tag: body.feature_tag ?? 'general',
@@ -215,19 +220,24 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     // 7) المزوّد
     const webhookUrl = `${projectUrl()}/functions/v1/provider-webhook?source=${provider.name}`
     const { jobId } = await provider.submit({ slug: model.provider_slug, input: built.input, webhookUrl })
+    // المهمة صارت عند المزوّد ويحاسبنا عليها: من هنا لا يحرّر الـcatch الحجز (المراجعة المستقلة 2026-10-24، خطر 6)
+    submittedJobId = jobId
 
-    // 8) كتابة المهمة → Realtime. من هنا الـwebhook هو مالك الحجز والحالة.
-    const { data: written, error: updErr } = await db
-      .from('assets')
-      .update({
-        ...commonFields,
-        provider_job_id: jobId,
-        metadata: { ...(asset.metadata ?? {}), prompt_final: body.prompt, provider_input: built.input, locale: body.locale ?? 'ar', template: body.template ?? null },
-      })
-      .eq('id', asset.id)
-      .eq('status', 'processing')
-      .is('provider_job_id', null)
-      .select('id')
+    // 8) كتابة المهمة → Realtime. من هنا الـwebhook هو مالك الحجز والحالة. محاولة ثانية عند خطأ عابر في القاعدة.
+    const writeJob = () =>
+      db
+        .from('assets')
+        .update({
+          ...commonFields,
+          provider_job_id: jobId,
+          metadata: { ...(asset.metadata ?? {}), prompt_final: body.prompt, provider_input: built.input, locale: body.locale ?? 'ar', template: body.template ?? null },
+        })
+        .eq('id', asset.id)
+        .eq('status', 'processing')
+        .is('provider_job_id', null)
+        .select('id')
+    let { data: written, error: updErr } = await writeJob()
+    if (updErr) ({ data: written, error: updErr } = await writeJob())
     if (updErr) throw toAppError(new Error(updErr.message))
     if (!written || written.length === 0) {
       throw new AppError('PROVIDER_ERROR', undefined, { detail: `asset ${asset.id} changed state before provider_job_id was written (job ${jobId})` })
@@ -247,10 +257,26 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     logRequest({ fn, user: userId, asset: assetId, ms: Date.now() - started, ok: true, model: model.id, cost, type: model.type })
     return res
   } catch (e) {
-    // 9) أي فشل قبل كتابة provider_job_id: تحرير الحجز إن كان لنا، تعليم الأصل فاشلًا، ثم إعادة الرمي للغلاف
+    // 9) أي فشل قبل كتابة provider_job_id: تحرير الحجز إن كان لنا، تعليم الأصل فاشلًا، ثم إعادة الرمي للغلاف.
+    //    إن وصلت المهمة للمزوّد (submittedJobId) فلا تحرير ولا failed: المزوّد يولّد ويحاسبنا — الحجز يبقى ويسوّيه
+    //    reconcile_holds بعد المهلة (processing بلا مهمة) بدل استرداد فوري لشيء سندفع ثمنه.
     const err = toAppError(e)
     let released = false
-    if (assetId) {
+    if (submittedJobId) {
+      // آخر محاولة لربط المهمة بالأصل حتى يجده الـwebhook (بلا شرط الحالة — الـwebhook يقرر حسب الحالة الفعلية)
+      if (assetId) {
+        await db
+          .from('assets')
+          .update({ provider_job_id: submittedJobId })
+          .eq('id', assetId)
+          .is('provider_job_id', null)
+          .then(
+            () => undefined,
+            () => undefined,
+          )
+      }
+      logRequest({ fn, user: userId, asset: assetId, ms: Date.now() - started, ok: false, code: 'JOB_NOT_RECORDED', detail: `job ${submittedJobId}: ${err.detail ?? err.message}` })
+    } else if (assetId) {
       try {
         if (held) released = await releaseAssetHold(assetId, `${fn}: ${err.code}`)
         await markFailed(fn, assetId, userId, claimed ? 'processing' : 'queued', err, assetMetadata)

@@ -185,7 +185,7 @@ export const fal: ProviderAdapter = {
     if (p.status === 'OK') {
       const outputs = extractFalOutputs(p.payload)
       // OK بلا حمولة قابلة للتسلسل (payload_error) أو بلا ملف = فشل عندنا (لا نؤكد خصمًا بلا ناتج)
-      if (!outputs.length) return { jobId: p.request_id, status: 'failed', outputs: [], error: errorText(p) ?? 'OK without media output' }
+      if (!outputs.length) return { jobId: p.request_id, status: 'failed', outputs: [], error: errorText(p) ?? 'OK without media output', refetch: true }
       return { jobId: p.request_id, status: 'succeeded', outputs }
     }
     if (p.status === 'ERROR') return { jobId: p.request_id, status: 'failed', outputs: [], error: errorText(p) ?? 'ERROR' }
