@@ -38,6 +38,9 @@
 | B27 | انتهاء مهلة الإرسال (30 ث) بعد أن قبلت fal الطلب = استرداد ونحن ندفع: مفتاح idempotency عند المزوّد أو سؤال fal بالـ`gateway_request_id` | `providers/fal.ts`, `generate-core.ts` | خطر 6 في المراجعة المستقلة (الجزء المتبقي) | عند أول حادثة |
 | B28 | تحقق إضافي في webhook fal: `X-Fal-Webhook-User-Id` = حسابنا، وترويسة request id = `request_id` في الجسم | `providers/fal.ts` | دفاع إضافي (معرّفات الطلب غير قابلة للتخمين اليوم) | لاحقًا |
 | B29 | معرض العرض: توليده (`scripts/make-showcase.ts`) ثم نقله إلى Cloudflare Stream/R2 مع B16 (الآن Supabase Storage تحت `media/showcase/`)، وملصق (poster) صغير لكل فيديو بدل `#t=0.1` | `scripts/make-showcase.ts`, `storage.ts` | أول تحميل أخف على الجوال | مع R2 |
+| B30 | **قبل تفعيل أي استوديو**: مفتاح Gemini بفوترة (الطبقة المجانية 20 طلبًا/يوم لكل نموذج — 429 RESOURCE_EXHAUSTED يحوّل كل الصور إلى unchecked) | Google AI Studio → Billing | بوابة الجودة لا تعمل فعليًا بدونه | قبل المجموعة الذهبية |
+| B31 | مراقبة نسبة `qa.status = 'unchecked'` (عطل الحَكَم) في لوحة الإدارة، وتنبيه إن تجاوزت 5% في ساعة؛ وخيار إبقاء الأصل processing وإعادة الحكم من reconcile بدل التسليم بلا فحص | `_shared/studio-qa.ts`، لوحة الإدارة | الحكم المعطّل يمر بصمت اليوم | مع لوحة الإدارة (§11) |
+| B32 | بطاقات المشاهد بصور معاينة من نتائج المجموعة الذهبية | `content/studios/product-shot.json` (`presets.*.thumb`) + `StudioWizard` | الاختيار بالصورة أوضح من الوصف | بعد التفعيل |
 
 ## ما يجب تذكّره عند لمس هذه الملفات
 - أي تعديل على الرصيد أو السياسات: اختبار SQL أولًا في `supabase/tests/credits.test.sql` (يعمل على القاعدة السحابية داخل معاملة تُلغى وفي CI).

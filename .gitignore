@@ -9,3 +9,9 @@ supabase/.temp/
 *.log
 .vite/
 coverage/
+
+# المجموعة الذهبية: صور منتجات حقيقية وتقارير بروابط مؤقتة — النتائج (results-*.json) فقط تُلتزم
+content/golden/**/inputs/
+content/golden/**/report-*.html
+content/golden/**/.golden-user.json
+apps/web/public/__qa/
