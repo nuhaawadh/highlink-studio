@@ -77,8 +77,6 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
   let claimed = false
   /** حجز رصيد نشط نملكه نحن (قبل انتقال الملكية إلى الـwebhook) */
   let held = false
-  /** معرّف المهمة عند المزوّد بعد الإرسال — وجوده يعني أن الحجز لا يُحرَّر في الـcatch */
-  let submittedJobId: string | null = null
 
   try {
     // 1) الأصل
@@ -220,8 +218,6 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     // 7) المزوّد
     const webhookUrl = `${projectUrl()}/functions/v1/provider-webhook?source=${provider.name}`
     const { jobId } = await provider.submit({ slug: model.provider_slug, input: built.input, webhookUrl })
-    // المهمة صارت عند المزوّد ويحاسبنا عليها: من هنا لا يحرّر الـcatch الحجز (المراجعة المستقلة 2026-10-24، خطر 6)
-    submittedJobId = jobId
 
     // 8) كتابة المهمة → Realtime. من هنا الـwebhook هو مالك الحجز والحالة. محاولة ثانية عند خطأ عابر في القاعدة.
     const writeJob = () =>
@@ -236,11 +232,22 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
         .eq('status', 'processing')
         .is('provider_job_id', null)
         .select('id')
+    // بعد الإرسال لا نرمي أبدًا: المهمة تعمل عند المزوّد وتُحسب علينا — خطأ هنا يُفهم "أعد المحاولة" فتصير مهمتان وخصمان
+    // (المراجعة المستقلة الثانية 2026-10-24). إن تعذّر ربط المهمة بالأصل نحاول بلا شرط الحالة، ونرد بالنجاح والحجز قائم:
+    // الـwebhook يُنهي إن وجد الأصل، وإلا يسوّيه reconcile_holds بعد المهلة.
     let { data: written, error: updErr } = await writeJob()
     if (updErr) ({ data: written, error: updErr } = await writeJob())
-    if (updErr) throw toAppError(new Error(updErr.message))
-    if (!written || written.length === 0) {
-      throw new AppError('PROVIDER_ERROR', undefined, { detail: `asset ${asset.id} changed state before provider_job_id was written (job ${jobId})` })
+    if (updErr || !written || written.length === 0) {
+      await db
+        .from('assets')
+        .update({ provider_job_id: jobId })
+        .eq('id', asset.id)
+        .is('provider_job_id', null)
+        .then(
+          () => undefined,
+          () => undefined,
+        )
+      logRequest({ fn, user: userId, asset: assetId, ms: Date.now() - started, ok: false, code: 'JOB_NOT_RECORDED', detail: `job ${jobId}: ${updErr?.message ?? 'asset changed state before provider_job_id was written'}` })
     }
     held = false
     claimed = false
@@ -258,25 +265,10 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     return res
   } catch (e) {
     // 9) أي فشل قبل كتابة provider_job_id: تحرير الحجز إن كان لنا، تعليم الأصل فاشلًا، ثم إعادة الرمي للغلاف.
-    //    إن وصلت المهمة للمزوّد (submittedJobId) فلا تحرير ولا failed: المزوّد يولّد ويحاسبنا — الحجز يبقى ويسوّيه
-    //    reconcile_holds بعد المهلة (processing بلا مهمة) بدل استرداد فوري لشيء سندفع ثمنه.
+    //    (بعد الإرسال لا يصل التنفيذ إلى هنا — الخطوة 8 لا ترمي)
     const err = toAppError(e)
     let released = false
-    if (submittedJobId) {
-      // آخر محاولة لربط المهمة بالأصل حتى يجده الـwebhook (بلا شرط الحالة — الـwebhook يقرر حسب الحالة الفعلية)
-      if (assetId) {
-        await db
-          .from('assets')
-          .update({ provider_job_id: submittedJobId })
-          .eq('id', assetId)
-          .is('provider_job_id', null)
-          .then(
-            () => undefined,
-            () => undefined,
-          )
-      }
-      logRequest({ fn, user: userId, asset: assetId, ms: Date.now() - started, ok: false, code: 'JOB_NOT_RECORDED', detail: `job ${submittedJobId}: ${err.detail ?? err.message}` })
-    } else if (assetId) {
+    if (assetId) {
       try {
         if (held) released = await releaseAssetHold(assetId, `${fn}: ${err.code}`)
         await markFailed(fn, assetId, userId, claimed ? 'processing' : 'queued', err, assetMetadata)

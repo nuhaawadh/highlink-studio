@@ -81,6 +81,13 @@ export function modelHasAudio(model: ModelRow): boolean {
   return modelSupports(model).audio === true
 }
 
+/** صوت بلا زيادة سعر (Seedance/Wan/LTX…): يبدأ مفعّلًا في الواجهة — نفس قاعدة السيرفر في inputs.ts */
+export function modelAudioFree(model: ModelRow): boolean {
+  const s = modelSupports(model)
+  const tabled = Object.keys(s.video_cost_per_second ?? {}).some((k) => k.endsWith('+audio'))
+  return s.audio === true && !(typeof s.audio_cps === 'number' && s.audio_cps > 0) && !tabled
+}
+
 /** تكلفة صورة واحدة بهذا النموذج وبهذه الدقة — نفس حساب السيرفر */
 export function modelCost(model: ModelRow, imageSize: ImageSize): number {
   return safeCredits(model, { imageSize })

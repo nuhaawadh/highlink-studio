@@ -324,10 +324,34 @@ describe('buildProviderInput — مخططات fal (ADR 0005)', () => {
     expect(buildProviderInput(pix, 'p', undefined, {}).input.generate_audio_switch).toBe(false)
     expect(buildProviderInput(pix, 'p', undefined, { audio: true }).input.generate_audio_switch).toBe(true)
     const wan: ModelRow = { ...base, input_schema: { properties: { prompt: { type: 'string' }, audio: { type: 'boolean', default: true } } } }
-    expect(buildProviderInput(wan, 'p', undefined, {}).input.audio).toBe(false)
+    // صوت Wan مجاني: بلا طلب يتبع افتراض المزوّد، والإيقاف الصريح يُرسل false
+    expect(buildProviderInput(wan, 'p', undefined, {}).input.audio).toBe(true)
+    expect(buildProviderInput(wan, 'p', undefined, { audio: false }).input.audio).toBe(false)
     const tts: ModelRow = { ...base, input_schema: { properties: { prompt: { type: 'string' }, audio: { type: 'string' } } } }
     const built = buildProviderInput(tts, 'p', undefined, { audio: true })
     expect(built.input.audio).toBeUndefined()
     expect(built.invalid).toEqual([])
+  })
+
+  it('صوت مجاني (بلا audio_cps ولا مفاتيح +audio): بلا طلب صريح يتبع افتراض المزوّد — Seedance/Wan بصوتها الأصلي؛ والطلب الصريح يطغى', () => {
+    const free: ModelRow = {
+      ...kling,
+      type: 'video',
+      supports: { audio: true },
+      default_params: {},
+      input_schema: { properties: { prompt: { type: 'string' }, generate_audio: { type: 'boolean', default: true } } },
+    }
+    expect(buildProviderInput(free, 'p', undefined, {}).input.generate_audio).toBe(true)
+    expect(buildProviderInput(free, 'p', undefined, { audio: false }).input.generate_audio).toBe(false)
+    const freeOff: ModelRow = { ...free, input_schema: { properties: { prompt: { type: 'string' }, generate_audio: { type: 'boolean', default: false } } } }
+    expect(buildProviderInput(freeOff, 'p', undefined, {}).input.generate_audio).toBe(false)
+    // بزيادة سعر: false ما لم يُطلب، مهما كان افتراض المزوّد
+    const paid: ModelRow = { ...free, supports: { audio: true, audio_cps: 3 } }
+    expect(buildProviderInput(paid, 'p', undefined, {}).input.generate_audio).toBe(false)
+    const tabled: ModelRow = { ...free, supports: { audio: true, video_cost_per_second: { '720p': 12, '720p+audio': 18 } } }
+    expect(buildProviderInput(tabled, 'p', undefined, {}).input.generate_audio).toBe(false)
+    // نموذج لا يعرض الصوت: false دائمًا
+    const none: ModelRow = { ...free, supports: {} }
+    expect(buildProviderInput(none, 'p', undefined, {}).input.generate_audio).toBe(false)
   })
 })

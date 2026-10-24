@@ -106,10 +106,14 @@ describe('الكتالوج المولّد — نرسل ما سعّرناه فق�
       expect(lower(sent), 'sent image size = priced image size').toBe(lower(priced))
     }
 
-    // (3) الصوت صريح
+    // (3) الصوت صريح: false ما لم يُطلب — إلا الصوت المجاني (بلا audio_cps ولا +audio) فيتبع افتراض المزوّد بلا أثر على السعر
+    const vcps = Object.keys((s.video_cost_per_second as object | undefined) ?? {})
+    const audioFree = s.audio === true && !(typeof s.audio_cps === 'number' && s.audio_cps > 0) && !vcps.some((k) => k.endsWith('+audio'))
     for (const k of ['generate_audio', 'enable_audio', 'with_audio', 'generate_audio_switch', 'audio']) {
       if (!isBool(props[k])) continue
-      expect(input[k], `${k} must be sent explicitly as false`).toBe(false)
+      expect(input[k], `${k} must be sent explicitly`).toBe(audioFree ? defaultOf(props[k]) === true : false)
+      expect(buildProviderInput(r, 'اختبار', refs, { audio: false }).input[k], `${k} must follow audio:false`).toBe(false)
+      expect(modelCredits(r, {}), 'free audio must not change the price').toBe(modelCredits(r, { audio: audioFree ? true : undefined }))
       if (s.audio === true) expect(buildProviderInput(r, 'اختبار', refs, { audio: true }).input[k], `${k} must follow audio:true`).toBe(true)
     }
   })

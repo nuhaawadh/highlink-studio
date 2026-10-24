@@ -13,7 +13,7 @@ import { createQueuedAsset, GenerateError, requestGeneration, useAssets } from '
 import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import { env } from '@/lib/env'
-import { modelAspectRatios, modelDefaults, modelDurations, modelHasAudio, modelResolutions, useModels, videoCost, type ModelRow } from '@/lib/models'
+import { modelAspectRatios, modelAudioFree, modelDefaults, modelDurations, modelHasAudio, modelResolutions, useModels, videoCost, type ModelRow } from '@/lib/models'
 import { cn } from '@/lib/utils'
 
 /** تكلفة النموذج بإعداداته الافتراضية (مدة/دقة الافتراض، بلا صوت) — لبطاقات العائلات */
@@ -62,7 +62,8 @@ export function VideoGeneratePage() {
     setDuration(d.duration && durs.includes(d.duration) ? d.duration : (durs[0] ?? 5))
     setResolution(d.resolution && ress.includes(d.resolution) ? d.resolution : ress[0])
     setAspectRatio(d.aspectRatio && rats.includes(d.aspectRatio) ? d.aspectRatio : (rats[0] ?? '16:9'))
-    setAudio(false)
+    // الصوت المجاني يبدأ مفعّلًا (لا يغيّر التكلفة)؛ الصوت بزيادة يبدأ مطفأً
+    setAudio(modelAudioFree(model))
   }, [model])
 
   const cost = model ? videoCost(model, { duration, resolution, audio: hasAudio ? audio : undefined }) : 0

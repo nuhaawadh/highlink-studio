@@ -14,8 +14,8 @@ const EXT_BY_TYPE: Record<string, string> = {
   'image/jpeg': 'jpg',
   'image/webp': 'webp',
   'video/mp4': 'mp4',
-  'video/webm': 'webm',
-  'video/quicktime': 'mov',
+  // webm/mov لا يقبلها bucket media (allowed_mime_types في 0002) — قبولها هنا يعني رفض الرفع ثم حجزًا عالقًا ساعات؛
+  // تُضاف مع تحديث الـbucket (المراجعة المستقلة 2026-10-24)
 }
 
 export function extensionFor(contentType: string): string | null {

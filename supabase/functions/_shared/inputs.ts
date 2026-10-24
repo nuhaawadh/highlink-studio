@@ -161,9 +161,16 @@ export function buildProviderInput(model: ModelRow, prompt: string, images: stri
 
   // ---- الصوت الأصلي: يُرسل دائمًا صراحةً (false ما لم يُطلب) — افتراض بعض المزوّدين true (Veo، Kling 3)
   //      وهو أغلى، فترك الافتراض يعني أن يولّد المزوّد بصوت ونحن سعّرنا بلا صوت
-  //      الأسماء: generate_audio (Kling/Veo/Seedance)، generate_audio_switch (PixVerse)، audio (Wan/Vidu — منطقي فقط، لا رابط ملف)
+  //      الأسماء: generate_audio (Kling/Veo/Seedance)، generate_audio_switch (PixVerse)، audio (Wan/Vidu — منطقي فقط، لا رابط ملف).
+  //      الصوت المجاني (supports.audio بلا audio_cps ولا مفاتيح "+audio" في جدول السعر — Seedance/Wan/LTX…): بلا طلب صريح
+  //      يتبع افتراض المزوّد (عادةً بصوت) لأنه لا يغيّر ما سعّرناه؛ الطلب الصريح يطغى دائمًا.
+  const vcps = Object.keys((supports as { video_cost_per_second?: Record<string, unknown> }).video_cost_per_second ?? {})
+  const audioCps = (supports as { audio_cps?: unknown }).audio_cps
+  const audioFree = supports.audio === true && !(typeof audioCps === 'number' && audioCps > 0) && !vcps.some((k) => k.endsWith('+audio'))
   for (const k of ['generate_audio', 'enable_audio', 'with_audio', 'generate_audio_switch', 'audio'] as const) {
-    if (schema[k] && effective(schema[k]).type === 'boolean') set(k, config?.audio ?? false)
+    if (!schema[k] || effective(schema[k]).type !== 'boolean') continue
+    const providerDefault = (schema[k].default ?? effective(schema[k]).default) === true
+    set(k, config?.audio ?? (audioFree ? providerDefault : false))
   }
 
   // ---- قرارات ثابتة للمنصة: ناتج واحد لكل عملية (تسعير دقيق)، PNG، فاحص الأمان مفعّل، مرشّح متوسط، لا نموذج بديل (ADR 0003)
