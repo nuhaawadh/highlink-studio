@@ -29,6 +29,23 @@ export async function claimAndHold(args: { userId: string; assetId: string; amou
   return Number(data)
 }
 
+/**
+ * تشغيل استوديو (ADR 0006): كل الأصول (نفس run_id) → processing + حجز لكل صورة، أو لا شيء (migration 0007).
+ * يرمي INVALID_RUN / ALREADY_CLAIMED / RATE_LIMITED / INSUFFICIENT_CREDITS بلا أي أثر.
+ */
+export async function claimAndHoldRun(args: { userId: string; assetIds: string[]; amountEach: number; provider: string; model: string; type: string }): Promise<number> {
+  const { data, error } = await supabaseAdmin().rpc('claim_and_hold_run', {
+    p_user: args.userId,
+    p_assets: args.assetIds,
+    p_amount_each: args.amountEach,
+    p_provider: args.provider,
+    p_model: args.model,
+    p_type: args.type,
+  })
+  if (error) throw toAppError(new Error(error.message))
+  return Number(data)
+}
+
 async function findActiveHold(assetId: string): Promise<number | null> {
   const { data, error } = await supabaseAdmin()
     .from('credit_ledger')

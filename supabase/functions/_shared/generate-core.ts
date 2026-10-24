@@ -17,6 +17,7 @@ import { modelCredits, resolveDuration } from './pricing.ts'
 import { getProvider } from './providers/index.ts'
 import type { GenerateRequestInput } from './request.ts'
 import { checkPromptSafety } from './safety.ts'
+import { runStudio } from './studio-core.ts'
 import { projectUrl, supabaseAdmin } from './supabaseAdmin.ts'
 import type { GenerateResponse, ModelRow } from './types.ts'
 
@@ -70,6 +71,11 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
   const sandbox = ctx.sandbox === true
   const db = supabaseAdmin()
 
+  // الاستوديو: تشغيل متعدد الصور بمساره الخاص (ADR 0006) — ينظّف أصوله بنفسه
+  if (body.model.startsWith('studio:')) {
+    return await runStudio({ fn, userId, body, started, sandbox })
+  }
+
   /** يُضبط فقط بعد التحقق من أن الأصل يخص المستخدم */
   let assetId: string | null = null
   let assetMetadata: Record<string, unknown> | null = null
@@ -115,9 +121,9 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
 
     // 2) حد التزامن: يُفحص ذريًا داخل claim_and_hold (الخطوة 6) تحت قفل المستخدم — لا فحص مسبق هنا
 
-    // 3) حلّ النموذج (الاستوديوهات في المرحلة 2)
-    if (body.model.startsWith('studio:')) {
-      throw new AppError('MODEL_DISABLED', 'الاستوديوهات تُفعَّل في المرحلة 2')
+    // 3) حلّ النموذج — الاستوديوهات لها مسارها (ADR 0006): عدة أصول بحجز ذرّي وبوابة جودة
+    if (body.studio && !body.model.startsWith('studio:')) {
+      throw new AppError('INVALID_INPUT', undefined, { detail: 'studio body with a non-studio model' })
     }
     const { data: model, error: modelErr } = await db
       .from('models')

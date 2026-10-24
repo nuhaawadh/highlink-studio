@@ -5,6 +5,7 @@ import { logRequest } from './log.ts'
 import { isOutputRejected, OutputRejectedError } from './output-errors.ts'
 import type { ProviderWebhookResult } from './providers/index.ts'
 import { copyFromUrl } from './storage.ts'
+import { QA_FAILED_MESSAGE_AR, studioMeta, studioQaGate, type QaState } from './studio-qa.ts'
 import { supabaseAdmin } from './supabaseAdmin.ts'
 
 /**
@@ -38,6 +39,16 @@ export async function finalizeAsset(asset: FinalizableAsset, result: ProviderWeb
   if (result.status === 'processing') return 'skipped'
 
   if (result.status === 'succeeded') {
+    // بوابة الجودة للاستوديوهات (ADR 0006): قبل النسخ — الرسوب يعيد الإرسال أو يفشل ويسترد، ولا يرى العميل الناتج المرفوض
+    let studioQa: QaState | null = null
+    if (studioMeta(asset.metadata) && result.outputs[0]) {
+      const gate = await studioQaGate(asset, result.jobId, result.outputs[0], ctx)
+      if (gate.kind === 'retried') return 'skipped'
+      if (gate.kind === 'fail') {
+        return await failAsset(asset, { ctx, message: QA_FAILED_MESSAGE_AR, reason: gate.reason, metadata: { qa: gate.qa, provider_output: result.outputs[0] } })
+      }
+      studioQa = gate.qa
+    }
     let copied: Awaited<ReturnType<typeof copyFromUrl>>
     try {
       const first = result.outputs[0]
@@ -53,7 +64,8 @@ export async function finalizeAsset(asset: FinalizableAsset, result: ProviderWeb
         metadata: { output_rejected: e.detail ?? e.message, provider_output: result.outputs[0] ?? null, provider_status: result.status },
       })
     }
-    const qa = { fileOk: copied.bytes > 0, safe: true, retries: 0, notes: [`bytes=${copied.bytes}`, `type=${copied.contentType}`] }
+    const fileQa = { fileOk: copied.bytes > 0, safe: true, notes: [`bytes=${copied.bytes}`, `type=${copied.contentType}`] }
+    const qa = studioQa ? { ...studioQa, ...fileQa, retries: studioQa.retries_used } : { ...fileQa, retries: 0 }
     const { data: won, error: updErr } = await db
       .from('assets')
       .update({

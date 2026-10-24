@@ -40,3 +40,30 @@ describe('GenerateRequestSchema', () => {
     expect(GenerateRequestSchema.safeParse({ ...base, config: { aspectRatio: '9:16', imageSize: '4K' } }).success).toBe(true)
   })
 })
+
+describe('GenerateRequestSchema — studio (ADR 0006)', () => {
+  const studio = {
+    preset: 'luxury',
+    scene: 'على رخام',
+    text: 'عرض خاص',
+    outputs: [
+      { assetId: '6f1b7c2e-3d4a-4b5c-9d8e-7f6a5b4c3d2e', key: 'hero' },
+      { assetId: '7a1b7c2e-3d4a-4b5c-9d8e-7f6a5b4c3d2e', key: 'post' },
+    ],
+  }
+  it('يقبل طلب استوديو صالحًا', () => {
+    expect(GenerateRequestSchema.safeParse({ ...base, model: 'studio:product-shot', studio }).success).toBe(true)
+  })
+  it('يرفض أكثر من 6 مقاسات أو صفرًا، ومفاتيح ومعرّفات غير صالحة', () => {
+    const o = studio.outputs[0]
+    expect(GenerateRequestSchema.safeParse({ ...base, studio: { ...studio, outputs: Array(7).fill(o) } }).success).toBe(false)
+    expect(GenerateRequestSchema.safeParse({ ...base, studio: { ...studio, outputs: [] } }).success).toBe(false)
+    expect(GenerateRequestSchema.safeParse({ ...base, studio: { ...studio, outputs: [{ ...o, key: 'Hero!' }] } }).success).toBe(false)
+    expect(GenerateRequestSchema.safeParse({ ...base, studio: { ...studio, outputs: [{ ...o, assetId: 'x' }] } }).success).toBe(false)
+  })
+  it('يرفض نصًا أطول من 60 ومشهدًا أطول من 400 وpreset بأحرف غير مسموحة', () => {
+    expect(GenerateRequestSchema.safeParse({ ...base, studio: { ...studio, text: 'ن'.repeat(61) } }).success).toBe(false)
+    expect(GenerateRequestSchema.safeParse({ ...base, studio: { ...studio, scene: 'م'.repeat(401) } }).success).toBe(false)
+    expect(GenerateRequestSchema.safeParse({ ...base, studio: { ...studio, preset: '../x' } }).success).toBe(false)
+  })
+})
