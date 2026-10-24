@@ -12,6 +12,7 @@
   No migration in this release (0005 is already applied) - so no `db push`.
 #>
 param([switch]$SkipChecks)
+# Re-run safely: every step asks first, so answer n for steps that already succeeded.
 $ErrorActionPreference = 'Stop'
 Set-Location (Split-Path -Parent $PSScriptRoot)
 
@@ -72,19 +73,43 @@ if (Ask 'Deploy generate-media, asset-thumbnail, provider-webhook, v1, reconcile
 }
 
 # --- 3) seed ----------------------------------------------------------------------------------
+# Tries `supabase db query --linked` first. If the CLI cannot open its login role (TransportError),
+# falls back to the Management API (HTTPS only) with a personal token typed hidden, kept in memory for this step only.
+function Read-Token {
+  Write-Host 'Create a personal token at https://supabase.com/dashboard/account/tokens and paste it below (hidden, used for this step only).'
+  $sec = Read-Host -AsSecureString 'SUPABASE_ACCESS_TOKEN'
+  return [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
+}
+function Invoke-SqlApi([string]$File, [string]$Token, [string]$Ref) {
+  $sql = [IO.File]::ReadAllText($File, [Text.Encoding]::UTF8)
+  $json = @{ query = $sql } | ConvertTo-Json -Compress
+  $bytes = [Text.Encoding]::UTF8.GetBytes($json)
+  return Invoke-RestMethod -Method Post -Uri "https://api.supabase.com/v1/projects/$Ref/database/query" `
+    -Headers @{ Authorization = "Bearer $Token" } -ContentType 'application/json; charset=utf-8' -Body $bytes
+}
+
 Step '3) Seed: plans, manual models (Kling-Replicate off), 233 fal models (133 on)'
 if (Ask 'Apply supabase/seed.sql to the cloud database (in batches)?') {
   $dir = Join-Path $env:TEMP ('hl-seed-' + [guid]::NewGuid().ToString())
+  $ref = (Get-Content 'supabase\.temp\project-ref' -Raw).Trim()
+  $token = $null
   try {
     Invoke-Checked 'python' @('-I', 'scripts/split-seed.py', 'supabase/seed.sql', $dir)
-    Get-ChildItem $dir -Filter '*.sql' | Sort-Object Name | ForEach-Object {
-      Write-Host "  $($_.Name)"
-      Invoke-Checked 'npx' @('supabase', 'db', 'query', '--linked', '-f', $_.FullName)
+    $verify = Join-Path $dir 'zz-verify.sql'
+    Set-Content -Path $verify -Encoding ASCII -Value "select provider, type, enabled, count(*) as n from public.models group by 1, 2, 3 order by 1, 2, 3;"
+    foreach ($f in (Get-ChildItem $dir -Filter '*.sql' | Sort-Object Name)) {
+      Write-Host "  $($f.Name)"
+      if (-not $token) {
+        & npx supabase db query --linked -f $f.FullName
+        if ($LASTEXITCODE -eq 0) { continue }
+        Write-Host 'db query via CLI failed - switching to the Management API (HTTPS).' -ForegroundColor Yellow
+        $token = Read-Token
+      }
+      $out = Invoke-SqlApi -File $f.FullName -Token $token -Ref $ref
+      if ($f.Name -eq 'zz-verify.sql') { $out | Format-Table -AutoSize | Out-Host }
     }
-    $verify = Join-Path $dir 'verify.sql'
-    Set-Content -Path $verify -Encoding ASCII -Value "select provider, type, enabled, count(*) from public.models group by 1, 2, 3 order by 1, 2, 3;"
-    Invoke-Checked 'npx' @('supabase', 'db', 'query', '--linked', '-f', $verify)
   } finally {
+    $token = $null
     if (Test-Path $dir) { Remove-Item $dir -Recurse -Force }
   }
 }
