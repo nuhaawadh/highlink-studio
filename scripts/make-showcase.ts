@@ -11,6 +11,7 @@
  *   --budget <دولار>  سقف ما يُصرف عند fal في هذا التشغيل (يختار الأعلى أثرًا لكل دولار أولًا: صور العائلات، صور القوالب،
  *                     فيديوهات العائلات من الأرخص، فيديوهات القوالب، ثم الهيرو) — والباقي يُكمَل في تشغيل لاحق بلا تكرار
  *   --replicate-budget <دولار>  نفس السقف لـReplicate (القوالب بنص عربي)
+ *   --key <مفتاح,مفتاح>  عناصر بعينها فقط (video:kling، ramadan-greeting، hero) — مع --force لإعادة توليدها
  *
  * ما يفعله عند --run: مستخدم مؤقت بباقة كريتورز (تزامن 8) + منحة رصيد بقدر التكلفة (دفتر الرصيد، نوع bonus)، يولّد،
  * ينسخ كل ناتج إلى media/showcase/… (عام)، يكتب content/showcase/showcase.json بعد كل نجاح، ثم يحذف المستخدم المؤقت وملفاته.
@@ -44,6 +45,7 @@ const BUDGET: Record<string, number> = {
   replicate: opt('--replicate-budget') ? Number(opt('--replicate-budget')) : Infinity,
 }
 const CONCURRENCY = Math.min(8, Number(opt('--concurrency') ?? 6))
+const KEYS = opt('--key') ? new Set(opt('--key')!.split(',').map((k) => k.trim()).filter(Boolean)) : null
 
 // ------------------------------------------------------------------ إعداد
 function readEnv(p: string): Record<string, string> {
@@ -212,6 +214,11 @@ async function buildPlan(models: ModelRow[]): Promise<{ jobs: Job[]; skipped: st
       job.template = t.id
       jobs.push(job)
     }
+  }
+  if (KEYS) {
+    const keep = jobs.filter((j) => KEYS.has(j.key) || (KEYS.has('hero') && j.section === 'hero'))
+    jobs.length = 0
+    jobs.push(...keep)
   }
   // بسقف ميزانية: الأعلى أثرًا لكل دولار أولًا، وما لا يتسع يُترك لتشغيل لاحق (يتخطى ما وُلّد)
   const budgeted = Object.values(BUDGET).some((b) => Number.isFinite(b))
