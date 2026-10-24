@@ -8,6 +8,9 @@
  *   node apps/web/node_modules/jiti/lib/jiti-cli.mjs scripts/make-showcase.ts --run --limit 3 ← تجربة على 3
  *   node apps/web/node_modules/jiti/lib/jiti-cli.mjs scripts/make-showcase.ts --run           ← الكل (يسأل قبل البدء)
  * خيارات: --only hero|families|templates  --force (يعيد ما وُلّد سابقًا)  --concurrency 6
+ *   --budget <دولار>  سقف ما يُصرف عند fal في هذا التشغيل (يختار الأعلى أثرًا لكل دولار أولًا: صور العائلات، صور القوالب،
+ *                     فيديوهات العائلات من الأرخص، فيديوهات القوالب، ثم الهيرو) — والباقي يُكمَل في تشغيل لاحق بلا تكرار
+ *   --replicate-budget <دولار>  نفس السقف لـReplicate (القوالب بنص عربي)
  *
  * ما يفعله عند --run: مستخدم مؤقت بباقة كريتورز (تزامن 8) + منحة رصيد بقدر التكلفة (دفتر الرصيد، نوع bonus)، يولّد،
  * ينسخ كل ناتج إلى media/showcase/… (عام)، يكتب content/showcase/showcase.json بعد كل نجاح، ثم يحذف المستخدم المؤقت وملفاته.
@@ -36,6 +39,10 @@ const OFFLINE = flag('--offline')
 const FORCE = flag('--force')
 const ONLY = opt('--only')
 const LIMIT = opt('--limit') ? Number(opt('--limit')) : Infinity
+const BUDGET: Record<string, number> = {
+  fal: opt('--budget') ? Number(opt('--budget')) : Infinity,
+  replicate: opt('--replicate-budget') ? Number(opt('--replicate-budget')) : Infinity,
+}
 const CONCURRENCY = Math.min(8, Number(opt('--concurrency') ?? 6))
 
 // ------------------------------------------------------------------ إعداد
@@ -206,7 +213,24 @@ async function buildPlan(models: ModelRow[]): Promise<{ jobs: Job[]; skipped: st
       jobs.push(job)
     }
   }
-  return { jobs: jobs.slice(0, LIMIT), skipped }
+  // بسقف ميزانية: الأعلى أثرًا لكل دولار أولًا، وما لا يتسع يُترك لتشغيل لاحق (يتخطى ما وُلّد)
+  const budgeted = Object.values(BUDGET).some((b) => Number.isFinite(b))
+  if (!budgeted) return { jobs: jobs.slice(0, LIMIT), skipped }
+  const rank = (j: Job) => (j.section === 'families' ? (j.kind === 'image' ? 0 : 2) : j.section === 'templates' ? (j.kind === 'image' ? 1 : 3) : 4)
+  const ordered = [...jobs].sort((a, b) => rank(a) - rank(b) || a.cost - b.cost)
+  const left: Record<string, number> = { ...BUDGET }
+  const picked: Job[] = []
+  for (const j of ordered) {
+    const usd = (j.cost * CREDIT_USD) / MARKUP
+    const p = j.model.provider
+    if ((left[p] ?? Infinity) < usd) {
+      skipped.push(`${j.section}/${j.key}: over the ${p} budget this run ($${usd.toFixed(2)})`)
+      continue
+    }
+    left[p] = (left[p] ?? Infinity) - usd
+    picked.push(j)
+  }
+  return { jobs: picked.slice(0, LIMIT), skipped }
 }
 
 // ------------------------------------------------------------------ التنفيذ
@@ -214,7 +238,7 @@ async function main() {
   let models: unknown
   if (OFFLINE) {
     const gen = JSON.parse(readFileSync(path.join(ROOT, 'content', 'catalog', 'models.generated.json'), 'utf8')).models as ModelRow[]
-    models = gen.filter((m) => m.enabled).sort((a, b) => a.sort - b.sort)
+    models = gen.filter((m) => m.enabled).map((m) => ({ ...m, provider: m.provider ?? 'fal' })).sort((a, b) => a.sort - b.sort)
   } else {
     const r = await call('GET', '/rest/v1/models?select=*&enabled=eq.true&order=sort.asc', SERVICE)
     if (r.status !== 200 || !Array.isArray(r.data)) throw new Error(`could not load models: HTTP ${r.status}`)
