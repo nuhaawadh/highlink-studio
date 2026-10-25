@@ -49,6 +49,19 @@ export function PricingPage() {
         </div>
       </header>
 
+      {/* البداية المجانية منفصلة عن الباقات: زر الباقة المدفوعة يقول "اشترك" دائمًا (كان "ابدأ مجانًا" للزائر فيلخبط) */}
+      {!user && (
+        <div className="mb-8 flex flex-col items-start justify-between gap-3 border border-text p-4 sm:flex-row sm:items-center">
+          <p className="text-sm">{t('pricing.freeStrip', { bonus: SIGNUP_BONUS_CREDITS })}</p>
+          <Link
+            to="/login?mode=signup"
+            className="inline-flex h-10 shrink-0 items-center border border-text px-5 text-sm font-semibold text-text transition-colors hover:bg-text hover:text-bg"
+          >
+            {t('pricing.startFree')}
+          </Link>
+        </div>
+      )}
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {PAID_PLANS.map((plan) => (
           <PlanCard key={plan.id} plan={plan} yearly={yearly} fmt={fmt} signedIn={Boolean(user)} />
@@ -141,14 +154,16 @@ function PlanCard({
           {t('pricing.subscribe')}
         </Button>
       ) : (
+        // الزائر: التسجيل أولًا ثم يرجع للباقات (state.from) — الدفع نفسه يُفعَّل لاحقًا
         <Link
-          to="/login"
+          to="/login?mode=signup"
+          state={{ from: '/pricing' }}
           className={cn(
             'mt-6 inline-flex h-10 w-full items-center justify-center text-sm font-medium',
             popular ? 'bg-lime text-lime-ink' : 'border border-text bg-bg text-text hover:bg-text hover:text-bg',
           )}
         >
-          {t('pricing.startFree')}
+          {t('pricing.subscribe')}
         </Link>
       )}
     </div>

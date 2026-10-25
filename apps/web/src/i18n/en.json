@@ -114,7 +114,8 @@
       "public": "Your work may appear in the public gallery",
       "allModels": "All models and studios",
       "commercial": "Commercial use of outputs"
-    }
+    },
+    "freeStrip": "Not ready to subscribe? Sign up free, get {bonus} gift credits with no card, and try the studio."
   },
   "contact": {
     "title": "Contact us",
