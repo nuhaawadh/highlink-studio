@@ -5,7 +5,7 @@ import { AssetCard } from '@/components/studio/AssetCard'
 import { CreditCostButton } from '@/components/studio/CreditCostButton'
 import { Textarea } from '@/components/ui/textarea'
 import { useI18n } from '@/i18n'
-import { createQueuedAsset, GenerateError, requestGeneration, useAssets, type AssetRow } from '@/lib/assets'
+import { createQueuedAssets, GenerateError, requestGeneration, useAssets, type AssetRow } from '@/lib/assets'
 import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import type { StudioRecipe } from '@/lib/studios'
@@ -94,19 +94,17 @@ export function StudioWizard({ recipe, costEach, preview }: { recipe: StudioReci
       const runId = crypto.randomUUID()
       const outputs = recipe.outputs.filter((o) => selected.includes(o.key))
       const display = scene.trim() ? `${presetName(preset)} — ${scene.trim()}` : presetName(preset)
-      const rows = await Promise.all(
-        outputs.map((o) =>
-          createQueuedAsset({
-            userId,
-            type: 'image',
-            model: `studio:${recipe.id}`,
-            prompt: display,
-            aspectRatio: o.aspect_ratio,
-            resolution: recipe.defaults.resolution,
-            featureTag: 'product',
-            runId,
-          }),
-        ),
+      const rows = await createQueuedAssets(
+        outputs.map((o) => ({
+          userId,
+          type: 'image' as const,
+          model: `studio:${recipe.id}`,
+          prompt: display,
+          aspectRatio: o.aspect_ratio,
+          resolution: recipe.defaults.resolution,
+          featureTag: 'product' as const,
+          runId,
+        })),
       )
       rows.forEach(upsertLocal)
       const res = await requestGeneration({

@@ -160,6 +160,8 @@ export function defaultGateDeps(ctx: { fn: string; started: number; userId: stri
         slug: job.provider_slug,
         input: job.provider_input,
         webhookUrl: `${projectUrl()}/functions/v1/provider-webhook?source=${provider.name}`,
+        // داخل الـwebhook: لا انتظار 429 (B33-T2) — فشل الإرسال = فشل نهائي واسترداد (I3)
+        maxThrottleRetries: 0,
       })
       return jobId
     },

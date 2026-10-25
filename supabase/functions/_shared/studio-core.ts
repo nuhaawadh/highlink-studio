@@ -11,7 +11,7 @@ import { modelCredits } from './pricing.ts'
 import { getProvider } from './providers/index.ts'
 import type { GenerateRequestInput } from './request.ts'
 import { checkPromptSafety } from './safety.ts'
-import { isOwnReferenceUrl, renderStudioPrompt, selectOutputs, StudioRecipeSchema } from './studio.ts'
+import { isOwnReferenceUrl, renderStudioPrompt, sanitizeUserText, selectOutputs, StudioRecipeSchema } from './studio.ts'
 import { projectUrl, supabaseAdmin } from './supabaseAdmin.ts'
 import { GENERATE_ERROR_CODES, type GenerateErrorCode, type GenerateResponse, type ModelRow } from './types.ts'
 
@@ -190,7 +190,8 @@ export async function runStudio(ctx: { fn: string; userId: string; body: Generat
         studio_id: recipe.id,
         preset: req.preset,
         scene: req.scene || null,
-        headline: req.text || null,
+        // نفس النص المنظّف الذي يصل للمولّد (sanitizeUserText) — المطابقة على ما طُلب رسمه فعلًا
+        headline: sanitizeUserText(req.text, recipe.limits.text_max) || null,
         output_key: p.output.key,
         reference_url: reference,
         provider: provider.name,

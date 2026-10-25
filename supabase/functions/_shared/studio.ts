@@ -141,7 +141,12 @@ export function isOwnReferenceUrl(url: string, projectUrl: string, userId: strin
     return false
   }
   if (u.protocol !== 'https:' || u.host !== p.host || u.search || u.hash) return false
-  const path = decodeURIComponent(u.pathname)
+  let path: string
+  try {
+    path = decodeURIComponent(u.pathname)
+  } catch {
+    return false // ترميز % معطوب (backlog B33-T3)
+  }
   if (path.includes('..') || path.includes('//')) return false
   const base = '/storage/v1/object/public/media/'
   return path.startsWith(`${base}up/${userId}/`) || path.startsWith(`${base}u/${userId}/`)

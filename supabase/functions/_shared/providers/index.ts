@@ -8,6 +8,8 @@ export interface ProviderJob {
   slug: string
   input: Record<string, unknown>
   webhookUrl: string
+  /** حد إعادات 429 القصيرة (Replicate). 0 في مسار إعادة بوابة الجودة داخل الـwebhook (backlog B33-T2) */
+  maxThrottleRetries?: number
 }
 
 export type ProviderJobStatus = 'succeeded' | 'failed' | 'canceled' | 'processing'

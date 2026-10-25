@@ -51,3 +51,21 @@ describe('throttleWaitSeconds — 429 من Replicate (6/دقيقة بدفعة 1 
     expect(throttleWaitSeconds(429, JSON.stringify({ retry_after: 60 }), null)).toBeNull()
   })
 })
+
+describe('submit — maxThrottleRetries (B33-T2: مسار إعادة البوابة بلا انتظار 429)', () => {
+  it('0 = يفشل فورًا عند 429 بنداء واحد', async () => {
+    ;(globalThis as { Deno?: unknown }).Deno ??= { env: { get: () => 'r8_test' } }
+    const original = globalThis.fetch
+    let calls = 0
+    globalThis.fetch = (async () => {
+      calls++
+      return new Response(JSON.stringify({ status: 429, retry_after: 1 }), { status: 429 })
+    }) as typeof fetch
+    try {
+      await expect(replicate.submit({ slug: 'a/b', input: {}, webhookUrl: 'https://x/w', maxThrottleRetries: 0 })).rejects.toBeInstanceOf(AppError)
+      expect(calls).toBe(1)
+    } finally {
+      globalThis.fetch = original
+    }
+  })
+})

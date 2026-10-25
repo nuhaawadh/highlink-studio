@@ -9,6 +9,14 @@ import { buildJudgePrompt, judgeResponseSchema, parseJudgeResponse, type JudgeRe
  */
 const API = 'https://generativelanguage.googleapis.com/v1beta/models'
 const TIMEOUT_MS = 15_000
+/** ميزانية الحكم الكلية داخل الـwebhook (backlog B33-T2) — بعدها يُرمى الخطأ فتسلّم البوابة unchecked بدل تجاوز حد Edge */
+export const JUDGE_BUDGET_MS = 45_000
+
+export interface JudgeDeps {
+  fetch: typeof fetch
+  now: () => number
+}
+const realDeps: JudgeDeps = { fetch: (...a) => fetch(...a), now: () => Date.now() }
 const DEFAULT_MODELS = ['gemini-3.8-flash', 'gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash']
 /** حد الصورتين معًا قبل base64 — طلب Gemini inline محدود بـ20MB */
 const MAX_TOTAL_BYTES = 14 * 1024 * 1024
@@ -38,18 +46,22 @@ function toBase64(bytes: Uint8Array): string {
   return btoa(bin)
 }
 
-async function fetchImage(url: string): Promise<{ mime: string; bytes: Uint8Array }> {
-  const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) })
+async function fetchImage(url: string, deps: JudgeDeps): Promise<{ mime: string; bytes: Uint8Array }> {
+  const res = await deps.fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) })
   if (!res.ok) throw new Error(`judge: image fetch ${res.status}`)
   const mime = (res.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase()
   if (!mime.startsWith('image/')) throw new Error(`judge: not an image (${mime || 'none'})`)
   return { mime, bytes: new Uint8Array(await res.arrayBuffer()) }
 }
 
-export async function judgeStudioOutput(args: { referenceUrl: string; outputUrl: string; expectedText?: string }): Promise<JudgeResult & { model: string }> {
+export async function judgeStudioOutput(
+  args: { referenceUrl: string; outputUrl: string; expectedText?: string },
+  deps: JudgeDeps = realDeps,
+): Promise<JudgeResult & { model: string }> {
   const key = Deno.env.get('GEMINI_API_KEY')
   if (!key) throw new Error('judge: GEMINI_API_KEY missing')
-  const [ref, out] = await Promise.all([fetchImage(args.referenceUrl), fetchImage(args.outputUrl)])
+  const started = deps.now()
+  const [ref, out] = await Promise.all([fetchImage(args.referenceUrl, deps), fetchImage(args.outputUrl, deps)])
   if (ref.bytes.byteLength + out.bytes.byteLength > MAX_TOTAL_BYTES) {
     throw new Error(`judge: images too large (${ref.bytes.byteLength + out.bytes.byteLength} bytes)`)
   }
@@ -70,13 +82,15 @@ export async function judgeStudioOutput(args: { referenceUrl: string; outputUrl:
   })
   const errors: string[] = []
   for (const model of judgeModels()) {
+    const remaining = JUDGE_BUDGET_MS - (deps.now() - started)
+    if (remaining <= 0) throw new Error(`judge: time budget exhausted (${errors.join('; ')})`)
     let res: Response
     try {
-      res = await fetch(`${API}/${encodeURIComponent(model)}:generateContent`, {
+      res = await deps.fetch(`${API}/${encodeURIComponent(model)}:generateContent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
         body: payload,
-        signal: AbortSignal.timeout(TIMEOUT_MS),
+        signal: AbortSignal.timeout(Math.min(TIMEOUT_MS, remaining)),
       })
     } catch (e) {
       errors.push(`${model}: ${e instanceof Error ? e.name : String(e)}`)

@@ -754,6 +754,48 @@ begin
   if p <> 'pro' then raise exception 'T25f service_role plan change: got %', p; end if;
 end $$;
 
+-- =====================================================================
+-- T26: migration 0010 — رفع المراجع (backlog B33-T1): صور فقط (png/jpg/jpeg/webp) وحد يومي 40 لكل مستخدم
+-- =====================================================================
+do $$
+declare
+  u9 uuid := gen_random_uuid();
+  i  int;
+  r  record;
+begin
+  insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  values (u9, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'upload-test-' || u9 || '@example.invalid', '', now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now());
+
+  execute 'set local role authenticated';
+  perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u9)::text, true);
+
+  -- T26a: امتدادات الصور تمر (بأي حالة أحرف)، وغيرها يُرفض
+  insert into storage.objects (bucket_id, name) values ('media', 'up/' || u9 || '/a.PNG'), ('media', 'up/' || u9 || '/b.jpeg'), ('media', 'up/' || u9 || '/c.webp');
+  for r in select * from (values ('mp4', 'up/' || u9 || '/v.mp4'), ('svg', 'up/' || u9 || '/x.svg'), ('none', 'up/' || u9 || '/noext'), ('double', 'up/' || u9 || '/x.png.mp4')) as t(label, path)
+  loop
+    begin
+      insert into storage.objects (bucket_id, name) values ('media', r.path);
+      raise exception 'T26a % should have been rejected', r.label;
+    exception when others then
+      if sqlstate <> '42501' then raise exception 'T26a %: expected 42501, got % (%)', r.label, sqlstate, sqlerrm; end if;
+    end;
+  end loop;
+
+  -- T26b: الحد اليومي 40 (3 أعلاه + 37 = 40)، ثم الرفع 41 يُرفض
+  for i in 1..37 loop
+    insert into storage.objects (bucket_id, name) values ('media', 'up/' || u9 || '/q' || i || '.png');
+  end loop;
+  begin
+    insert into storage.objects (bucket_id, name) values ('media', 'up/' || u9 || '/over.png');
+    raise exception 'T26b 41st upload should have been rejected';
+  exception when others then
+    if sqlstate <> '42501' then raise exception 'T26b: expected 42501, got % (%)', sqlstate, sqlerrm; end if;
+  end;
+
+  execute 'reset role';
+  perform set_config('request.jwt.claims', '', true);
+end $$;
+
 select 'ALL CREDIT TESTS PASSED' as result;
 
 rollback;

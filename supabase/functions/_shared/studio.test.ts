@@ -100,5 +100,8 @@ describe('isOwnReferenceUrl', () => {
     expect(isOwnReferenceUrl(`${project}/storage/v1/object/public/media/up/${uid}/../other/p.png`, project, uid)).toBe(false)
     expect(isOwnReferenceUrl(`${project}/storage/v1/object/public/media/up/${uid}/%2e%2e/x.png`, project, uid)).toBe(false)
     expect(isOwnReferenceUrl('not a url', project, uid)).toBe(false)
+    // B33-T3: ترميز % معطوب لا يرمي (كان خطأً داخليًا بدل رفض)
+    expect(() => isOwnReferenceUrl(`${ok.replace('p.png', '%E0%A4%A.png')}`, project, uid)).not.toThrow()
+    expect(isOwnReferenceUrl(`${ok.replace('p.png', '%E0%A4%A.png')}`, project, uid)).toBe(false)
   })
 })

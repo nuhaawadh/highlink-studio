@@ -64,7 +64,7 @@ function mapStatus(s: unknown): ProviderJobStatus {
 export const replicate: ProviderAdapter = {
   name: 'replicate',
 
-  async submit({ slug, input, webhookUrl }) {
+  async submit({ slug, input, webhookUrl, maxThrottleRetries }) {
     // 429 بمهلة قصيرة (Replicate يخنق إنشاء التنبؤات إلى 6/دقيقة بدفعة 1 حين يقل رصيد الحساب عن 5$): ننتظر ونعيد حتى مرتين.
     // آمن: 429 يعني أن التنبؤ لم يُنشأ، فلا مهمة مكررة ولا تكلفة مزدوجة.
     let res: Response
@@ -83,7 +83,7 @@ export const replicate: ProviderAdapter = {
         throw new AppError('PROVIDER_ERROR', undefined, { detail: `replicate submit: ${e instanceof Error ? e.name + ' ' + e.message : String(e)}` })
       })
       text = await res.text()
-      const wait = attempt < MAX_THROTTLE_RETRIES ? throttleWaitSeconds(res.status, text, res.headers.get('retry-after')) : null
+      const wait = attempt < (maxThrottleRetries ?? MAX_THROTTLE_RETRIES) ? throttleWaitSeconds(res.status, text, res.headers.get('retry-after')) : null
       if (wait === null) break
       await new Promise((r) => setTimeout(r, wait * 1000))
     }

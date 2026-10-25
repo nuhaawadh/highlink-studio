@@ -124,6 +124,29 @@ export async function createQueuedAsset(input: CreateAssetInput): Promise<AssetR
 }
 
 /**
+ * يدرج صفوف تشغيل الاستوديو كلها في طلب واحد (backlog B33-T6): إما كلها أو لا شيء — لا صفوف queued يتيمة.
+ */
+export async function createQueuedAssets(inputs: CreateAssetInput[]): Promise<AssetRow[]> {
+  const rows = inputs.map((input) => ({
+    id: crypto.randomUUID(),
+    user_id: input.userId,
+    type: input.type,
+    status: 'queued',
+    model: input.model,
+    prompt: input.prompt,
+    aspect_ratio: input.aspectRatio ?? null,
+    resolution: input.resolution ?? null,
+    feature_tag: input.featureTag ?? 'general',
+    run_id: input.runId ?? null,
+  }))
+  const { data, error } = await supabase.from('assets').insert(rows).select('*')
+  if (error) throw new Error(error.message)
+  // ترتيب الرد غير مضمون — نعيده بترتيب الطلب
+  const byId = new Map((data ?? []).map((r) => [r.id, r]))
+  return rows.map((r) => byId.get(r.id)!).filter(Boolean)
+}
+
+/**
  * صورة مصغّرة لفيديو مكتمل تُلتقط من أول إطار في المتصفح (المخطط §6) وتُرفع عبر Edge Function بصلاحية السيرفر.
  * يرجع الرابط أو null إن رُفض (ليس فشلًا يُعرض للمستخدم).
  */
