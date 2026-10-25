@@ -8,19 +8,12 @@ import { MediaTile } from '@/components/studio/MediaTile'
 import { TemplateCover } from '@/components/studio/TemplateIcon'
 import { useI18n } from '@/i18n'
 import { useAuth } from '@/lib/auth'
-import { familyName, groupByFamily, modelCost, modelDefaults, modelName, modelSupports, useModels, videoCost, type ModelRow } from '@/lib/models'
+import { affordableCount, familyName, groupByFamily, modelDefaults, modelName, modelSupports, useModels, videoCost, type ModelRow } from '@/lib/models'
 import { familyMedia, heroShowcase, LIKE_HERO, likeCost, likeHref, templateMedia, wallMedia } from '@/lib/showcase'
 import { templateCatalog, templateSeason, useModelMap } from '@/lib/templates'
 import { cn } from '@/lib/utils'
 
 const defaultVideoCost = (m: ModelRow) => videoCost(m, { duration: modelDefaults(m).duration, resolution: modelDefaults(m).resolution })
-const defaultImageCost = (m: ModelRow) => modelCost(m, modelDefaults(m).imageSize ?? '1K')
-
-/** كم توليدة تكفيها هدية التسجيل بأرخص نموذج ظاهر (بإعداداته الافتراضية) — "حتى" لأن الأغلى أقل */
-function giftCount(models: ModelRow[], cost: (m: ModelRow) => number): number | null {
-  const costs = models.map(cost).filter((c) => c > 0)
-  return costs.length ? Math.floor(SIGNUP_BONUS_CREDITS / Math.min(...costs)) : null
-}
 
 /**
  * الرئيسية (دليل الهوية V1 + معرض العرض): العنوان والزر في البداية، وجدار من نتائج حقيقية ولّدتها المنصة في النهاية —
@@ -56,8 +49,8 @@ export function HomePage() {
   const shownFamilies = families.filter((f) => familyMedia('video', f.key)).slice(0, 6)
 
   const start = user ? '/image-generate' : '/login?mode=signup'
-  const giftImages = useMemo(() => giftCount(imageModels, defaultImageCost), [imageModels])
-  const giftVideos = useMemo(() => giftCount(videoModels, defaultVideoCost), [videoModels])
+  const giftImages = useMemo(() => affordableCount(imageModels, SIGNUP_BONUS_CREDITS), [imageModels])
+  const giftVideos = useMemo(() => affordableCount(videoModels, SIGNUP_BONUS_CREDITS), [videoModels])
 
   return (
     <div className="pt-16">
@@ -86,7 +79,7 @@ export function HomePage() {
             {hero ? (
               // الهيرو المختار كبير، وتحته صف من ثلاثة أمثلة بنفس القص (4:5)
               <div className="flex flex-col gap-2 md:gap-3">
-                <LikeTile likeKey={LIKE_HERO} media={hero} />
+                <LikeTile likeKey={LIKE_HERO} media={hero} always />
                 <div className="grid grid-cols-3 gap-2 md:gap-3">
                   {wall.slice(0, 3).map((w) => (
                     <LikeTile key={w.key} likeKey={w.key} media={w.media} className="aspect-[4/5]" fill />
@@ -169,7 +162,7 @@ export function HomePage() {
               // "سوّ مثلها": صفحة التوليد بالبرومت والنموذج والإعدادات نفسها (بلا جلسة → الدخول ثم الرجوع هنا)
               return (
                 <Link key={f.key} to={likeHref(familyKey('video', f.key), 'video')} className="group flex flex-col gap-2">
-                  <div className="border border-border transition-colors group-hover:border-text">
+                  <div className="lime-trace relative border border-border transition-colors group-hover:border-text">
                     <MediaTile media={media} alt={name} />
                   </div>
                   <span className="flex items-baseline justify-between gap-3">
@@ -199,10 +192,14 @@ export function HomePage() {
 }
 
 /** مثال في جدار الرئيسية = رابط "سوّ مثلها" (الشارة تحت، بنفس لغة شارات الحملات) */
-function LikeTile({ likeKey, media, className, fill }: { likeKey: string; media: ShowcaseMedia; className?: string; fill?: boolean }) {
+function LikeTile({ likeKey, media, className, fill, always }: { likeKey: string; media: ShowcaseMedia; className?: string; fill?: boolean; always?: boolean }) {
   const { t } = useI18n()
   return (
-    <Link to={likeHref(likeKey, media.kind)} className={cn('group relative block overflow-hidden bg-inverse', className)}>
+    <Link
+      to={likeHref(likeKey, media.kind)}
+      data-trace={always ? 'always' : undefined}
+      className={cn('lime-trace group relative block overflow-hidden bg-inverse', className)}
+    >
       <MediaTile media={media} alt={media.prompt.slice(0, 120)} fill={fill} className={fill ? 'absolute inset-0' : undefined} />
       <span className="absolute bottom-0 start-0 inline-flex items-center gap-1 bg-inverse px-2 py-1 text-[11px] font-medium text-inverse-ink">
         {t('like.cta')} <ArrowLeft className="size-3 ltr:rotate-180" aria-hidden />

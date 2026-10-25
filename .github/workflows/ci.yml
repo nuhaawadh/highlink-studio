@@ -41,6 +41,8 @@ jobs:
       - name: stub Supabase auth schema, roles and publication
         run: |
           psql "postgresql://postgres:postgres@localhost:5432/postgres" -v ON_ERROR_STOP=1 <<'SQL'
+          -- الأدوار أولًا: منح صلاحيات storage تحت يحتاجها
+          create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
           create schema auth;
           create table auth.users (
             id uuid primary key, instance_id uuid, aud text, role text, email text, encrypted_password text,
@@ -67,7 +69,6 @@ jobs:
               (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role')
             )::text
           $$;
-          create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
           -- صلاحيات الأدوار كما يمنحها Supabase للمخطط public (تلزم اختبارات RLS T9–T11)
           grant usage on schema public, auth to anon, authenticated, service_role;
           grant execute on all functions in schema auth to anon, authenticated, service_role;

@@ -46,4 +46,64 @@
   .bg-brand-gradient {
     background-image: linear-gradient(90deg, var(--grad-1), var(--grad-2), var(--grad-3));
   }
+
+  /*
+    خط ضوء ليموني يلف على إطار الصورة/الفيديو (طلب نهى 2026-10-25). خط رفيع لا توهّج — الدليل يمنع الظلال.
+    يشتغل بالمرور أو التركيز (إطار واحد في كل لحظة، فيبقى الليموني نادرًا في الشاشة)، و`data-trace="always"` للهيرو.
+    "تقليل الحركة" = إطار ليموني ثابت بدل الدوران. الحاوية تحتاج `relative`.
+  */
+  .lime-trace::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    padding: 3px;
+    background: conic-gradient(
+      from var(--trace-angle),
+      transparent 0deg 240deg,
+      rgb(var(--col-lime) / 0.25) 290deg,
+      rgb(var(--col-lime)) 340deg,
+      rgb(var(--col-lime)) 356deg,
+      transparent 360deg
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: lime-trace-spin 3.2s linear infinite;
+    animation-play-state: paused;
+  }
+  .lime-trace:hover::after,
+  .lime-trace:focus-visible::after,
+  .lime-trace:focus-within::after,
+  .group:hover .lime-trace::after,
+  .group:focus-visible .lime-trace::after,
+  .lime-trace[data-trace='always']::after {
+    opacity: 1;
+    animation-play-state: running;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lime-trace::after {
+      animation: none;
+      background: rgb(var(--col-lime));
+    }
+  }
+}
+
+@property --trace-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes lime-trace-spin {
+  to {
+    --trace-angle: 360deg;
+  }
 }

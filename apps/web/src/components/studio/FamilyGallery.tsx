@@ -63,7 +63,7 @@ export function FamilyGallery({
                 aria-pressed={on}
                 className="flex flex-col text-start focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-text"
               >
-                <div className={cn('relative w-full overflow-hidden bg-inverse', aspect)}>
+                <div className={cn('lime-trace relative w-full overflow-hidden bg-inverse', aspect)}>
                   {media ? (
                     <>
                       <MediaTile media={media} alt={name} fill className="absolute inset-0" />

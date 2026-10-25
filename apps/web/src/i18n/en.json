@@ -167,7 +167,7 @@
   },
   "account": {
     "title": "Account",
-    "subtitle": "Your details, balance and API keys.",
+    "subtitle": "Your credits, work, invoices and settings in one place.",
     "email": "Email",
     "plan": "Plan",
     "balance": "Balance",
@@ -204,7 +204,102 @@
     "empty": "No keys yet — create your first key to use the studio from n8n or your store.",
     "tooMany": "Limit reached: 10 active keys. Revoke an old key first.",
     "invalidWebhook": "The webhook URL must start with https://",
-    "error": "Something went wrong — please try again"
+    "error": "Something went wrong — please try again",
+    "memberSince": "Member since {date}",
+    "tabs": {
+      "overview": "Overview",
+      "credits": "Credit history",
+      "billing": "Invoices",
+      "profile": "Profile",
+      "developers": "Developers"
+    },
+    "overview": {
+      "balance": "Current balance",
+      "enough": "Enough for up to {images} images or {videos} videos with the cheapest model",
+      "topup": "Top up credits",
+      "create": "Start creating",
+      "plan": "Your plan",
+      "planMonthly": "{n} credits every month",
+      "planConcurrent": "Up to {n} generations at once",
+      "planFree": "You have your sign-up gift. Monthly plans open soon.",
+      "upgrade": "See plans",
+      "month": "This month",
+      "history": "Full credit history",
+      "statImages": "Images ready",
+      "statVideos": "Videos ready",
+      "statSpent": "Credits spent",
+      "statRefunded": "Generations refunded",
+      "recent": "Your latest work",
+      "allWork": "All your work",
+      "noWork": "Nothing generated yet.",
+      "noWorkCta": "Start from a template",
+      "qTemplates": "Saudi templates",
+      "qTemplatesHint": "A ready ad for your sector in a few fields",
+      "qPricing": "Plans and pricing",
+      "qPricingHint": "In SAR, with the cost shown before every generation",
+      "qHelp": "Need help?",
+      "qHelpHint": "Message us and we will get back to you"
+    },
+    "ledger": {
+      "title": "Credit history",
+      "hint": "Every movement on your balance: gifts, top-ups and charges. A failed generation refunds itself in full.",
+      "kinds": {
+        "signup": "Sign-up gift",
+        "grant": "Credits added",
+        "bonus": "Bonus credits",
+        "adjust": "Support adjustment",
+        "hold": "Generating",
+        "charge": "Generation",
+        "refund": "Refunded",
+        "expire": "Expired"
+      },
+      "pending": "held",
+      "expires": "Expires {date}",
+      "empty": "No movements yet.",
+      "more": "Show more"
+    },
+    "billing": {
+      "title": "Invoices",
+      "hint": "Top-up and subscription invoices in SAR.",
+      "empty": "No invoices yet.",
+      "soon": "Online payment opens soon: mada, Visa, Mastercard and Apple Pay.",
+      "seePlans": "See plans",
+      "date": "Date",
+      "amount": "Amount",
+      "credits": "Credits",
+      "status": "Status",
+      "sar": "SAR {n}",
+      "statuses": {
+        "initiated": "Pending",
+        "paid": "Paid",
+        "failed": "Failed",
+        "refunded": "Refunded"
+      }
+    },
+    "profile": {
+      "title": "Profile",
+      "name": "Your name",
+      "namePlaceholder": "The name shown on your account",
+      "save": "Save",
+      "saved": "Saved",
+      "emailHint": "Your email can’t be changed here. Message us if you need to change it.",
+      "language": "Interface language",
+      "lang": {
+        "ar": "العربية",
+        "en": "English"
+      },
+      "password": "Password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "changePassword": "Change password",
+      "passwordChanged": "Password changed",
+      "passwordShort": "Use 8 or more characters",
+      "passwordMismatch": "The passwords don’t match",
+      "googleAccount": "You sign in with Google, so your password is managed there.",
+      "help": "Contact us",
+      "delete": "Request data deletion",
+      "deleteHint": "You can ask us to delete your account and all your data. We explain the steps and timing."
+    }
   },
   "library": {
     "title": "Library",

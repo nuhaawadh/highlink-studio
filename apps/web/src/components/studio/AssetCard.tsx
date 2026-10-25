@@ -64,7 +64,7 @@ export function AssetCard({ asset, className }: { asset: AssetRow; className?: s
       data-type={asset.type}
       className={cn('group flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface', className)}
     >
-      <div className="relative w-full overflow-hidden bg-bg" style={{ aspectRatio: cssAspect(asset.aspect_ratio, asset.type) }}>
+      <div className="lime-trace relative w-full overflow-hidden bg-bg" style={{ aspectRatio: cssAspect(asset.aspect_ratio, asset.type) }}>
         {pending && (
           <>
             <Skeleton className="absolute inset-0 rounded-none" />

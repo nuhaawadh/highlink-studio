@@ -88,6 +88,18 @@ export function modelAudioFree(model: ModelRow): boolean {
   return s.audio === true && !(typeof s.audio_cps === 'number' && s.audio_cps > 0) && !tabled
 }
 
+/** تكلفة النموذج بإعداداته الافتراضية — فيديو: مدة ودقة الافتراض بلا صوت، صورة: دقة الافتراض */
+export function defaultCost(model: ModelRow): number {
+  const d = modelDefaults(model)
+  return model.type === 'video' ? videoCost(model, { duration: d.duration, resolution: d.resolution }) : modelCost(model, d.imageSize ?? '1K')
+}
+
+/** كم توليدة يكفيها رصيد بأرخص نموذج في القائمة (بإعداداته الافتراضية) — "حتى"، لأن الأغلى أقل. بلا نماذج مسعّرة = null */
+export function affordableCount(models: ModelRow[], credits: number): number | null {
+  const costs = models.map(defaultCost).filter((c) => c > 0)
+  return costs.length ? Math.floor(Math.max(0, credits) / Math.min(...costs)) : null
+}
+
 /** تكلفة صورة واحدة بهذا النموذج وبهذه الدقة — نفس حساب السيرفر */
 export function modelCost(model: ModelRow, imageSize: ImageSize): number {
   return safeCredits(model, { imageSize })

@@ -55,7 +55,7 @@ function CampaignCard({ c, models, title }: { c: CampaignDef; models: Map<string
   const label = (p: typeof reel) => (p.tpl ? (locale === 'ar' ? p.tpl.title_ar : p.tpl.title_en) : '')
 
   const still = (p: typeof reel, name: string) => (
-    <Link to={p.href} className="group relative block h-full min-h-0 overflow-hidden border border-border bg-inverse" aria-label={`${name}: ${label(p)}`}>
+    <Link to={p.href} className="lime-trace group relative block h-full min-h-0 overflow-hidden border border-border bg-inverse" aria-label={`${name}: ${label(p)}`}>
       {p.media ? (
         <MediaTile media={p.media} alt={label(p)} fill className="absolute inset-0" />
       ) : (
@@ -70,7 +70,7 @@ function CampaignCard({ c, models, title }: { c: CampaignDef; models: Map<string
       <div className={cn('grid gap-2', wide ? 'grid-cols-2 grid-rows-[auto_auto]' : 'grid-cols-[1.15fr_1fr]')}>
         <Link
           to={reel.href}
-          className={cn('group relative block overflow-hidden border border-border bg-inverse', wide && 'col-span-2')}
+          className={cn('lime-trace group relative block overflow-hidden border border-border bg-inverse', wide && 'col-span-2')}
           aria-label={`${t('campaigns.reel')}: ${label(reel)}`}
         >
           <MediaTile media={reel.media!} alt={label(reel)} />

@@ -22,7 +22,7 @@ const ICONS: Record<string, LucideIcon> = {
 export function TemplateCover({ category, icon, media, alt, className }: { category: string; icon?: string; media?: ShowcaseMedia | null; alt?: string; className?: string }) {
   if (media) {
     return (
-      <div data-category={category} className={cn('relative overflow-hidden bg-inverse', className)}>
+      <div data-category={category} className={cn('lime-trace relative overflow-hidden bg-inverse', className)}>
         <MediaTile media={media} alt={alt ?? ''} fill className="absolute inset-0" />
       </div>
     )
