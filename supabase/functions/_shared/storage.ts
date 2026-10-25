@@ -22,9 +22,12 @@ export function extensionFor(contentType: string): string | null {
   return EXT_BY_TYPE[contentType.split(';')[0].trim().toLowerCase()] ?? null
 }
 
-export async function put(path: string, bytes: Uint8Array, contentType: string): Promise<void> {
+/** bucket خاص (migration 0008): المحاولات المرفوضة من بوابة الجودة — لا قراءة عامة ولا سياسات (المراجعة المستقلة C2) */
+const PRIVATE_BUCKET = 'qa-private'
+
+export async function put(path: string, bytes: Uint8Array, contentType: string, bucket: string = BUCKET): Promise<void> {
   const { error } = await supabaseAdmin()
-    .storage.from(BUCKET)
+    .storage.from(bucket)
     .upload(path, bytes, { contentType, upsert: true, cacheControl: '31536000' })
   if (error) throw new AppError('PROVIDER_ERROR', 'تعذّر حفظ الناتج في التخزين', { detail: error.message })
 }
@@ -49,7 +52,7 @@ export interface CopiedFile {
 const FETCH_TIMEOUT_MS = 60_000
 export const MAX_OUTPUT_BYTES = 52_428_800
 
-export async function copyFromUrl(sourceUrl: string, basePath: string, expected: 'image' | 'video'): Promise<CopiedFile> {
+async function fetchOutput(sourceUrl: string, expected: 'image' | 'video'): Promise<{ bytes: Uint8Array; contentType: string; ext: string }> {
   const res = await fetch(sourceUrl, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }).catch((e: unknown) => {
     throw new AppError('PROVIDER_ERROR', 'تعذّر جلب الناتج من المزوّد', { detail: `fetch: ${e instanceof Error ? e.name + ' ' + e.message : String(e)}` })
   })
@@ -67,7 +70,20 @@ export async function copyFromUrl(sourceUrl: string, basePath: string, expected:
   const bytes = new Uint8Array(await res.arrayBuffer())
   if (bytes.byteLength === 0) throw new OutputRejectedError('ناتج المزوّد فارغ', 'zero bytes')
   if (bytes.byteLength > MAX_OUTPUT_BYTES) throw new OutputRejectedError('ناتج المزوّد أكبر من الحد المسموح', `bytes ${bytes.byteLength}`)
+  return { bytes, contentType, ext }
+}
+
+export async function copyFromUrl(sourceUrl: string, basePath: string, expected: 'image' | 'video'): Promise<CopiedFile> {
+  const { bytes, contentType, ext } = await fetchOutput(sourceUrl, expected)
   const path = `${basePath}.${ext}`
   await put(path, bytes, contentType)
   return { url: publicUrl(path), path, bytes: bytes.byteLength, contentType }
+}
+
+/** نسخة إلى التخزين الخاص (qa-private) — بلا رابط عام؛ المسار يُحفظ في studio_jobs فقط */
+export async function copyToPrivate(sourceUrl: string, basePath: string): Promise<{ path: string; bytes: number }> {
+  const { bytes, contentType, ext } = await fetchOutput(sourceUrl, 'image')
+  const path = `${basePath}.${ext}`
+  await put(path, bytes, contentType, PRIVATE_BUCKET)
+  return { path, bytes: bytes.byteLength }
 }

@@ -404,7 +404,7 @@ begin
     (r2a, u5, 'image', 'queued', 'studio:product-shot', run2),
     (r2b, u5, 'image', 'queued', 'studio:product-shot', run2),
     (solo, u5, 'image', 'queued', 'nano-banana-pro', null),
-    (other, u6, 'image', 'queued', 'studio:product-shot', run1);
+    (other, u6, 'image', 'queued', 'studio:product-shot', gen_random_uuid());  -- تشغيل مستقل لمستخدم آخر (0008: run_id مشترك بين مستخدمين = INVALID_RUN، يغطيه T22c)
 
   -- T15a: رصيد 30 < 33 → INSUFFICIENT_CREDITS ولا أثر: الأصول queued ولا صف في الدفتر
   begin
@@ -529,6 +529,108 @@ begin
   if n <> 1 then raise exception 'T20b admin should see disabled studio, got % rows', n; end if;
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
+end $$;
+
+-- =====================================================================
+-- T22–T24: migration 0008 — إصلاحات المراجعة المستقلة للاستوديو (2026-10-25)
+--   T22 (I1): run_id لا يتجاوز حد التزامن — أصل له run_id لا يمر من claim_and_hold، والتشغيل يجب أن يضم كل أصول run_id
+--   T23 (C1): metadata لا يكتبها العميل (لا تحديث ولا إدراج بمحتوى)
+--   T24 (C1/C2): studio_jobs وbucket qa-private مغلقان أمام الواجهة
+-- =====================================================================
+do $$
+declare
+  u7    uuid := gen_random_uuid();
+  u8    uuid := gen_random_uuid();
+  runA  uuid := gen_random_uuid();
+  a1    uuid := gen_random_uuid();
+  a2    uuid := gen_random_uuid();
+  sneak uuid := gen_random_uuid();
+  plain uuid := gen_random_uuid();
+  n     int;
+  r     record;
+begin
+  insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at)
+  values
+    (u7, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'fix-test-' || u7 || '@example.invalid', '', now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now()),
+    (u8, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'fix-test-' || u8 || '@example.invalid', '', now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now());
+  perform public.grant_credits(u7, 100, 'bonus', 'fix-test');
+  insert into public.assets (id, user_id, type, status, model, run_id) values
+    (a1, u7, 'image', 'queued', 'studio:product-shot', runA),
+    (a2, u7, 'image', 'queued', 'studio:product-shot', runA),
+    (sneak, u7, 'image', 'queued', 'nano-banana-pro', runA),
+    (plain, u7, 'image', 'queued', 'nano-banana-pro', null);
+
+  -- T22a: أصل عادي يحمل run_id → INVALID_RUN من claim_and_hold (لا يُحسب داخل تشغيل قائم)
+  begin
+    perform public.claim_and_hold(u7, sneak, 11, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T22a should have failed';
+  exception when others then
+    if sqlerrm <> 'INVALID_RUN' then raise exception 'T22a: expected INVALID_RUN, got %', sqlerrm; end if;
+  end;
+  -- T22b: تشغيل لا يضم كل أصول run_id (sneak خارجه) → INVALID_RUN بلا أثر
+  begin
+    perform public.claim_and_hold_run(u7, array[a1, a2], 11, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T22b should have failed';
+  exception when others then
+    if sqlerrm <> 'INVALID_RUN' then raise exception 'T22b: expected INVALID_RUN, got %', sqlerrm; end if;
+  end;
+  select count(*) into n from public.assets where id in (a1, a2, sneak) and status = 'queued';
+  if n <> 3 then raise exception 'T22b atomicity: expected 3 queued, got %', n; end if;
+  -- T22c: run_id لمستخدم آخر يطابق تشغيلي → INVALID_RUN (التشغيل يجب أن يكون كاملًا ولي وحدي)
+  insert into public.assets (id, user_id, type, status, model, run_id) values (gen_random_uuid(), u8, 'image', 'queued', 'studio:product-shot', runA);
+  begin
+    perform public.claim_and_hold_run(u7, array[a1, a2, sneak], 11, 'replicate', 'nano-banana-pro', 'image');
+    raise exception 'T22c should have failed';
+  exception when others then
+    if sqlerrm <> 'INVALID_RUN' then raise exception 'T22c: expected INVALID_RUN, got %', sqlerrm; end if;
+  end;
+  -- T22d: الأصل العادي بلا run_id ما زال يمر
+  perform public.claim_and_hold(u7, plain, 11, 'replicate', 'nano-banana-pro', 'image');
+
+  -- ---- كمستخدم مسجّل (الواجهة) ----
+  execute 'set local role authenticated';
+  perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u7)::text, true);
+
+  -- T23a: تحديث metadata من الواجهة → FORBIDDEN_COLUMN_UPDATE
+  begin
+    update public.assets set metadata = '{"studio":{"reference_url":"https://evil.invalid/x.png"}}'::jsonb where id = a1;
+    raise exception 'T23a should have failed';
+  exception when others then
+    if sqlerrm not like '%FORBIDDEN_COLUMN_UPDATE%' then raise exception 'T23a: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
+  end;
+  -- T23b: إدراج بـmetadata غير فارغة → سياسة الإدراج ترفض (42501)؛ بلا metadata يمر
+  begin
+    insert into public.assets (id, user_id, type, status, model, metadata) values (gen_random_uuid(), u7, 'image', 'queued', 'nano-banana-pro', '{"studio":{}}'::jsonb);
+    raise exception 'T23b should have failed';
+  exception when others then
+    if sqlstate <> '42501' then raise exception 'T23b: expected 42501, got % (%)', sqlstate, sqlerrm; end if;
+  end;
+  insert into public.assets (id, user_id, type, status, model) values (gen_random_uuid(), u7, 'image', 'queued', 'nano-banana-pro');
+
+  -- T24a: studio_jobs لا يُقرأ ولا يُكتب من الواجهة
+  select count(*) into n from public.studio_jobs;
+  if n <> 0 then raise exception 'T24a studio_jobs readable by authenticated (% rows)', n; end if;
+  begin
+    insert into public.studio_jobs (asset_id, user_id, run_id, studio_id, preset, output_key, reference_url, provider, provider_slug, provider_input, qa_config)
+    values (a1, u7, runA, 'product-shot', 'luxury', 'hero', 'https://x.test/a.png', 'replicate', 'x/y', '{}'::jsonb, '{}'::jsonb);
+    raise exception 'T24a insert should have failed';
+  exception when others then
+    if sqlstate <> '42501' then raise exception 'T24a insert: expected 42501, got % (%)', sqlstate, sqlerrm; end if;
+  end;
+  -- T24b: لا رفع إلى qa-private من الواجهة
+  begin
+    insert into storage.objects (bucket_id, name) values ('qa-private', 'up/' || u7 || '/x.png');
+    raise exception 'T24b should have failed';
+  exception when others then
+    if sqlstate <> '42501' then raise exception 'T24b: expected 42501, got % (%)', sqlstate, sqlerrm; end if;
+  end;
+
+  execute 'reset role';
+  perform set_config('request.jwt.claims', '', true);
+
+  -- T24c: qa-private موجود وخاص
+  select public into r from storage.buckets where id = 'qa-private';
+  if r.public is distinct from false then raise exception 'T24c qa-private bucket must exist and be private, got %', r.public; end if;
 end $$;
 
 select 'ALL CREDIT TESTS PASSED' as result;

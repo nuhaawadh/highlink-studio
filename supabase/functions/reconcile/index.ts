@@ -66,12 +66,15 @@ Deno.serve(async (req) => {
       try {
         const { data } = await db
           .from('assets')
-          .select('id, user_id, type, status, metadata, api_key_id, created_at, model')
+          .select('id, user_id, type, status, metadata, api_key_id, created_at, model, provider_job_id, run_id')
           .eq('id', r.asset!)
           .maybeSingle<FinalizableAsset & { created_at: string; model: string | null }>()
         asset = data
         if (!asset || asset.status !== 'processing') {
           entry.outcome = 'not_processing'
+        } else if (asset.provider_job_id !== r.provider_job_id) {
+          // I2: أعادت بوابة الجودة الإرسال بعد لقطة reconcile_holds — المهمة الحالية لم تتجاوز مهلتها بعد
+          entry.outcome = 'job_changed'
         } else {
           const provider = getProvider(r.provider!)
           // fal يبني رابط الطابور من مسار النقطة (owner/app) — نأخذه من صف النموذج؛ Replicate يتجاهله

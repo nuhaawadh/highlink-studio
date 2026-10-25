@@ -24,6 +24,7 @@ import type { GenerateResponse, ModelRow } from './types.ts'
 interface AssetRow {
   id: string
   user_id: string
+  run_id: string | null
   status: string
   provider: string | null
   provider_job_id: string | null
@@ -88,7 +89,7 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     // 1) الأصل
     const { data: asset, error: assetErr } = await db
       .from('assets')
-      .select('id, user_id, status, provider, provider_job_id, cost_credits, metadata')
+      .select('id, user_id, run_id, status, provider, provider_job_id, cost_credits, metadata')
       .eq('id', body.assetId)
       .maybeSingle<AssetRow>()
     if (assetErr) throw toAppError(new Error(assetErr.message))
@@ -97,6 +98,10 @@ export async function runGenerate(ctx: GenerateContext): Promise<GenerateRespons
     }
     assetId = asset.id
     assetMetadata = asset.metadata
+    // I1: أصل تشغيل استوديو لا يُحجز منفردًا (وإلا يُحسب داخل "التشغيل" ويتجاوز حد التزامن) — claim_and_hold يرفضه أيضًا
+    if (asset.run_id) {
+      throw new AppError('INVALID_INPUT', 'طلب الاستوديو غير صالح — أعد المحاولة من الصفحة', { status: 409, detail: 'asset belongs to a studio run' })
+    }
 
     // تكرار الطلب بنفس assetId بعد إرسال سابق → نفس الرد (idempotent) بدل حجز ثانٍ
     if (asset.status === 'processing' && asset.provider_job_id) {
