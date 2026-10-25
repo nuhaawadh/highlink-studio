@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
     // 3) الأصل المرتبط بالمهمة
     const { data: asset, error: assetErr } = await db
       .from('assets')
-      .select('id, user_id, type, status, metadata, api_key_id, model')
+      .select('id, user_id, type, status, metadata, api_key_id, model, provider_job_id, run_id')
       .eq('provider', provider.name)
       .eq('provider_job_id', result.jobId)
       .maybeSingle<FinalizableAsset & { model: string | null }>()

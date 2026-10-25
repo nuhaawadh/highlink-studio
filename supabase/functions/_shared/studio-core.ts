@@ -11,7 +11,7 @@ import { modelCredits } from './pricing.ts'
 import { getProvider } from './providers/index.ts'
 import type { GenerateRequestInput } from './request.ts'
 import { checkPromptSafety } from './safety.ts'
-import { isOwnReferenceUrl, renderStudioPrompt, selectOutputs, StudioRecipeSchema, type StudioRecipe } from './studio.ts'
+import { isOwnReferenceUrl, renderStudioPrompt, selectOutputs, StudioRecipeSchema } from './studio.ts'
 import { projectUrl, supabaseAdmin } from './supabaseAdmin.ts'
 import { GENERATE_ERROR_CODES, type GenerateErrorCode, type GenerateResponse, type ModelRow } from './types.ts'
 
@@ -25,19 +25,16 @@ interface RunAsset {
   metadata: Record<string, unknown> | null
 }
 
-/** ما يحمله كل أصل استوديو في metadata.studio — يقرؤه finalize لبوابة الجودة وإعادة الإرسال */
+/**
+ * ما يُعرض للواجهة في metadata.studio — للعرض فقط. البوابة لا تقرؤه أبدًا (المراجعة المستقلة C1):
+ * حالتها في studio_jobs (migration 0008) التي يكتبها السيرفر ولا تقرؤها الواجهة.
+ */
 export interface StudioAssetMeta {
   id: string
   preset: string
-  scene: string | null
-  text: string | null
   output: string
   aspect_ratio: string
   run_id: string
-  reference_url: string
-  provider: string
-  provider_slug: string
-  qa: StudioRecipe['qa']
 }
 
 async function failQueued(ids: string[], userId: string, err: AppError, fn: string) {
@@ -183,38 +180,49 @@ export async function runStudio(ctx: { fn: string; userId: string; body: Generat
     await claimAndHoldRun({ userId, assetIds: ids, amountEach: each, provider: provider.name, model: model.id, type: 'image' })
     ownedQueued = []
 
+    // 7.b) حالة البوابة لكل مقاس في studio_jobs قبل أي إرسال (I5: لا ناتج بلا بوابة حتى لو تعذّرت كتابة الأصل لاحقًا).
+    //      فشل الإدراج = لا إرسال: نعلّم الأصول فاشلة ثم نحرّر حجوزاتها (I4: هذا الترتيب يلتقطه reconcile_holds إن انقطعنا).
+    const { error: jobsErr } = await db.from('studio_jobs').insert(
+      plans.map((p) => ({
+        asset_id: p.asset.id,
+        user_id: userId,
+        run_id: runId,
+        studio_id: recipe.id,
+        preset: req.preset,
+        scene: req.scene || null,
+        headline: req.text || null,
+        output_key: p.output.key,
+        reference_url: reference,
+        provider: provider.name,
+        provider_slug: model.provider_slug,
+        provider_input: p.input,
+        qa_config: { product_match_min: recipe.qa.product_match_min, arabic_text_exact: recipe.qa.arabic_text_exact, max_retries: recipe.qa.max_retries },
+      })),
+    )
+    if (jobsErr) {
+      const err = new AppError('PROVIDER_ERROR', undefined, { detail: `studio_jobs insert: ${jobsErr.message}` })
+      for (const p of plans) {
+        await failProcessing(p.asset.id, userId, err, fn, p.asset.metadata).catch(() => undefined)
+        await releaseAssetHold(p.asset.id, `${fn}: studio_jobs insert failed`).catch(() => false)
+      }
+      throw err
+    }
+
     // 8) إرسال مهمة لكل مقاس بالتتابع (دفعة Replicate = 1 تحت 5$ — التوازي خُنق في التجربة الحية 2026-10-24)، ثم كتابتها.
     //    فشل مقاس لا يمس أخواته.
     const webhookUrl = `${projectUrl()}/functions/v1/provider-webhook?source=${provider.name}`
     const sendOne = async (p: (typeof plans)[number]) => {
-        const meta: StudioAssetMeta = {
-          id: recipe.id,
-          preset: req.preset,
-          scene: req.scene || null,
-          text: req.text || null,
-          output: p.output.key,
-          aspect_ratio: p.output.aspect_ratio,
-          run_id: runId,
-          reference_url: reference,
-          provider: provider.name,
-          provider_slug: model.provider_slug,
-          qa: recipe.qa,
-        }
-        const metadata = {
-          ...(p.asset.metadata ?? {}),
-          prompt_final: p.prompt,
-          provider_input: p.input,
-          locale: body.locale ?? 'ar',
-          studio: meta,
-          qa: { status: 'pending', attempts: [], retries_used: 0, judge_failures: 0 },
-        }
+        const meta: StudioAssetMeta = { id: recipe.id, preset: req.preset, output: p.output.key, aspect_ratio: p.output.aspect_ratio, run_id: runId }
+        // للعرض فقط — المدخلات والمرجع والإعدادات في studio_jobs (C1)
+        const metadata = { ...(p.asset.metadata ?? {}), locale: body.locale ?? 'ar', studio: meta, qa: { status: 'pending' } }
         let jobId: string
         try {
           ;({ jobId } = await provider.submit({ slug: model.provider_slug, input: p.input, webhookUrl }))
         } catch (e) {
           const err = toAppError(e)
-          const released = await releaseAssetHold(p.asset.id, `${fn}: studio submit ${err.code}`).catch(() => false)
+          // I4: نعلّم الأصل فاشلًا أولًا ثم نحرّر — "فاشل + حجز معلّق" يلتقطه reconcile_holds، و"processing بلا حجز" لا يلتقطه شيء
           await failProcessing(p.asset.id, userId, err, fn, metadata).catch(() => undefined)
+          const released = await releaseAssetHold(p.asset.id, `${fn}: studio submit ${err.code}`).catch(() => false)
           logRequest({ fn, user: userId, asset: p.asset.id, ms: Date.now() - started, ok: false, code: err.code, detail: err.detail, released, studio: studioId })
           return { assetId: p.asset.id, key: p.output.key, ok: false as const, error: err }
         }
@@ -233,7 +241,8 @@ export async function runStudio(ctx: { fn: string; userId: string; body: Generat
         if (wErr) ({ data: written, error: wErr } = await write())
         if (wErr || !written || written.length === 0) {
           // المهمة تعمل عند المزوّد: لا نرمي. نربط المعرّف على الأقل؛ الـwebhook أو reconcile يُنهيان
-          await db.from('assets').update({ provider_job_id: jobId }).eq('id', p.asset.id).is('provider_job_id', null).then(() => undefined, () => undefined)
+          // I5: المعرّف والـmetadata معًا (والبوابة تعمل من studio_jobs على أي حال)
+          await db.from('assets').update({ provider_job_id: jobId, metadata }).eq('id', p.asset.id).is('provider_job_id', null).then(() => undefined, () => undefined)
           logRequest({ fn, user: userId, asset: p.asset.id, ms: Date.now() - started, ok: false, code: 'JOB_NOT_RECORDED', detail: `job ${jobId}: ${wErr?.message ?? 'state changed'}` })
         }
         return { assetId: p.asset.id, key: p.output.key, ok: true as const, jobId }

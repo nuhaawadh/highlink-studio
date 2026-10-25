@@ -5,7 +5,7 @@ import { logRequest } from './log.ts'
 import { isOutputRejected, OutputRejectedError } from './output-errors.ts'
 import type { ProviderWebhookResult } from './providers/index.ts'
 import { copyFromUrl } from './storage.ts'
-import { QA_FAILED_MESSAGE_AR, studioMeta, studioQaGate, type QaState } from './studio-qa.ts'
+import { defaultGateDeps, loadStudioJob, QA_FAILED_MESSAGE_AR, runQaGate, type QaSummary } from './studio-qa.ts'
 import { supabaseAdmin } from './supabaseAdmin.ts'
 
 /**
@@ -25,29 +25,45 @@ export interface FinalizableAsset {
   status: string
   metadata: Record<string, unknown> | null
   api_key_id: string | null
+  /** المهمة الحالية للأصل — نتيجة مهمة أخرى (قديمة بعد إعادة البوابة) تُتجاهل (المراجعة المستقلة I2) */
+  provider_job_id?: string | null
+  run_id?: string | null
 }
 
 export const FAILED_MESSAGE_AR = 'فشل التوليد عند المزوّد — استُرجع رصيدك كاملًا'
 export const CANCELED_MESSAGE_AR = 'أُلغي التوليد — استُرجع رصيدك كاملًا'
 export const TIMEOUT_MESSAGE_AR = 'انتهت مهلة التوليد — استُرجع رصيدك كاملًا'
 export const OUTPUT_REJECTED_MESSAGE_AR = 'تعذّر حفظ الناتج — استُرجع رصيدك كاملًا'
+export const STUDIO_STATE_MISSING_AR = 'تعذّر فحص الصورة — استُرجع رصيدك كاملًا'
 
 export type FinalizeOutcome = 'completed' | 'failed' | 'skipped'
 
 export async function finalizeAsset(asset: FinalizableAsset, result: ProviderWebhookResult, ctx: { fn: string; started: number }): Promise<FinalizeOutcome> {
   const db = supabaseAdmin()
   if (result.status === 'processing') return 'skipped'
+  // I2: نتيجة مهمة ليست الحالية للأصل (مثلًا job1 بعد أن أعادت البوابة الإرسال إلى job2) — لا تُنهي الأصل
+  if (asset.provider_job_id && asset.provider_job_id !== result.jobId) {
+    logRequest({ fn: ctx.fn, user: asset.user_id, asset: asset.id, ms: Date.now() - ctx.started, ok: true, code: 'STALE_JOB', job: result.jobId, current: asset.provider_job_id })
+    return 'skipped'
+  }
 
   if (result.status === 'succeeded') {
-    // بوابة الجودة للاستوديوهات (ADR 0006): قبل النسخ — الرسوب يعيد الإرسال أو يفشل ويسترد، ولا يرى العميل الناتج المرفوض
-    let studioQa: QaState | null = null
-    if (studioMeta(asset.metadata) && result.outputs[0]) {
-      const gate = await studioQaGate(asset, result.jobId, result.outputs[0], ctx)
-      if (gate.kind === 'retried') return 'skipped'
-      if (gate.kind === 'fail') {
-        return await failAsset(asset, { ctx, message: QA_FAILED_MESSAGE_AR, reason: gate.reason, metadata: { qa: gate.qa, provider_output: result.outputs[0] } })
+    // بوابة الجودة للاستوديوهات (ADR 0006): قبل النسخ — الرسوب يعيد الإرسال أو يفشل ويسترد، ولا يرى العميل الناتج المرفوض.
+    // C1: البوابة تُفعَّل وتُدار من صف studio_jobs (يكتبه السيرفر) لا من metadata.
+    let studioQa: QaSummary | null = null
+    if (result.outputs[0]) {
+      const job = await loadStudioJob(asset.id)
+      if (job) {
+        const gate = await runQaGate(job, result.jobId, result.outputs[0], defaultGateDeps({ fn: ctx.fn, started: ctx.started, userId: asset.user_id }))
+        if (gate.kind === 'retried') return 'skipped'
+        if (gate.kind === 'fail') {
+          return await failAsset(asset, { ctx, jobId: result.jobId, message: QA_FAILED_MESSAGE_AR, reason: gate.reason, metadata: { qa: gate.summary } })
+        }
+        studioQa = gate.summary
+      } else if (asset.run_id) {
+        // I5 (دفاع): أصل استوديو بلا حالة بوابة — لا نسلّمه بلا فحص؛ فشل واسترداد
+        return await failAsset(asset, { ctx, jobId: result.jobId, message: STUDIO_STATE_MISSING_AR, reason: 'studio asset without studio_jobs row', metadata: {} })
       }
-      studioQa = gate.qa
     }
     let copied: Awaited<ReturnType<typeof copyFromUrl>>
     try {
@@ -57,15 +73,17 @@ export async function finalizeAsset(asset: FinalizableAsset, result: ProviderWeb
     } catch (e) {
       // عابر (شبكة/5xx/تخزين) → يُرمى فيعيد المزوّد الإرسال أو يعيد reconcile المحاولة؛ نهائي → فشل يحرّر الحجز
       if (!isOutputRejected(e)) throw e
+      // لا رابط المزوّد في metadata (يقرؤها المالك): ناتج مرفوض + استرداد كامل لا يعطي صورة مجانية (C2)
       return await failAsset(asset, {
         ctx,
+        jobId: result.jobId,
         message: OUTPUT_REJECTED_MESSAGE_AR,
         reason: `output rejected: ${e.detail ?? e.message}`,
-        metadata: { output_rejected: e.detail ?? e.message, provider_output: result.outputs[0] ?? null, provider_status: result.status },
+        metadata: { output_rejected: e.detail ?? e.message, provider_status: result.status },
       })
     }
     const fileQa = { fileOk: copied.bytes > 0, safe: true, notes: [`bytes=${copied.bytes}`, `type=${copied.contentType}`] }
-    const qa = studioQa ? { ...studioQa, ...fileQa, retries: studioQa.retries_used } : { ...fileQa, retries: 0 }
+    const qa = studioQa ? { ...studioQa, fileOk: fileQa.fileOk, retries: studioQa.retries_used } : { ...fileQa, retries: 0 }
     const { data: won, error: updErr } = await db
       .from('assets')
       .update({
@@ -78,6 +96,7 @@ export async function finalizeAsset(asset: FinalizableAsset, result: ProviderWeb
       })
       .eq('id', asset.id)
       .eq('status', 'processing')
+      .eq('provider_job_id', result.jobId)
       .select('id')
     if (updErr) throw toAppError(new Error(updErr.message))
     if (!won || won.length === 0) {
@@ -93,6 +112,7 @@ export async function finalizeAsset(asset: FinalizableAsset, result: ProviderWeb
 
   return await failAsset(asset, {
     ctx,
+    jobId: result.jobId,
     message: result.status === 'canceled' ? CANCELED_MESSAGE_AR : FAILED_MESSAGE_AR,
     reason: `provider ${result.status}: ${(result.error ?? '').slice(0, 200)}`,
     metadata: { provider_error: result.error ?? null, provider_status: result.status },
@@ -102,7 +122,7 @@ export async function finalizeAsset(asset: FinalizableAsset, result: ProviderWeb
 /** failed مشروط بـprocessing، ثم تحرير الحجز فقط إن كنا من غيّر الحالة */
 async function failAsset(
   asset: FinalizableAsset,
-  opts: { ctx: { fn: string; started: number }; message: string; reason: string; metadata: Record<string, unknown> },
+  opts: { ctx: { fn: string; started: number }; jobId: string; message: string; reason: string; metadata: Record<string, unknown> },
 ): Promise<FinalizeOutcome> {
   const db = supabaseAdmin()
   const { data: won, error: failErr } = await db
@@ -116,6 +136,8 @@ async function failAsset(
     })
     .eq('id', asset.id)
     .eq('status', 'processing')
+    // I2: فقط المهمة الحالية تُنهي الأصل
+    .eq('provider_job_id', opts.jobId)
     .select('id')
   if (failErr) throw toAppError(new Error(failErr.message))
   if (!won || won.length === 0) {

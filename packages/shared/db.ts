@@ -610,6 +610,91 @@ export type Database = {
           },
         ]
       }
+      studio_jobs: {
+        Row: {
+          asset_id: string
+          attempts: Json
+          created_at: string
+          headline: string | null
+          judge_failures: number
+          output_key: string
+          preset: string
+          provider: string
+          provider_input: Json
+          provider_slug: string
+          qa_config: Json
+          reference_url: string
+          retries_used: number
+          run_id: string
+          scene: string | null
+          studio_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          asset_id: string
+          attempts?: Json
+          created_at?: string
+          headline?: string | null
+          judge_failures?: number
+          output_key: string
+          preset: string
+          provider: string
+          provider_input: Json
+          provider_slug: string
+          qa_config: Json
+          reference_url: string
+          retries_used?: number
+          run_id: string
+          scene?: string | null
+          studio_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          asset_id?: string
+          attempts?: Json
+          created_at?: string
+          headline?: string | null
+          judge_failures?: number
+          output_key?: string
+          preset?: string
+          provider?: string
+          provider_input?: Json
+          provider_slug?: string
+          qa_config?: Json
+          reference_url?: string
+          retries_used?: number
+          run_id?: string
+          scene?: string | null
+          studio_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "studio_jobs_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: true
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "studio_jobs_studio_id_fkey"
+            columns: ["studio_id"]
+            isOneToOne: false
+            referencedRelation: "studios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "studio_jobs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       studios: {
         Row: {
           badge: string | null
