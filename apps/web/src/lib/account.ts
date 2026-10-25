@@ -30,7 +30,7 @@ export function useProfile(userId: string | null) {
   return { profile, loading, reload }
 }
 
-/** يحدّث الاسم الظاهر و/أو اللغة فقط (الباقة يحددها السيرفر — migration 0008 يمنع غيرها) */
+/** يحدّث الاسم الظاهر و/أو اللغة فقط (الباقة يحددها السيرفر — migration 0009 يمنع غيرها) */
 export async function updateProfile(userId: string, patch: { display_name?: string | null; locale?: 'ar' | 'en' }): Promise<void> {
   const { error } = await supabase.from('profiles').update(patch).eq('id', userId)
   if (error) throw new Error(error.message)

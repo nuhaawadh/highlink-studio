@@ -3,7 +3,7 @@
 --   npx supabase db query --linked -f supabase/tests/credits.test.sql
 -- أو في CI على Postgres محلي (انظر .github/workflows/ci.yml). لا يترك أي أثر.
 -- أي فشل = exception برسالة تبدأ بـ T<n>. النجاح = صف واحد "ALL CREDIT TESTS PASSED".
--- T0–T8: دفتر الرصيد (0001/0002). T9–T11: حارس الأعمدة وسياسة INSERT وget_balance وreconcile_holds (0003). T22: حارس profiles (0008).
+-- T0–T8: دفتر الرصيد (0001/0002). T9–T11: حارس الأعمدة وسياسة INSERT وget_balance وreconcile_holds (0003). T25: حارس profiles (0009).
 
 begin;
 
@@ -532,7 +532,7 @@ begin
 end $$;
 
 -- =====================================================================
--- T22: migration 0008 — حارس profiles: المستخدم يعدّل اسمه ولغته فقط، لا باقته ولا التعبئة التلقائية
+-- T25: migration 0009 — حارس profiles: المستخدم يعدّل اسمه ولغته فقط، لا باقته ولا التعبئة التلقائية
 -- =====================================================================
 do $$
 declare
@@ -551,68 +551,68 @@ begin
   execute 'set local role authenticated';
   perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u)::text, true);
 
-  -- T22a: الاسم واللغة يمرّان
+  -- T25a: الاسم واللغة يمرّان
   update public.profiles set display_name = 'نهى', locale = 'en' where id = u;
 
-  -- T22b: رفع الباقة ممنوع
+  -- T25b: رفع الباقة ممنوع
   begin
     update public.profiles set plan_id = 'creators' where id = u;
-    raise exception 'T22b plan_id self-update should have failed';
+    raise exception 'T25b plan_id self-update should have failed';
   exception when others then
-    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T22b: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
+    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T25b: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
   end;
 
-  -- T22c: التعبئة التلقائية ممنوعة (تلمس الدفع)
+  -- T25c: التعبئة التلقائية ممنوعة (تلمس الدفع)
   begin
     update public.profiles set auto_refill_credits = 4000, auto_refill_threshold = 1 where id = u;
-    raise exception 'T22c auto_refill self-update should have failed';
+    raise exception 'T25c auto_refill self-update should have failed';
   exception when others then
-    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T22c: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
+    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T25c: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
   end;
 
-  -- T22d: لغة غير مدعومة واسم أطول من 60
+  -- T25d: لغة غير مدعومة واسم أطول من 60
   begin
     update public.profiles set locale = 'fr' where id = u;
-    raise exception 'T22d locale should have failed';
+    raise exception 'T25d locale should have failed';
   exception when others then
-    if sqlerrm <> 'INVALID_LOCALE' then raise exception 'T22d: expected INVALID_LOCALE, got %', sqlerrm; end if;
+    if sqlerrm <> 'INVALID_LOCALE' then raise exception 'T25d: expected INVALID_LOCALE, got %', sqlerrm; end if;
   end;
   begin
     update public.profiles set display_name = repeat('x', 61) where id = u;
-    raise exception 'T22d name should have failed';
+    raise exception 'T25d name should have failed';
   exception when others then
-    if sqlerrm <> 'INVALID_DISPLAY_NAME' then raise exception 'T22d: expected INVALID_DISPLAY_NAME, got %', sqlerrm; end if;
+    if sqlerrm <> 'INVALID_DISPLAY_NAME' then raise exception 'T25d: expected INVALID_DISPLAY_NAME, got %', sqlerrm; end if;
   end;
 
-  -- T22g: قائمة سماح — username وavatar_url وcreated_at كلها ممنوعة (أي عمود غير الاسم واللغة)
+  -- T25g: قائمة سماح — username وavatar_url وcreated_at كلها ممنوعة (أي عمود غير الاسم واللغة)
   begin
     update public.profiles set username = 'highlink' where id = u;
-    raise exception 'T22g username should have failed';
+    raise exception 'T25g username should have failed';
   exception when others then
-    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T22g username: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
+    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T25g username: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
   end;
   begin
     update public.profiles set avatar_url = 'javascript:alert(1)' where id = u;
-    raise exception 'T22g avatar should have failed';
+    raise exception 'T25g avatar should have failed';
   exception when others then
-    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T22g avatar: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
+    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T25g avatar: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
   end;
   begin
     update public.profiles set created_at = now() - interval '5 years' where id = u;
-    raise exception 'T22g created_at should have failed';
+    raise exception 'T25g created_at should have failed';
   exception when others then
-    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T22g created_at: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
+    if sqlerrm <> 'FORBIDDEN_COLUMN_UPDATE' then raise exception 'T25g created_at: expected FORBIDDEN_COLUMN_UPDATE, got %', sqlerrm; end if;
   end;
 
-  -- T22h: upsert بباقة مختلفة يُرفض (لا سياسة INSERT على profiles)
+  -- T25h: upsert بباقة مختلفة يُرفض (لا سياسة INSERT على profiles)
   begin
     insert into public.profiles (id, plan_id) values (u, 'creators') on conflict (id) do update set plan_id = excluded.plan_id;
-    raise exception 'T22h upsert should have failed';
+    raise exception 'T25h upsert should have failed';
   exception when others then
-    if sqlerrm not like 'new row violates row-level security policy%' then raise exception 'T22h: expected RLS violation, got %', sqlerrm; end if;
+    if sqlerrm not like 'new row violates row-level security policy%' then raise exception 'T25h: expected RLS violation, got %', sqlerrm; end if;
   end;
 
-  -- T22i: التحقق على ما تغيّر فقط — اسم طويل موجود من قبل (مثلًا من التسجيل) لا يمنع تغيير اللغة
+  -- T25i: التحقق على ما تغيّر فقط — اسم طويل موجود من قبل (مثلًا من التسجيل) لا يمنع تغيير اللغة
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
   update public.profiles set display_name = repeat('n', 80) where id = u2;
@@ -620,8 +620,8 @@ begin
   perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u2)::text, true);
   update public.profiles set locale = 'en' where id = u2;
   get diagnostics n = row_count;
-  if n <> 1 then raise exception 'T22i: locale change with a long existing name should pass, got % rows', n; end if;
-  -- T22j: ونفس الشي للغة: لغة قديمة غير مدعومة (كتبها السيرفر) لا تمنع تغيير الاسم
+  if n <> 1 then raise exception 'T25i: locale change with a long existing name should pass, got % rows', n; end if;
+  -- T25j: ونفس الشي للغة: لغة قديمة غير مدعومة (كتبها السيرفر) لا تمنع تغيير الاسم
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
   update public.profiles set locale = 'fr' where id = u2;
@@ -629,27 +629,27 @@ begin
   perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u2)::text, true);
   update public.profiles set display_name = 'Short' where id = u2;
   get diagnostics n = row_count;
-  if n <> 1 then raise exception 'T22j: name change with an old unsupported locale should pass, got % rows', n; end if;
+  if n <> 1 then raise exception 'T25j: name change with an old unsupported locale should pass, got % rows', n; end if;
   perform set_config('request.jwt.claims', json_build_object('role', 'authenticated', 'sub', u)::text, true);
 
-  -- T22e: صف مستخدم آخر لا يُمس (RLS: صفر صفوف)
+  -- T25e: صف مستخدم آخر لا يُمس (RLS: صفر صفوف)
   update public.profiles set display_name = 'x' where id = u2;
   get diagnostics n = row_count;
-  if n <> 0 then raise exception 'T22e: updated another user''s profile (% rows)', n; end if;
+  if n <> 0 then raise exception 'T25e: updated another user''s profile (% rows)', n; end if;
 
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
   select plan_id, display_name, locale into p, nm, lc from public.profiles where id = u;
-  if p <> 'free' or nm <> 'نهى' or lc <> 'en' then raise exception 'T22 final: plan=% name=% locale=%', p, nm, lc; end if;
+  if p <> 'free' or nm <> 'نهى' or lc <> 'en' then raise exception 'T25 final: plan=% name=% locale=%', p, nm, lc; end if;
 
-  -- T22f: السيرفر (service_role) يغيّر الباقة
+  -- T25f: السيرفر (service_role) يغيّر الباقة
   execute 'set local role service_role';
   perform set_config('request.jwt.claims', json_build_object('role', 'service_role')::text, true);
   update public.profiles set plan_id = 'pro' where id = u;
   execute 'reset role';
   perform set_config('request.jwt.claims', '', true);
   select plan_id into p from public.profiles where id = u;
-  if p <> 'pro' then raise exception 'T22f service_role plan change: got %', p; end if;
+  if p <> 'pro' then raise exception 'T25f service_role plan change: got %', p; end if;
 end $$;
 
 select 'ALL CREDIT TESTS PASSED' as result;
