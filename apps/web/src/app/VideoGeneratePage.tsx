@@ -8,6 +8,8 @@ import { AssetCard } from '@/components/studio/AssetCard'
 import { CreditCostButton } from '@/components/studio/CreditCostButton'
 import { FamilyGallery } from '@/components/studio/FamilyGallery'
 import { ModelPicker } from '@/components/studio/ModelPicker'
+import { ModeTabs } from '@/components/studio/ModeTabs'
+import { ReferencePicker } from '@/components/studio/ReferencePicker'
 import { OptionChips } from '@/components/studio/OptionChips'
 import { Textarea } from '@/components/ui/textarea'
 import { useI18n } from '@/i18n'
@@ -15,7 +17,22 @@ import { createQueuedAsset, GenerateError, requestGeneration, useAssets } from '
 import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import { env } from '@/lib/env'
-import { modelAspectRatios, modelAudioFree, modelDefaults, modelDurations, modelHasAudio, modelResolutions, modelSupports, useModels, videoCost, type ModelRow } from '@/lib/models'
+import {
+  modelAspectRatios,
+  modelAudioFree,
+  modelDefaults,
+  modelDurations,
+  modelHasAudio,
+  modelRefSpec,
+  modelResolutions,
+  modelsForMode,
+  modelSupports,
+  modesFor,
+  useModels,
+  videoCost,
+  type GenMode,
+  type ModelRow,
+} from '@/lib/models'
 import { likeFromUrl } from '@/lib/showcase'
 import { cn } from '@/lib/utils'
 
@@ -34,7 +51,7 @@ export function VideoGeneratePage() {
   const { user } = useAuth()
   const userId = user?.id ?? null
   const { balance } = useCredits(userId)
-  const { models, loading: modelsLoading } = useModels('video')
+  const { allModels, loading: modelsLoading } = useModels('video')
   const { assets, loading: assetsLoading, upsertLocal } = useAssets(userId, { type: 'video', limit: 24 })
 
   // ?like=<مفتاح> ("سوّ مثلها" من المعرض): البرومت والنموذج والإعدادات من المثال. ?model=<id>: النموذج فقط
@@ -51,6 +68,19 @@ export function VideoGeneratePage() {
   const [busy, setBusy] = useState(false)
   // مثال ينتظر نموذجه حتى تُطبَّق إعداداته فوق الافتراض (النماذج تُحمَّل بعد أول عرض)
   const pendingLike = useRef<{ media: ShowcaseMedia; family: string | null } | null>(initialLike)
+
+  // الخطوة 5: الوضع (من نص / من صورة / بمراجع) يحدد النماذج المعروضة، والمراجع تُرفع إلى up/{uid}/
+  const [mode, setMode] = useState<GenMode>('text')
+  const [refs, setRefs] = useState<string[]>([])
+  const models = useMemo(() => modelsForMode(allModels, 'video', mode), [allModels, mode])
+  // رابط ?model=<id> لنموذج يحتاج مراجع → افتح وضعه مرة واحدة بعد تحميل النماذج
+  const modeFromUrl = useRef(false)
+  useEffect(() => {
+    if (modeFromUrl.current || !allModels.length || !modelId) return
+    modeFromUrl.current = true
+    const owner = modesFor('video').find((m) => modelsForMode(allModels, 'video', m).some((x) => x.id === modelId))
+    if (owner && owner !== 'text') setMode(owner)
+  }, [allModels, modelId])
 
   useEffect(() => {
     document.title = `${t('nav.video')} — ${env.VITE_APP_NAME}`
@@ -82,8 +112,16 @@ export function VideoGeneratePage() {
     setAspectRatio(d.aspectRatio && rats.includes(d.aspectRatio) ? d.aspectRatio : (rats[0] ?? '16:9'))
     // الصوت المجاني يبدأ مفعّلًا (لا يغيّر التكلفة)؛ الصوت بزيادة يبدأ مطفأً
     setAudio(modelAudioFree(model))
+    setRefs((r) => r.slice(0, modelRefSpec(model).max))
     applyPendingLike(model)
   }, [model])
+
+  /** تبديل الوضع: أول نموذج في الوضع الجديد، والمثال المنتظر يُلغى */
+  function pickMode(m: GenMode) {
+    pendingLike.current = null
+    setModelId(null)
+    setMode(m)
+  }
 
   /** "سوّ مثلها": إعدادات المثال فوق الافتراض، ضمن ما يعرضه النموذج (أو عائلته لو تغيّر الإصدار) */
   function applyPendingLike(m: ModelRow) {
@@ -113,7 +151,8 @@ export function VideoGeneratePage() {
   }
 
   const cost = model ? videoCost(model, { duration, resolution, audio: hasAudio ? audio : undefined }) : 0
-  const canGenerate = Boolean(user && model && prompt.trim().length > 0 && cost > 0)
+  const refSpec = model ? modelRefSpec(model) : { min: 0, max: 0, frames: false }
+  const canGenerate = Boolean(user && model && prompt.trim().length > 0 && cost > 0 && refs.length >= refSpec.min)
 
   async function onGenerate() {
     if (!user || !model || !prompt.trim()) return
@@ -134,6 +173,7 @@ export function VideoGeneratePage() {
         model: model.id,
         prompt: prompt.trim(),
         config: { aspectRatio, duration, resolution, ...(hasAudio ? { audio } : {}) },
+        ...(refSpec.max > 0 && refs.length ? { images: refs.slice(0, refSpec.max) } : {}),
         feature_tag: 'general',
         locale,
         // سقف الإنفاق = ما رآه المستخدم على الزر؛ لو تغيّر سعر النموذج بعد التحميل يُرفض الطلب بدل خصم أعلى
@@ -163,12 +203,16 @@ export function VideoGeneratePage() {
           <p className="mt-1 text-sm text-muted">{t('video.subtitle')}</p>
         </div>
 
+        <ModeTabs modes={modesFor('video')} value={mode} onChange={pickMode} />
+
         <div>
           <h2 className="mb-2 text-xs font-semibold text-muted">{t('generate.model')}</h2>
           <div className="max-h-[50vh] overflow-y-auto pe-1 md:max-h-[60vh]">
             <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={pickModel} defaultCost={defaultVideoCost} />
           </div>
         </div>
+
+        {model && userId && refSpec.max > 0 && <ReferencePicker userId={userId} spec={refSpec} refs={refs} onChange={setRefs} />}
 
         {model && (
           <>
@@ -268,7 +312,7 @@ export function VideoGeneratePage() {
               maxLength={4000}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder={t('video.promptPlaceholder')}
+              placeholder={t(mode === 'image' ? 'video.imagePlaceholder' : mode === 'refs' ? 'video.refsPlaceholder' : 'video.promptPlaceholder')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                   e.preventDefault()

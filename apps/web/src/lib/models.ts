@@ -33,6 +33,8 @@ export interface Supports {
   credits_by_duration?: Record<string, number>
   ref_images?: number
   requires_ref?: boolean
+  /** أقل عدد مراجع يقبله النموذج (2 = إطار أول وأخير، أو شخص وقطعة) */
+  min_refs?: number
   text?: boolean
   i2v?: boolean
   /** جدول كامل بالدقة والدقة+الصوت (Kling عبر Replicate) — يقرؤه modelCredits */
@@ -158,6 +160,51 @@ export function groupByFamily(models: ModelRow[], defaultCost: (m: ModelRow) => 
     }
   }
   return Array.from(map.values())
+}
+
+/**
+ * أوضاع صفحات التوليد الحر (الخطوة 5 — رفع المراجع): كل وضع يعرض أنواعه فقط، فلا تتكرر رقائق الإصدار
+ * (kling-v4 وkling-v4-i2v كلاهما "4") ويظهر منتقي المراجع بالعدد الصحيح.
+ *   text  — كما كان: ما لا يحتاج مراجع ولم يُخفَ (supports.ui !== false)
+ *   edit  — الصور: تعديل بالمراجع
+ *   image — الفيديو: من صورة (إطار أول، وأول+أخير)
+ *   refs  — الفيديو: بمراجع (شخصية/منتج/أسلوب)
+ */
+export type GenMode = 'text' | 'edit' | 'image' | 'refs'
+
+const MODE_KINDS: Record<'image' | 'video', Partial<Record<GenMode, string[]>>> = {
+  image: { edit: ['edit'] },
+  video: { image: ['i2v', 'flf2v'], refs: ['ref2v'] },
+}
+
+export function modesFor(type: 'image' | 'video'): GenMode[] {
+  return ['text', ...(Object.keys(MODE_KINDS[type]) as GenMode[])]
+}
+
+export function modelsForMode(models: ModelRow[], type: 'image' | 'video', mode: GenMode): ModelRow[] {
+  const ofType = models.filter((m) => m.type === type)
+  if (mode === 'text') return ofType.filter((m) => modelSupports(m).ui !== false && modelSupports(m).requires_ref !== true)
+  const kinds = MODE_KINDS[type][mode]
+  if (!kinds) return []
+  return ofType.filter((m) => kinds.includes(String(modelSupports(m).kind ?? '')))
+}
+
+/** أقصى عدد مراجع يعرضه المنتقي في الواجهة (المزوّد قد يقبل أكثر؛ الـAPI يقبل حتى 14) */
+const UI_MAX_REFS = 4
+
+/**
+ * مواصفة منتقي المراجع للنموذج: الحد الأدنى والأعلى، و`frames` = المراجع إطارات (الأول ثم الأخير) لا مجموعة صور.
+ * الخادم يفرض الحد الأدنى نفسه (generate-core: requires_ref/min_refs) — هذا للعرض والتعطيل قبل الضغط.
+ */
+export function modelRefSpec(model: ModelRow): { min: number; max: number; frames: boolean } {
+  const s = modelSupports(model)
+  if (!s.requires_ref) return { min: 0, max: 0, frames: false }
+  const kind = String(s.kind ?? '')
+  const frames = kind === 'i2v' || kind === 'flf2v'
+  const min = Math.max(1, s.min_refs ?? 1)
+  const declared = s.ref_images && s.ref_images > 0 ? s.ref_images : min
+  const max = Math.max(min, Math.min(frames ? 2 : UI_MAX_REFS, declared))
+  return { min, max, frames }
 }
 
 export function useModels(type: 'image' | 'video') {

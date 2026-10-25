@@ -7,6 +7,8 @@ import { AssetCard } from '@/components/studio/AssetCard'
 import { CreditCostButton } from '@/components/studio/CreditCostButton'
 import { FamilyGallery } from '@/components/studio/FamilyGallery'
 import { ModelPicker } from '@/components/studio/ModelPicker'
+import { ModeTabs } from '@/components/studio/ModeTabs'
+import { ReferencePicker } from '@/components/studio/ReferencePicker'
 import { ResolutionPicker } from '@/components/studio/ResolutionPicker'
 import { Textarea } from '@/components/ui/textarea'
 import { useI18n } from '@/i18n'
@@ -14,7 +16,7 @@ import { createQueuedAsset, GenerateError, requestGeneration, useAssets } from '
 import { useAuth } from '@/lib/auth'
 import { useCredits } from '@/lib/credits'
 import { env } from '@/lib/env'
-import { modelAspectRatios, modelCost, modelDefaults, modelSizes, modelSupports, useModels, type ModelRow } from '@/lib/models'
+import { modelAspectRatios, modelCost, modelDefaults, modelRefSpec, modelSizes, modelsForMode, modelSupports, modesFor, useModels, type GenMode, type ModelRow } from '@/lib/models'
 import { likeFromUrl } from '@/lib/showcase'
 
 /** تكلفة النموذج بدقته الافتراضية — لبطاقات العائلات في المنتقي */
@@ -29,7 +31,7 @@ export function ImageGeneratePage() {
   const { user } = useAuth()
   const userId = user?.id ?? null
   const { balance } = useCredits(userId)
-  const { models, loading: modelsLoading } = useModels('image')
+  const { allModels, loading: modelsLoading } = useModels('image')
   const { assets, loading: assetsLoading, upsertLocal } = useAssets(userId, { type: 'image', limit: 24 })
 
   // ?like=<مفتاح> ("سوّ مثلها" من المعرض): البرومت والنموذج والإعدادات من المثال. ?model=<id>: النموذج فقط
@@ -44,6 +46,19 @@ export function ImageGeneratePage() {
   const [busy, setBusy] = useState(false)
   // مثال ينتظر نموذجه حتى تُطبَّق إعداداته فوق الافتراض (النماذج تُحمَّل بعد أول عرض)
   const pendingLike = useRef<{ media: ShowcaseMedia; family: string | null } | null>(initialLike)
+
+  // الخطوة 5: الوضع (من نص / تعديل صورة) يحدد النماذج المعروضة، والمراجع تُرفع إلى up/{uid}/
+  const [mode, setMode] = useState<GenMode>('text')
+  const [refs, setRefs] = useState<string[]>([])
+  const models = useMemo(() => modelsForMode(allModels, 'image', mode), [allModels, mode])
+  // رابط ?model=<id> لنموذج يحتاج مراجع → افتح وضعه مرة واحدة بعد تحميل النماذج
+  const modeFromUrl = useRef(false)
+  useEffect(() => {
+    if (modeFromUrl.current || !allModels.length || !modelId) return
+    modeFromUrl.current = true
+    const owner = modesFor('image').find((m) => modelsForMode(allModels, 'image', m).some((x) => x.id === modelId))
+    if (owner && owner !== 'text') setMode(owner)
+  }, [allModels, modelId])
 
   useEffect(() => {
     document.title = `${t('nav.images')} — ${env.VITE_APP_NAME}`
@@ -67,8 +82,16 @@ export function ImageGeneratePage() {
     const ratios = modelAspectRatios(model)
     setImageSize(d.imageSize && sizes.includes(d.imageSize) ? d.imageSize : sizes[0])
     setAspectRatio(d.aspectRatio && ratios.includes(d.aspectRatio) ? d.aspectRatio : ratios[0])
+    setRefs((r) => r.slice(0, modelRefSpec(model).max))
     applyPendingLike(model)
   }, [model])
+
+  /** تبديل الوضع: أول نموذج في الوضع الجديد، والمثال المنتظر يُلغى */
+  function pickMode(m: GenMode) {
+    pendingLike.current = null
+    setModelId(null)
+    setMode(m)
+  }
 
   /** "سوّ مثلها": إعدادات المثال فوق الافتراض، ضمن ما يعرضه النموذج (أو عائلته لو تغيّر الإصدار) */
   function applyPendingLike(m: ModelRow) {
@@ -97,7 +120,8 @@ export function ImageGeneratePage() {
   }
 
   const cost = model ? modelCost(model, imageSize) : 0
-  const canGenerate = Boolean(user && model && prompt.trim().length > 0)
+  const refSpec = model ? modelRefSpec(model) : { min: 0, max: 0, frames: false }
+  const canGenerate = Boolean(user && model && prompt.trim().length > 0 && refs.length >= refSpec.min)
 
   async function onGenerate() {
     if (!user || !model || !prompt.trim()) return
@@ -118,6 +142,7 @@ export function ImageGeneratePage() {
         model: model.id,
         prompt: prompt.trim(),
         config: { aspectRatio, imageSize },
+        ...(refSpec.max > 0 && refs.length ? { images: refs.slice(0, refSpec.max) } : {}),
         feature_tag: 'general',
         locale,
         // سقف الإنفاق = ما رآه المستخدم على الزر؛ لو تغيّر سعر النموذج بعد التحميل يُرفض الطلب بدل خصم أعلى
@@ -148,10 +173,14 @@ export function ImageGeneratePage() {
           <p className="mt-1 text-sm text-muted">{t('generate.subtitle')}</p>
         </div>
 
+        <ModeTabs modes={modesFor('image')} value={mode} onChange={pickMode} />
+
         <div>
           <h2 className="mb-2 text-xs font-semibold text-muted">{t('generate.model')}</h2>
           <ModelPicker models={models} loading={modelsLoading} value={model?.id ?? null} onChange={pickModel} defaultCost={defaultImageCost} />
         </div>
+
+        {model && userId && refSpec.max > 0 && <ReferencePicker userId={userId} spec={refSpec} refs={refs} onChange={setRefs} />}
 
         {model && (
           <>
@@ -206,7 +235,7 @@ export function ImageGeneratePage() {
               maxLength={4000}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder={t('generate.promptPlaceholder')}
+              placeholder={t(mode === 'edit' ? 'generate.editPlaceholder' : 'generate.promptPlaceholder')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                   e.preventDefault()
