@@ -897,6 +897,7 @@ export type Database = {
           provider_job_id: string
         }[]
       }
+      reference_upload_ok: { Args: never; Returns: boolean }
       release_hold: {
         Args: { p_hold_id: number; p_note?: string }
         Returns: undefined
